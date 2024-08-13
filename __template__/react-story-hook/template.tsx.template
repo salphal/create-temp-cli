@@ -1,0 +1,15 @@
+import React, {useEffect} from "react";
+
+export interface ${CompName}Props {
+}
+
+const ${compName} = (props: ${CompName}Props) => {
+
+  const {} = props;
+
+  useEffect(() => {}, []);
+
+  return {};
+};
+
+export default ${compName};

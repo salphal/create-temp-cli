@@ -1,0 +1,3 @@
+import ${compName} from "./${comp-file-name}";
+
+export default ${compName};

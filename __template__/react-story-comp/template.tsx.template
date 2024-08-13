@@ -1,0 +1,31 @@
+import React, {type ForwardRefRenderFunction, type Ref, useState, useEffect, useRef, useImperativeHandle} from "react";
+
+export interface ${CompName}Props {
+}
+
+export interface ${CompName}Ref {
+}
+
+const ${CompName}: ForwardRefRenderFunction<${CompName}Ref, ${CompName}Props> = (
+  props: ${CompName}Props,
+  ref: Ref<${CompName}Ref | HTMLDivElement>,
+) => {
+
+  const {} = props;
+
+  useImperativeHandle(ref, () => ({}));
+
+  useEffect(() => {}, []);
+
+  return (
+    <React.Fragment>
+
+      <div className={""}>
+        ${CompName} Component
+      </div>
+
+    </React.Fragment>
+  );
+};
+
+export default React.forwardRef(${CompName});

@@ -1,0 +1,33 @@
+{
+  "name": "@alphal/create-temp",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "bin": {
+    "create-temp": "index.cjs"
+  },
+  "files": [
+    "index.cjs",
+    "template-*",
+    "dist"
+  ],
+  "scripts": {
+    "dev": "unbuild --stub",
+    "build": "unbuild",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "engines": {
+    "node": "^18.0.0 || >=20.0.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^12.1.0",
+    "minimist": "^1.2.8"
+  },
+  "devDependencies": {
+    "@types/minimist": "^1.2.5"
+  }
+}

@@ -1,0 +1,40 @@
+import type { Meta, StoryObj } from '@storybook/react';
+import ${CompName}, { type ${CompName}Props } from "./${comp-file-name}";
+import { ${CompName}Story } from './${comp-file-name}.story';
+
+
+const meta = {
+  title: 'Hooks/${CompName}',
+  component: ${CompName}Story,
+  // tags: ['autodocs'],
+  parameters: {
+    layout: 'fullscreen',
+    docs: {
+      toc: true,
+    },
+  },
+  args: {
+  },
+  argTypes: {
+  },
+} satisfies Meta<typeof ${CompName}>;
+
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+
+const defaultProps: ${CompName}Props = {
+};
+
+export const Default${CompName}: Story = {
+  args: {
+    ...defaultProps
+  }
+};
+
+export const Another${CompName}: Story = {
+  args: {
+    ...defaultProps
+  }
+};
