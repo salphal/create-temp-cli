@@ -4,11 +4,11 @@
   "description": "",
   "type": "module",
   "bin": {
-    "create-temp": "index.cjs"
+    "create-temp": "index.js"
   },
   "files": [
-    "index.cjs",
-    "template-*",
+    "index.js",
+    "__template__",
     "dist"
   ],
   "scripts": {
@@ -28,6 +28,7 @@
     "minimist": "^1.2.8"
   },
   "devDependencies": {
-    "@types/minimist": "^1.2.5"
+    "@types/minimist": "^1.2.5",
+    "unbuild": "^2.0.0"
   }
 }

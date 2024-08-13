@@ -12,10 +12,10 @@
  *  - hook -> /lib/hooks
  */
 
-const fs = require('fs');
-const path = require('path');
-const minimist = require('minimist');
-const {program} = require('commander');
+import fs from 'node:fs';
+import path from 'node:path';
+import minimist from 'minimist'
+import {program} from 'commander';
 
 const cwd = process.cwd();
 
