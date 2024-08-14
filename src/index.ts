@@ -4,6 +4,7 @@
 import {Command} from 'commander';
 import minimist from "minimist";
 
+/**  */
 const argv = minimist<{
   template?: string;
   help?: boolean;
@@ -12,8 +13,11 @@ const argv = minimist<{
   alias: {h: 'help', t: 'template'},
   string: ['_'],
 });
+console.log('=>(index.ts:16) argv', argv);
 
+/** current working directory path */
 const cwd = process.cwd()
+console.log('=>(index.ts:17) cwd', cwd);
 
 const program = new Command();
 
