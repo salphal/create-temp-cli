@@ -9,7 +9,7 @@ export default defineBuildConfig({
   clean: true,
   outDir: 'dist',
   name: 'bundle',
-  sourcemap: true,
+  // sourcemap: true,
   rollup: {
     inlineDependencies: true,
     esbuild: {
