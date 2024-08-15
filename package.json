@@ -8,7 +8,7 @@
   },
   "files": [
     "index.js",
-    "__template__/**",
+    "__template__",
     "dist"
   ],
   "scripts": {
@@ -24,17 +24,23 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
     "@types/minimist": "^1.2.5",
     "@types/node": "^22.2.0",
     "@types/prompts": "^2.4.9",
+    "@types/shelljs": "^0.8.15",
+    "child_process": "^1.0.2",
     "commander": "^12.1.0",
     "cross-spawn": "^7.0.3",
+    "dotenv": "^16.4.5",
+    "download-git-repo": "^3.0.2",
+    "figlet": "^1.7.0",
+    "fs-extra": "^11.2.0",
     "kolorist": "^1.8.0",
     "minimist": "^1.2.8",
+    "ora": "^8.0.1",
     "prompts": "^2.4.2",
+    "shelljs": "^0.8.5",
     "unbuild": "^2.0.0"
-  },
-  "dependencies": {
-    "dotenv": "^16.4.5"
   }
 }

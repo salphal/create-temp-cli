@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 
-import fs from "fs";
+import fs from "fs-extra";
 import path from "path";
 import prompts from "prompts";
 import {configDotenv} from "dotenv";
@@ -12,12 +12,12 @@ import {camelcase, camelCase, CamelCase} from "../utils/camelcase";
 import {createDirectory} from "../utils/directory";
 
 
-const cwd = process.cwd();
-Logger.info(`Current work directory: ${cwd}`);
+const __dirname = process.cwd(); // es下 获取当前运行的根目录
+Logger.info(`Current work directory: ${__dirname}`);
 
 /** 载入自定义环境变量 */
 configDotenv({
-  path: path.resolve(cwd, '.temp.env')
+  path: path.resolve(__dirname, '.temp.env')
 });
 
 /** 仅获取以 CREATE_TEMP 开头的环境变量 */
@@ -247,14 +247,14 @@ function setCustomOutputDirectoryList(envs: Envs) {
 
 async function init() {
 
-  setupEnvs(envs);
+  setupEnvs(envs as Envs);
 
   /** 默认模版目录路径 */
-  const baseTemplateDir = path.join(cwd, '__template__');
+  const baseTemplateDir = path.join(__dirname, '__template__');
   /** 所有模版信息列表集合 */
   const allTempInfoList: TempInfoList = [];
   /** 输出目录路径 */
-  let outputDirectoryPath = path.join(cwd, '__output__');
+  let outputDirectoryPath = path.join(__dirname, '__output__');
 
   /** 模版集合的路径 */
   const tempDirectoryPathList = [
@@ -315,12 +315,12 @@ async function init() {
   /** 仅可输出再当前工程的子目录下 */
   if (typeof outputPath === 'string' && outputPath.trim() !== '.') {
     if (typeof customOutputPath === 'string') {
-      outputDirectoryPath = path.join(cwd, customOutputPath);
+      outputDirectoryPath = path.join(__dirname, customOutputPath);
     } else {
-      outputDirectoryPath = path.join(cwd, outputPath);
+      outputDirectoryPath = path.join(__dirname, outputPath);
     }
   } else {
-    outputDirectoryPath = path.join(cwd, '__output__');
+    outputDirectoryPath = path.join(__dirname, '__output__');
   }
 
   /** 在项目根路径下创建默认输出目录 */
