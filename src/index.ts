@@ -202,6 +202,10 @@ function templateFileNameToReallyFileName(templateFileName: string, reallyFileNa
 }
 
 
+/**
+ * 挂载环境变量中设置的 输出目录列表
+ * @param outputDirectoryList - 输出目录列表
+ */
 function setCustomOutputDirectoryList(outputDirectoryList: Array<string>) {
   const customOutputPathChoices = outputDirectoryList.map(v => ({title: v, value: v}))
   questions = questions.map((question: any) => {
