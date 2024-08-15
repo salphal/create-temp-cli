@@ -271,7 +271,7 @@ async function init() {
   /** 获取用户输入的结果 */
   const response = await prompts(questions, {});
 
-  const {tempName, compName, fileName, outputPath} = response;
+  const {tempName, compName, fileName, outputPath, customOutputPath} = response;
 
   const replaceVariableMap = {
     CompName: CamelCase(compName), // 首字母大写( eg: DemoComp )
@@ -292,7 +292,11 @@ async function init() {
 
   /** 仅可输出再当前工程的子目录下 */
   if (typeof outputPath === 'string' && outputPath.trim() !== '.') {
-    outputDirectoryPath = path.join(cwd, outputPath);
+    if (typeof customOutputPath === 'string') {
+      outputDirectoryPath = path.join(cwd, customOutputPath);
+    } else {
+      outputDirectoryPath = path.join(cwd, outputPath);
+    }
   } else {
     /** 在项目根路径下创建默认输出目录 */
     await createDirectory(cwd, '__output__');
