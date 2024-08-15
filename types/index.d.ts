@@ -14,3 +14,7 @@ export interface PickerOption {
 export type PickerOptionList = Array<PickerOption>;
 
 export type TempNameList = Array<string>;
+
+export interface Envs {
+  [key: string]: string | undefined;
+}

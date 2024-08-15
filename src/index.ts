@@ -6,7 +6,7 @@ import path from "path";
 import prompts from "prompts";
 import {configDotenv} from "dotenv";
 
-import {PickerOptionList, TempInfo, TempInfoList, TempNameList} from "../types";
+import {Envs, PickerOptionList, TempInfo, TempInfoList, TempNameList} from "../types";
 import Logger from "../utils/logger";
 import {camelcase, camelCase, CamelCase} from "../utils/camelcase";
 import {createDirectory} from "../utils/directory";
@@ -201,12 +201,37 @@ function templateFileNameToReallyFileName(templateFileName: string, reallyFileNa
   return filename;
 }
 
+/**
+ * 挂载环境变量中的配置
+ * @param envs - 环境变量
+ */
+function setupEnvs(envs: Envs) {
+  setupTemplateDirectory(envs);
+  setupOutputDirectory(envs);
+  setCustomOutputDirectoryList(envs);
+}
 
 /**
- * 挂载环境变量中设置的 输出目录列表
- * @param outputDirectoryList - 输出目录列表
+ * 挂载 默认模版目录
+ * @param envs - 环境变量
  */
-function setCustomOutputDirectoryList(outputDirectoryList: Array<string>) {
+function setupTemplateDirectory(envs: Envs) {
+}
+
+/**
+ * 挂载 默认输出目录
+ * @param envs - 环境变量
+ */
+function setupOutputDirectory(envs: Envs) {
+}
+
+/**
+ * 挂载 追加自定义输出目录的选项
+ * @param envs - 环境变量
+ */
+function setCustomOutputDirectoryList(envs: Envs) {
+  if (!envs.CREATE_TEMP_OUTPUT_DIRECTORY_CHOICES) return;
+  const outputDirectoryList = envs.CREATE_TEMP_OUTPUT_DIRECTORY_CHOICES.split(',').filter(v => !!v);
   const customOutputPathChoices = outputDirectoryList.map(v => ({title: v, value: v}))
   questions = questions.map((question: any) => {
     if (question.name === 'customOutputPath') {
@@ -219,13 +244,10 @@ function setCustomOutputDirectoryList(outputDirectoryList: Array<string>) {
   });
 }
 
+
 async function init() {
 
-  /** 装载用户自定的输出路径 */
-  if (envs.CREATE_TEMP_OUTPUT_DIRECTORY_CHOICES) {
-    const outputDirectoryList = envs.CREATE_TEMP_OUTPUT_DIRECTORY_CHOICES.split(',');
-    outputDirectoryList.length && setCustomOutputDirectoryList(outputDirectoryList);
-  }
+  setupEnvs(envs);
 
   /** 默认模版目录路径 */
   const baseTemplateDir = path.join(cwd, '__template__');
@@ -340,6 +362,7 @@ async function init() {
     currentTempInfoList
   };
 }
+
 
 init()
   .then((res) => {
