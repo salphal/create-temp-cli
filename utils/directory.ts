@@ -28,23 +28,23 @@ export function clearAllOnDir(directoryPath: string) {
  * @param folderName {string} - 文件夹名称
  * @return {Promise<number>}
  */
-export async function createDirectory(baseDirectoryPath: string, folderName: string) {
+export async function createDirectory(baseDirectoryPath: string, folderName?: string) {
   return new Promise(async (resolve, reject) => {
-    const fullPath = path.join(baseDirectoryPath, folderName);
+    const fullPath = folderName ? path.join(baseDirectoryPath, folderName) : baseDirectoryPath;
     try {
       if (!fs.existsSync(fullPath)) {
-        fs.mkdir(path.join(baseDirectoryPath, folderName), (err) => {
+        fs.mkdir(fullPath, (err) => {
           if (err) {
             Logger.error(`Error creating folder: ${err}`)
             reject(err);
             return;
           }
-          Logger.success(`Folder created successfully at ${path.join(baseDirectoryPath, folderName)}`)
+          Logger.success(`Folder created successfully at ${fullPath}`)
           resolve(1);
         });
       } else {
         clearAllOnDir(fullPath);
-        Logger.warn(`Directory already exists: ${path.join(baseDirectoryPath, folderName)}`)
+        Logger.warn(`Directory already exists: ${fullPath}`)
         resolve(1);
       }
     } catch (err) {

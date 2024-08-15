@@ -69,7 +69,7 @@ let questions: any = [
       {title: 'src/pages', value: 'src/pages'},
       {title: 'src/views', value: 'src/views'},
       {title: 'src/components', value: 'src/components'},
-      {title: 'src/hooks', value: 'src/components'},
+      {title: 'src/hooks', value: 'src/hooks'},
       {title: 'src/store', value: 'src/store'},
       {title: 'lib', value: 'lib'},
       {title: 'lib/components', value: 'lib/components'},
@@ -320,9 +320,11 @@ async function init() {
       outputDirectoryPath = path.join(cwd, outputPath);
     }
   } else {
-    /** 在项目根路径下创建默认输出目录 */
-    await createDirectory(cwd, '__output__');
+    outputDirectoryPath = path.join(cwd, '__output__');
   }
+
+  /** 在项目根路径下创建默认输出目录 */
+  await createDirectory(outputDirectoryPath);
 
   /**
    * 在输出目录下 创建输出的组件目录
