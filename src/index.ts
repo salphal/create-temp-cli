@@ -282,7 +282,7 @@ async function init() {
    */
   const isCreated = await createDirectory(outputDirectoryPath, fileName);
   if (!isCreated) {
-    Logger.error('Could not create directory')
+    Logger.error(`Could not create directory: ${outputDirectoryPath}/${fileName}`);
     process.exit(1);
   }
 
