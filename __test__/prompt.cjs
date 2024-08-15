@@ -58,7 +58,7 @@ const questions = [
 
   {
     type: 'select',
-    name: select,
+    name: 'select',
     message: 'Select 单选',
     choices: [
       { title: 'Red', description: 'This option has a description', value: '#ff0000' },
