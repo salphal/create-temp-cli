@@ -65,15 +65,15 @@ let questions: any = [
     name: 'customOutputPath',
     message: 'Please pick output directory',
     choices: [
-      { title: '__output__',  value: '.' },
-      { title: 'src/pages', value: 'src/pages' },
-      { title: 'src/views', value: 'src/views' },
-      { title: 'src/components', value: 'src/components' },
-      { title: 'src/hooks', value: 'src/components' },
-      { title: 'src/store', value: 'src/store' },
-      { title: 'lib', value: 'lib' },
-      { title: 'lib/components', value: 'lib/components' },
-      { title: 'lib/hooks', value: 'lib/hooks' },
+      {title: '__output__', value: '.'},
+      {title: 'src/pages', value: 'src/pages'},
+      {title: 'src/views', value: 'src/views'},
+      {title: 'src/components', value: 'src/components'},
+      {title: 'src/hooks', value: 'src/components'},
+      {title: 'src/store', value: 'src/store'},
+      {title: 'lib', value: 'lib'},
+      {title: 'lib/components', value: 'lib/components'},
+      {title: 'lib/hooks', value: 'lib/hooks'},
     ],
     initial: '.'
   }
@@ -202,7 +202,26 @@ function templateFileNameToReallyFileName(templateFileName: string, reallyFileNa
 }
 
 
+function setCustomOutputDirectoryList(outputDirectoryList: Array<string>) {
+  const customOutputPathChoices = outputDirectoryList.map(v => ({title: v, value: v}))
+  questions = questions.map((question: any) => {
+    if (question.name === 'customOutputPath') {
+      return {
+        ...question,
+        choices: [...question.choices, ...customOutputPathChoices]
+      };
+    }
+    return question;
+  });
+}
+
 async function init() {
+
+  /** 装载用户自定的输出路径 */
+  if (envs.CREATE_TEMP_OUTPUT_DIRECTORY_CHOICES) {
+    const outputDirectoryList = envs.CREATE_TEMP_OUTPUT_DIRECTORY_CHOICES.split(',');
+    outputDirectoryList.length && setCustomOutputDirectoryList(outputDirectoryList);
+  }
 
   /** 默认模版目录路径 */
   const baseTemplateDir = path.join(cwd, '__template__');
