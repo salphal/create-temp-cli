@@ -52,16 +52,39 @@ let questions: any = [
     message: 'Please enter component file name. ( default: template )',
     initial: 'template',
   },
+  /** 输入自定义输出目录( 默认为当前项目根目录下的 __output__ ) */
   {
     type: 'text',
     name: 'outputPath',
-    message: 'Please enter output path. ( default: ./__output__ )',
+    message: 'Please enter output directory path. ( default: __output__ ), If enter x then select custom output directory map',
     initial: '.',
   },
+  /** 如果前一项的结果为 x, 则可以自定义选择预设目录 */
+  {
+    type: (prev: string) => prev == 'x' ? 'autocomplete' : null,
+    name: 'customOutputPath',
+    message: 'Please pick output directory',
+    choices: [
+      { title: '__output__',  value: '.' },
+      { title: 'src/pages', value: 'src/pages' },
+      { title: 'src/views', value: 'src/views' },
+      { title: 'src/components', value: 'src/components' },
+      { title: 'src/hooks', value: 'src/components' },
+      { title: 'src/store', value: 'src/store' },
+      { title: 'lib', value: 'lib' },
+      { title: 'lib/components', value: 'lib/components' },
+      { title: 'lib/hooks', value: 'lib/hooks' },
+    ],
+    initial: '.'
+  }
 ];
 
-function getTempNameByFullPath(path: string): string {
-  const match = path.match(/__template__\/.*/);
+/**
+ * 根据完整路径获取模版名称
+ * @param fullPath - 模版完整路径
+ */
+function getTempNameByFullPath(fullPath: string): string {
+  const match = fullPath.match(/__template__\/.*/);
   if (Array.isArray(match) && match.length) {
     const tempName = match[0].replace('__template__/', '');
     const tempNameList = tempName.split('/');
@@ -70,19 +93,31 @@ function getTempNameByFullPath(path: string): string {
     }
     return tempNameList.join('/');
   } else {
-    return path;
+    return fullPath;
   }
 }
 
-function getAllTempNameList(tempInfoList: TempInfoList): Array<string> {
+/**
+ * 筛选出为目录的模版名称
+ * @param tempInfoList - 模版信息列表
+ * @param tempDirectoryPathList - 模版目录列表
+ */
+function getAllTempNameList(tempInfoList: TempInfoList, tempDirectoryPathList: Array<string>): Array<string> {
   if (!Array.isArray(tempInfoList) || !tempInfoList.length) return [];
   const allTempNames = tempInfoList.map((v: TempInfo) => v.tempName);
-  return Array.from(new Set(allTempNames));
+  return Array.from(new Set(allTempNames))
+    .filter((tempName) =>
+      tempDirectoryPathList.some((tempDirectoryPath) =>
+        fs.lstatSync(`${tempDirectoryPath}/${tempName}`).isDirectory()));
 }
 
-async function getAllTempInfoList(dirPath: string): Promise<TempInfoList> {
+/**
+ * 根据模版目录路径, 获取所有模版信息
+ * @param templateDirectoryPath - 模版目录路径
+ */
+async function getAllTempInfoList(templateDirectoryPath: string): Promise<TempInfoList> {
   return new Promise((resolve, reject) => {
-    fs.readdir(dirPath, (err, fileNames) => {
+    fs.readdir(templateDirectoryPath, (err, fileNames) => {
       if (err) {
         reject(err);
         return;
@@ -90,7 +125,7 @@ async function getAllTempInfoList(dirPath: string): Promise<TempInfoList> {
       const allFiles = [];
       (async function processFiles() {
         for (const fileName of fileNames) {
-          const fullPath = path.join(dirPath, fileName);
+          const fullPath = path.join(templateDirectoryPath, fileName);
           const stat = await fs.promises.stat(fullPath);
           if (stat.isDirectory()) {
             const nestedFiles = await getAllTempInfoList(fullPath);
@@ -109,6 +144,10 @@ async function getAllTempInfoList(dirPath: string): Promise<TempInfoList> {
   });
 }
 
+/**
+ * 根据模版名称列表, 创建 prompts 的筛选项
+ * @param tempNameList - 模版名称列表
+ */
 function createChoicesByTempNameList(tempNameList: TempNameList): PickerOptionList {
   if (!Array.isArray(tempNameList) || !tempNameList.length) return [];
   return tempNameList.map((name) => {
@@ -119,6 +158,11 @@ function createChoicesByTempNameList(tempNameList: TempNameList): PickerOptionLi
   });
 }
 
+/**
+ * 根据模版名称, 获取当前模版信息
+ * @param tempName - 模版名称
+ * @param tempInfoList - 模版信息列表
+ */
 function getCurrentTempInfoListByTempName(tempName: string, tempInfoList: TempInfoList) {
   if (!Array.isArray(tempInfoList) || !tempInfoList.length) return [];
   return tempInfoList.filter((tempInfo) => tempInfo.tempName === tempName);
@@ -161,11 +205,11 @@ function templateFileNameToReallyFileName(templateFileName: string, reallyFileNa
 async function init() {
 
   /** 默认模版目录路径 */
-  const baseTemplateDir = path.join(cwd, './__template__');
+  const baseTemplateDir = path.join(cwd, '__template__');
   /** 所有模版信息列表集合 */
   const allTempInfoList: TempInfoList = [];
   /** 输出目录路径 */
-  let outputDirectoryPath = path.join(cwd, './__output__');
+  let outputDirectoryPath = path.join(cwd, '__output__');
 
   /** 模版集合的路径 */
   const tempDirectoryPathList = [
@@ -180,7 +224,7 @@ async function init() {
   }
 
   /** 获取所有 去重的模版名列表 */
-  const tempNameList = getAllTempNameList(allTempInfoList)
+  const tempNameList = getAllTempNameList(allTempInfoList, tempDirectoryPathList)
 
   /** 根据 模版名列表 生成 模版选项 */
   const choices = createChoicesByTempNameList(tempNameList);
@@ -264,6 +308,7 @@ async function init() {
     tempName,
     compName,
     fileName,
+    outputDirectoryPath,
     replaceVariableMap,
     currentTempInfoList
   };
@@ -272,6 +317,7 @@ async function init() {
 init()
   .then((res) => {
     Logger.success(`Success created ${res.compName} by ${res.tempName}`);
+    Logger.success(`Already written to ${res.outputDirectoryPath}/${res.fileName} folder`);
   })
   .catch((err) => {
     Logger.error(err);

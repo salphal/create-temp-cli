@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
 
-const { program } = require('commander');
-
-
 /**
  * https://github.com/tj/commander.js/blob/HEAD/Readme_zh-CN.md
  */
+
+
+const { program } = require('commander');
 
 /**
  * 根据入参顺序定义参数

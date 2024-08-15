@@ -1,6 +1,11 @@
 #!/usr/bin/env node
 
 
+/**
+ * https://github.com/marvinhagemeister/kolorist/blob/main/src/index.ts
+ */
+
+
 const {
   blue,
   cyan,
@@ -12,11 +17,6 @@ const {
   yellow,
   black
 } = require('kolorist');
-
-
-/**
- * https://github.com/marvinhagemeister/kolorist/blob/main/src/index.ts
- */
 
 
 const test = `

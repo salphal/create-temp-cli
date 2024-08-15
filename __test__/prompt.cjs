@@ -1,8 +1,12 @@
 #!/usr/bin/env node
 
 
-const prompts = require('prompts');
+/**
+ * https://github.com/terkelg/prompts
+ */
 
+
+const prompts = require('prompts');
 
 /**
  * @param type - 执行类型, 为 null 则跳过
