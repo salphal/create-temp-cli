@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import ${CompName}, { type ${CompName}Props } from "./${comp-file-name}";
-import { ${CompName}Story } from './${comp-file-name}.story';
+import ${CompName}, { type ${CompName}Props } from "./${fileName}";
+import { ${CompName}Story } from './${fileName}.story';
 
 
 const meta = {

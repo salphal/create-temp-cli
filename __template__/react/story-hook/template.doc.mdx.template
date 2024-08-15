@@ -1,4 +1,4 @@
-{/* ${comp-file-name}.doc.mdx */}
+{/* ${fileName}.doc.mdx */}
 
 import {
   Meta,
@@ -16,7 +16,7 @@ import {
   Unstyled
 } from '@storybook/blocks';
 
-import * as ${CompName}Stories from "./${comp-file-name}.stories";
+import * as ${CompName}Stories from "./${fileName}.stories";
 
 <Meta of={${CompName}Stories}/>
 

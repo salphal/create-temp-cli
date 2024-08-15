@@ -1,5 +1,5 @@
 import React from 'react';
-import ${compName}, {type ${CompName}Props} from "./${comp-file-name}";
+import ${compName}, {type ${CompName}Props} from "./${fileName}";
 
 export interface ${CompName}StoryProps {
 }

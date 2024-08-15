@@ -19,7 +19,7 @@ export default defineBuildConfig({
   },
   alias: {
     // we can always use non-transpiled code since we support node 18+
-    prompts: 'prompts/lib/index.cjs',
+    prompts: 'prompts/lib/index.js',
   },
   hooks: {
     'rollup:options'(ctx, options) {

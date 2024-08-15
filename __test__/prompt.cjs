@@ -16,26 +16,26 @@ const prompts = require('prompts');
 const questions = [
   {
     type: 'text',
-    name: 'text',
+    name: 'string',
     message: '字符串输入',
     initial: 'default value',
   },
   {
     type: 'number',
-    name: 'age',
+    name: 'number',
     message: '数字输入',
     min: 2,
     max: 10
   },
   {
     type: 'confirm',
-    name: 'value',
+    name: 'confirm',
     message: '确认 弹窗',
     initial: true
   },
   {
     type: 'toggle',
-    name: 'value',
+    name: 'toggle',
     message: '是/否 确认弹窗',
     initial: true,
     active: 'yes',
@@ -44,13 +44,13 @@ const questions = [
 
   {
     type: 'password',
-    name: 'value',
+    name: 'password',
     message: '密码输入'
   },
 
   {
     type: 'list',
-    name: 'value',
+    name: 'list',
     message: '输入列表',
     initial: '',
     separator: ','
@@ -58,7 +58,7 @@ const questions = [
 
   {
     type: 'select',
-    name: 'value',
+    name: select,
     message: 'Select 单选',
     choices: [
       { title: 'Red', description: 'This option has a description', value: '#ff0000' },
@@ -69,7 +69,7 @@ const questions = [
   },
   {
     type: 'multiselect',
-    name: 'value',
+    name: 'multiSelect',
     message: 'Select 多选',
     choices: [
       { title: 'Red', value: '#ff0000' },
@@ -80,14 +80,16 @@ const questions = [
     hint: '- Space to select. Return to submit'
   },
   {
-    type: 'multiselect',
-    name: 'color',
-    message: '根据输入匹配 单选',
+    type: 'autocomplete',
+    name: 'picker',
+    message: 'Pick your favorite actor',
     choices: [
-      { title: 'Red', value: '#ff0000' },
-      { title: 'Green', value: '#00ff00' },
-      { title: 'Blue', value: '#0000ff' }
-    ],
+      { title: 'Cage' },
+      { title: 'Clooney', value: 'silver-fox' },
+      { title: 'Gyllenhaal' },
+      { title: 'Gibson' },
+      { title: 'Grant' }
+    ]
   },
 
   {
