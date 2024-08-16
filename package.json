@@ -24,7 +24,10 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/download": "^8.0.5",
+    "@types/figlet": "^1.5.8",
     "@types/fs-extra": "^11.0.4",
+    "@types/git-clone": "^0.2.4",
     "@types/minimist": "^1.2.5",
     "@types/node": "^22.2.0",
     "@types/prompts": "^2.4.9",
@@ -42,5 +45,10 @@
     "prompts": "^2.4.2",
     "shelljs": "^0.8.5",
     "unbuild": "^2.0.0"
+  },
+  "dependencies": {
+    "download": "^8.0.0",
+    "git-clone": "^0.2.0",
+    "rimraf": "^6.0.1"
   }
 }
