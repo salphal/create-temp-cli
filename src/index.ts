@@ -5,11 +5,13 @@ import fs from "fs-extra";
 import path from "path";
 import prompts from "prompts";
 import {configDotenv} from "dotenv";
+import {program} from "commander";
 
 import {Envs, PickerOptionList, TempInfo, TempInfoList, TempNameList} from "../types";
 import Logger from "../utils/logger";
+import clone from "../utils/clone";
 import {camelcase, camelCase, CamelCase} from "../utils/camelcase";
-import {createDirectory} from "../utils/directory";
+import {copy, copyDir, createDirectory} from "../utils/directory";
 import {updateQuestionListByQuestion} from "../utils/questions";
 
 
@@ -21,7 +23,6 @@ import {updateQuestionListByQuestion} from "../utils/questions";
  */
 
 const __dirname = process.cwd(); // es下 获取当前运行的根目录
-Logger.info(`Current work directory: ${__dirname}`);
 
 /** 载入自定义环境变量 */
 configDotenv({
@@ -32,7 +33,6 @@ configDotenv({
 const envs = Object.fromEntries(
   Object.entries(process.env)
     .filter(([k, v]) => /^CREATE_TEMP.*/.test(k)));
-Logger.info(envs);
 
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -113,6 +113,9 @@ let tempNameList: string[] = [];
 
 
 async function init(config: any = {}) {
+
+  Logger.info(`__dirname: ${__dirname}`);
+  Logger.info(envs);
 
   setupEnvs(envs as Envs);
   tempDirPathList.push(tempDirPath);
@@ -207,16 +210,16 @@ async function init(config: any = {}) {
   };
 }
 
-init()
-  .then((res) => {
-    Logger.success(`Success created ${res.compName} by ${res.tempName}`);
-    Logger.success(`Already written to ${res.outputDirPath}/${res.fileName} folder`);
-  })
-  .catch((err) => {
-    Logger.error(err);
-  })
-  .finally(() => {
-  });
+// init()
+//   .then((res) => {
+//     Logger.success(`Success created ${res.compName} by ${res.tempName}`);
+//     Logger.success(`Already written to ${res.outputDirPath}/${res.fileName} folder`);
+//   })
+//   .catch((err) => {
+//     Logger.error(err);
+//   })
+//   .finally(() => {
+//   });
 
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -375,6 +378,27 @@ function updateTempNameChoicesByTempNameList() {
   );
 }
 
+function cloneTemplates() {
+  clone({
+    remote: 'https://github.com/salphal/create-temp-cli.git',
+    branch: 'main',
+    outputPath: '.tmp'
+  })
+    .then(res => {
+      const stat = fs.statSync(path.resolve(__dirname, '.tmp/__template__'));
+      if (stat.isDirectory()) {
+        copyDir(path.join(__dirname, '.tmp/__template__'), path.join(__dirname, '__template__'));
+        Logger.success("Successfully downloaded __template__ directory");
+        copy(path.join(__dirname, '.tmp/.temp.env'), path.join(__dirname, '.temp.env'));
+        Logger.success("Successfully downloaded .temp.env file");
+      }
+    })
+    .catch(err => {
+    })
+    .finally(() => {
+    })
+}
+
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -430,6 +454,47 @@ function setCustomOutputDirectoryList(envs: Envs) {
     return question;
   });
 }
+
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+
+program
+  .name('temp-cli')
+  .usage('[...options]')
+  .description('Create files based on templates')
+  .version('1.0.0', '-v, --version')
+  // 自定义帮助提示信息
+  .addHelpText("before", () => "--------------------------------------------------------------------")
+  .addHelpText("after", () => "--------------------------------------------------------------------");
+
+program
+  .command('create')
+  .alias('ct')
+  .option('-cn [compName], --comp-name <compName>', 'Component name', 'Template')
+  .option('-fn [fileName], --file-name [fileName]', 'File name', 'template')
+  .option('-op [outputPath], --output-path [outputPath]', 'Output path', '.')
+  .action((opts: any, cmd: any) => {
+    init(opts)
+      .then((res) => {
+        Logger.success(`Success created ${res.compName} by ${res.tempName}`);
+        Logger.success(`Already written to ${res.outputDirPath}/${res.fileName} folder`);
+      })
+      .catch((err) => {
+        Logger.error(err);
+      })
+      .finally(() => {
+      });
+  });
+
+program
+  .command('init')
+  .action((opts: any, cmd: any) => {
+    cloneTemplates();
+  });
+
+
+program.parse(process.argv);
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
