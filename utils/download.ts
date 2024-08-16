@@ -4,24 +4,39 @@ import ora from 'ora';
 import {red, green} from 'kolorist';
 
 interface DownloadConfig {
-	remote: string;
-	branch: string;
-	options?: any;
+  /** 远程仓库地址 */
+  remote: string;
+  /** 远程分支名( 默认 master ) */
+  branch: string;
+  /** 输出的本地路径( 以当前脚本为根路径, 若没有该文件夹则会自动创建, 若有则可能会冲突 ) */
+  outputPath: string;
+  /** 是否使用 http 直接从 url 下载 */
+  isDirect?: boolean;
+  /** clone 配置对象( 请求头等 ) */
+  options?: any;
 }
 
 async function clone(config: DownloadConfig) {
-	const spinner = ora("Pulling code...").start();
-	const {remote, branch, options = {clone: true}} = config;
-	return new Promise((resolve, reject) => {
-		download(remote, branch, options, (err: any) => {
-			if (err) {
-				spinner.fail(red(err));
-				reject(err);
-			}
-		});
-		spinner.succeed(green(`Success pull ${remote}/${branch}`));
-		resolve(0);
-	});
+  const spinner = ora("Pulling code...").start();
+  const {remote, branch, outputPath, isDirect = true, options = {clone: true}} = config;
+  return new Promise((resolve, reject) => {
+    /**
+     * 使用 http 从 master 处的 Github 存储库下载
+     * ?[bitbucket|gitlab]:[auth]/[registry]#[branch]
+     *
+     * 使用 http 直接从 url 下载
+     * [direct]:[full_git_url]#[branch]
+     */
+    const url = `${isDirect ? 'direct:' : ''}${remote}#${branch}`;
+    download(url, outputPath, options, (err: any) => {
+      if (err) {
+        spinner.fail(red(err));
+        reject(err);
+      }
+    });
+    spinner.succeed(green(`Success pull ${remote}/${branch}`));
+    resolve(0);
+  });
 }
 
 export default clone;

@@ -10,7 +10,15 @@ import {Envs, PickerOptionList, TempInfo, TempInfoList, TempNameList} from "../t
 import Logger from "../utils/logger";
 import {camelcase, camelCase, CamelCase} from "../utils/camelcase";
 import {createDirectory} from "../utils/directory";
+import {updateQuestionListByQuestion} from "../utils/questions";
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+/**
+ * 脚本初始化配置
+ */
 
 const __dirname = process.cwd(); // es下 获取当前运行的根目录
 Logger.info(`Current work directory: ${__dirname}`);
@@ -26,16 +34,25 @@ const envs = Object.fromEntries(
     .filter(([k, v]) => /^CREATE_TEMP.*/.test(k)));
 Logger.info(envs);
 
-let questions: any = [
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+
+/**
+ * 公共配置信息
+ */
+
+/** 和用户交互的配置对象 */
+let questions: any[] = [
   /** 选择模版 */
   {
     type: 'autocomplete',
     name: 'tempName',
     message: 'Please pick a template',
     choices: [
-      {title: 'Red', value: '#ff0000'},
-      {title: 'Green', value: '#00ff00'},
-      {title: 'Blue', value: '#0000ff'}
+      {title: 'option1', value: 'option1'},
+      {title: 'option2', value: 'option2'},
+      {title: 'option3', value: 'option3'}
     ],
   },
   /** 输入组件名 */
@@ -78,6 +95,132 @@ let questions: any = [
     initial: '.'
   }
 ];
+
+/** 默认模版目录路径 */
+let tempDirPath: string = path.join(__dirname, '__template__');
+/** 输出目录路径 */
+let outputDirPath: string = path.join(__dirname, '__output__');
+
+/** 所有模版信息列表集合 */
+let allTempInfoList: TempInfoList = [];
+/** 模版目录集合 */
+let tempDirPathList: string[] = [];
+/** 获取所有 去重的模版名列表 */
+let tempNameList: string[] = [];
+
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+
+async function init(config: any = {}) {
+
+  setupEnvs(envs as Envs);
+  tempDirPathList.push(tempDirPath);
+
+  /** 获取所有 模版目录下的 所有模版 */
+  allTempInfoList = await getAllTempInfoByTempDirPathList(tempDirPathList);
+  /** 获取所有 去重的模版名列表 */
+  tempNameList = getAllTempNameList(allTempInfoList, tempDirPathList)
+
+  /** 根据扫描模版目录下的模版更新模版的选项 */
+  updateTempNameChoicesByTempNameList();
+
+  /** 判断若没有模版, 则停止 */
+  if (!allTempInfoList.length) {
+    Logger.error('Template directory is empty, has nothing templates')
+    process.exit(1);
+  }
+
+  /** 获取用户输入的结果 */
+  const response = await prompts(questions, {});
+  const {tempName, compName, fileName, outputPath, customOutputPath} = response;
+
+  /** 模版中变量的映射集合 */
+  const replaceVariableMap = {
+    CompName: CamelCase(compName), // 首字母大写( eg: DemoComp )
+    compName: camelCase(compName), // 首字母小写 ( eg: demoExample )
+    fileName: camelcase(fileName), // 全部字母小写( eg: demo-example )
+  };
+  Logger.info(replaceVariableMap);
+
+  /**
+   * 获取当前模板信息的文件列表
+   */
+  const currentTempInfoList = getCurrentTempInfoListByTempName(tempName, allTempInfoList);
+
+  /**
+   * 判断当前模版是否有效
+   */
+  if (!currentTempInfoList.length) {
+    Logger.error('Current template info is empty');
+    process.exit(1);
+  }
+
+  /** 根据用户输入更新输出目录 */
+  if (typeof outputPath === 'string' && outputPath.trim() !== '.') {
+    if (typeof customOutputPath === 'string') {
+      outputDirPath = path.join(__dirname, customOutputPath);
+    } else {
+      outputDirPath = path.join(__dirname, outputPath);
+    }
+  }
+
+  /** 在项目根路径下创建默认输出目录 */
+  await createDirectory(outputDirPath);
+
+  /**
+   * 在输出目录下 创建输出的组件目录
+   *  - 已有: 则清空该目录下的所有文件
+   *  - 没有: 则创建一个
+   */
+  const isCreated = await createDirectory(outputDirPath, fileName);
+  if (!isCreated) {
+    Logger.error(`Could not create directory: ${outputDirPath}/${fileName}`);
+    process.exit(1);
+  }
+
+  /**
+   * 1. 读取文件
+   * 2. 替换其中的变量
+   * 3. 输出到指定目录的文件中
+   */
+  for (let i = 0; i < currentTempInfoList.length; i++) {
+
+    const {fileName: tempName, fullPath} = currentTempInfoList[i];
+
+    const content = await replaceFileByReplacements(fullPath, replaceVariableMap);
+    const reallyFileName = templateFileNameToReallyFileName(tempName, fileName);
+    const outputFullPath = path.join(outputDirPath, fileName, reallyFileName);
+
+    fs.writeFile(outputFullPath, content as string, 'utf-8', (err) => {
+      if (err) Logger.error(`${err}`);
+    });
+  }
+
+  return {
+    tempName,
+    compName,
+    fileName,
+    outputDirPath,
+    replaceVariableMap,
+    currentTempInfoList
+  };
+}
+
+init()
+  .then((res) => {
+    Logger.success(`Success created ${res.compName} by ${res.tempName}`);
+    Logger.success(`Already written to ${res.outputDirPath}/${res.fileName} folder`);
+  })
+  .catch((err) => {
+    Logger.error(err);
+  })
+  .finally(() => {
+  });
+
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 
 /**
  * 根据完整路径获取模版名称
@@ -202,6 +345,45 @@ function templateFileNameToReallyFileName(templateFileName: string, reallyFileNa
 }
 
 /**
+ * 获取所有 模版目录下的 所有模版
+ * @param templateDirectoryPathList {Array<string>} - 模版目录列表
+ */
+async function getAllTempInfoByTempDirPathList(templateDirectoryPathList: string[]): Promise<TempInfoList> {
+  return new Promise<TempInfoList>(async (resolve, reject) => {
+    const tempInfoList: any[] = [];
+    for (let i = 0; i < templateDirectoryPathList.length; i++) {
+      const tempDirectoryPath = templateDirectoryPathList[i];
+      const tempFilePath = await getAllTempInfoList(tempDirectoryPath);
+      tempInfoList.push(...tempFilePath);
+    }
+    resolve(tempInfoList);
+  });
+}
+
+/**
+ * 根据扫描模版目录下的模版更新模版的选项
+ */
+function updateTempNameChoicesByTempNameList() {
+  /** 根据 模版名列表 生成 模版选项 */
+  const choices = createChoicesByTempNameList(tempNameList);
+  questions = updateQuestionListByQuestion(
+    {
+      name: 'tempName',
+      choices
+    },
+    questions
+  );
+}
+
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+
+/**
+ * 挂载环境变量中的配置
+ */
+
+/**
  * 挂载环境变量中的配置
  * @param envs - 环境变量
  */
@@ -216,6 +398,9 @@ function setupEnvs(envs: Envs) {
  * @param envs - 环境变量
  */
 function setupTemplateDirectory(envs: Envs) {
+  if (!envs.CREATE_TEMP_TEMPLATE_DIRECTORY) return;
+  const tempDirPathList = envs.CREATE_TEMP_TEMPLATE_DIRECTORY.split(',').filter(v => !!v);
+  tempDirPathList.push(...tempDirPathList)
 }
 
 /**
@@ -223,6 +408,8 @@ function setupTemplateDirectory(envs: Envs) {
  * @param envs - 环境变量
  */
 function setupOutputDirectory(envs: Envs) {
+  if (!envs.CREATE_TEMP_OUTPUT_DIRECTORY) return;
+  outputDirPath = path.join(__dirname, envs.CREATE_TEMP_OUTPUT_DIRECTORY)
 }
 
 /**
@@ -245,134 +432,4 @@ function setCustomOutputDirectoryList(envs: Envs) {
 }
 
 
-async function init() {
-
-  setupEnvs(envs as Envs);
-
-  /** 默认模版目录路径 */
-  const baseTemplateDir = path.join(__dirname, '__template__');
-  /** 所有模版信息列表集合 */
-  const allTempInfoList: TempInfoList = [];
-  /** 输出目录路径 */
-  let outputDirectoryPath = path.join(__dirname, '__output__');
-
-  /** 模版集合的路径 */
-  const tempDirectoryPathList = [
-    baseTemplateDir
-  ];
-
-  /** 获取所有 模版目录下的 所有模版 */
-  for (let i = 0; i < tempDirectoryPathList.length; i++) {
-    const tempDirectoryPath = tempDirectoryPathList[i];
-    const tempFilePath = await getAllTempInfoList(tempDirectoryPath);
-    allTempInfoList.push(...tempFilePath);
-  }
-
-  /** 获取所有 去重的模版名列表 */
-  const tempNameList = getAllTempNameList(allTempInfoList, tempDirectoryPathList)
-
-  /** 根据 模版名列表 生成 模版选项 */
-  const choices = createChoicesByTempNameList(tempNameList);
-
-  /** 重新赋值模版选项 */
-  questions = questions.map((question: any) => {
-    if (question.name === 'tempName') {
-      return {
-        ...question,
-        choices
-      };
-    }
-    return question;
-  });
-
-  if (!allTempInfoList.length) {
-    Logger.error('Template directory is empty, has nothing templates')
-    process.exit(1);
-  }
-
-  /** 获取用户输入的结果 */
-  const response = await prompts(questions, {});
-
-  const {tempName, compName, fileName, outputPath, customOutputPath} = response;
-
-  const replaceVariableMap = {
-    CompName: CamelCase(compName), // 首字母大写( eg: DemoComp )
-    compName: camelCase(compName), // 首字母小写 ( eg: demoExample )
-    fileName: camelcase(fileName), // 全部字母小写( eg: demo-example )
-  };
-  Logger.info(replaceVariableMap);
-
-  /**
-   * 获取当前模板信息的文件列表
-   */
-  const currentTempInfoList = getCurrentTempInfoListByTempName(tempName, allTempInfoList);
-
-  if (!currentTempInfoList.length) {
-    Logger.error('Current template info is empty');
-    process.exit(1);
-  }
-
-  /** 仅可输出再当前工程的子目录下 */
-  if (typeof outputPath === 'string' && outputPath.trim() !== '.') {
-    if (typeof customOutputPath === 'string') {
-      outputDirectoryPath = path.join(__dirname, customOutputPath);
-    } else {
-      outputDirectoryPath = path.join(__dirname, outputPath);
-    }
-  } else {
-    outputDirectoryPath = path.join(__dirname, '__output__');
-  }
-
-  /** 在项目根路径下创建默认输出目录 */
-  await createDirectory(outputDirectoryPath);
-
-  /**
-   * 在输出目录下 创建输出的组件目录
-   *  - 已有: 则清空该目录下的所有文件
-   *  - 没有: 则创建一个
-   */
-  const isCreated = await createDirectory(outputDirectoryPath, fileName);
-  if (!isCreated) {
-    Logger.error(`Could not create directory: ${outputDirectoryPath}/${fileName}`);
-    process.exit(1);
-  }
-
-  /**
-   * 1. 读取文件
-   * 2. 替换其中的变量
-   * 3. 输出到指定目录的文件中
-   */
-  for (let i = 0; i < currentTempInfoList.length; i++) {
-
-    const {fileName: tempName, fullPath} = currentTempInfoList[i];
-
-    const content = await replaceFileByReplacements(fullPath, replaceVariableMap);
-    const reallyFileName = templateFileNameToReallyFileName(tempName, fileName);
-    const outputFullPath = path.join(outputDirectoryPath, fileName, reallyFileName);
-
-    fs.writeFile(outputFullPath, content as string, 'utf-8', (err) => {
-      if (err) Logger.error(`${err}`);
-    });
-  }
-
-  return {
-    tempName,
-    compName,
-    fileName,
-    outputDirectoryPath,
-    replaceVariableMap,
-    currentTempInfoList
-  };
-}
-
-
-init()
-  .then((res) => {
-    Logger.success(`Success created ${res.compName} by ${res.tempName}`);
-    Logger.success(`Already written to ${res.outputDirectoryPath}/${res.fileName} folder`);
-  })
-  .catch((err) => {
-    Logger.error(err);
-  })
-  .finally(() => {
-  });
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
