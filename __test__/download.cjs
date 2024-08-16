@@ -25,19 +25,22 @@ async function clone(config) {
      * [direct]:[full_git_url]#[branch]
      */
     const url = `${isDirect ? 'direct:' : ''}${remote}#${branch}`;
-    download(url, outputPath, options, (err) => {
+    console.log('=>(download.cjs:28) url', url);
+    download('direct:https://github.com/salphal/create-temp-cli.git#main', outputPath, options, (err) => {
+    // download(url, outputPath, options, (err) => {
       if (err) {
         reject(err);
       }
-      resolve();
     });
+    resolve();
   });
 }
 
 
 clone({
-  remote: 'https://github.com/salphal/request.git',
+  // direct:https://github.com/salphal/create-temp-cli.git#main
+  remote: 'https://github.com/salphal/create-temp-cli.git',
   branch: 'main',
-  outputPath: 'test'
+  outputPath: '.tmp'
 });
 

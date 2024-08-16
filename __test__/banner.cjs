@@ -7,7 +7,7 @@ const banner = require('figlet');
 
 
 console.log(
-  banner.textSync("create-temp-cli", {
+  banner.textSync("temp-cli", {
     horizontalLayout: "default",
     whitespaceBreak: true,
   })
