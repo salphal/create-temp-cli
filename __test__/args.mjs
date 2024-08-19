@@ -36,5 +36,5 @@ console.log('=>(index.ts:16) argv', argv);
 /**
  * 执行当前进程的目录路径
  */
-const cwd = process.cwd()
+const __dirname = process.cwd()
 console.log('=>(index.ts:17) cwd', cwd);
