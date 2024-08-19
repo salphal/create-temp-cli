@@ -1,4 +1,4 @@
-import download from './download';
+import download from './core/download';
 
 interface DownloadConfig {
   /** 远程仓库地址 */

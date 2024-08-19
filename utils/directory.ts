@@ -5,22 +5,21 @@ import Logger from "./logger";
 
 /**
  * 清空文件夹下的所有文件
- * @param directoryPath {string} - 文件夹路径
+ * @param dirPath {string} - 文件夹路径
  */
-export function clearAllOnDir(directoryPath: string) {
-  const files = fs.readdirSync(directoryPath);
+export function emptyAll(dirPath: string) {
+  const files = fs.readdirSync(dirPath);
   files.forEach((file) => {
-    const filePath = `${directoryPath}/${file}`;
+    const filePath = `${dirPath}/${file}`;
     const stats = fs.statSync(filePath);
     if (stats.isDirectory()) {
-      clearAllOnDir(filePath);
+      emptyAll(filePath);
     } else {
       fs.unlinkSync(filePath);
       Logger.success(`Success delete ${file} file`)
     }
   });
 }
-
 
 /**
  * 创建文件夹
@@ -43,7 +42,7 @@ export async function createDirectory(baseDirectoryPath: string, folderName?: st
           resolve(1);
         });
       } else {
-        clearAllOnDir(fullPath);
+        emptyAll(fullPath);
         Logger.warn(`Directory already exists: ${fullPath}`)
         resolve(1);
       }
@@ -52,7 +51,6 @@ export async function createDirectory(baseDirectoryPath: string, folderName?: st
     }
   });
 }
-
 
 export function copy(src: string, dest: string) {
   const stat = fs.statSync(src)
@@ -72,7 +70,7 @@ export function copyDir(srcDir: string, destDir: string) {
   }
 }
 
-export function isEmpty(path: string) {
+export function isEmptyDir(path: string) {
   const files = fs.readdirSync(path)
   return files.length === 0 || (files.length === 1 && files[0] === '.git')
 }
