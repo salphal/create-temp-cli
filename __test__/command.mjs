@@ -6,7 +6,7 @@
  */
 
 
-const { program } = require('commander');
+import {program} from "commander";
 
 /**
  * 根据入参顺序定义参数
