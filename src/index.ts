@@ -56,20 +56,23 @@ let tempNameList: string[] = [];
 /**
  *
  */
-function step1() {
+function step1(prev: any, ctx: any) {
+  // console.log("=>(index.ts:60) step1", prev);
   return 11;
 }
 
-function step2() {
+function step2(prev: any, ctx: any) {
+  // console.log("=>(index.ts:60) step2", prev);
   return 22;
 }
 
-function step3() {
+function step3(prev: any, ctx: any) {
+  // console.log("=>(index.ts:60) step3", prev);
   return 33;
 }
 
 
-const filterList = [
+const stepList = [
   {
     name: "step1",
     func: step1
@@ -84,20 +87,30 @@ const filterList = [
   },
 ];
 
-const filterChain = new FilterChain({filterList});
+const filterChain = new FilterChain({stepList, debug: true});
 
 
 // (async function testFilterChain() {
-//   // await filterChain.next();
-//   // await filterChain.next();
-//   // const res = await filterChain.next();
-//   const res = await filterChain.autoExecute();
-//   console.log('=>(index.ts:51) res', res);
+  // await filterChain.next();
+  // await filterChain.back();
+  // await filterChain.next();
+  // const res = await filterChain.next();
+  // const res = await filterChain.autoExecute();
+  // console.log('=>(index.ts:51) res', res);
 // }());
 
 
 async function init(opts: any) {
-  const res = await filterChain.autoExecute();
+  // const res = await filterChain.autoExecute();
+  // console.log('=>(index.ts:51) res', res);
+
+  await filterChain.next();
+  await filterChain.next();
+  await filterChain.next();
+  await filterChain.back();
+  await filterChain.back();
+  const res = await filterChain.back();
+  // const res = await filterChain.autoExecute();
   console.log('=>(index.ts:51) res', res);
 }
 

@@ -12,3 +12,13 @@ setTimeout(() => {
 	spinner.color = 'yellow';
 	spinner.text = 'Loading rainbows';
 }, 1000);
+
+
+class Loading {
+
+	static start() {
+	}
+
+	static end() {
+	}
+}
