@@ -4,12 +4,12 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-import FilterChain from "../utils/core/filter-chain";
 import {program} from "commander";
 import args from "minimist";
 import {configDotenv} from "dotenv";
 import path from "path";
 import {TempInfoList} from "../types";
+import Scheduler from "../utils/core/scheduler";
 
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -56,18 +56,15 @@ let tempNameList: string[] = [];
 /**
  *
  */
-function step1(prev: any, ctx: any) {
-  // console.log("=>(index.ts:60) step1", prev);
+function step0() {
   return 11;
 }
 
-function step2(prev: any, ctx: any) {
-  // console.log("=>(index.ts:60) step2", prev);
+function step1() {
   return 22;
 }
 
-function step3(prev: any, ctx: any) {
-  // console.log("=>(index.ts:60) step3", prev);
+function step2() {
   return 33;
 }
 
@@ -75,43 +72,38 @@ function step3(prev: any, ctx: any) {
 const stepList = [
   {
     name: "step1",
-    func: step1
+    callback: step0
   },
   {
     name: "step2",
-    func: step2
+    callback: step1
   },
   {
     name: "step3",
-    func: step3
+    callback: step2
   },
 ];
 
-const filterChain = new FilterChain({stepList, debug: true});
+const scheduler = new Scheduler({stepList});
 
 
 // (async function testFilterChain() {
-  // await filterChain.next();
-  // await filterChain.back();
-  // await filterChain.next();
-  // const res = await filterChain.next();
-  // const res = await filterChain.autoExecute();
-  // console.log('=>(index.ts:51) res', res);
+//   // await filterChain.next();
+//   // await filterChain.next();
+//   // const res = await filterChain.next();
+//   const res = await filterChain.autoExecute();
+//   console.log('=>(index.ts:51) res', res);
 // }());
 
 
 async function init(opts: any) {
-  // const res = await filterChain.autoExecute();
-  // console.log('=>(index.ts:51) res', res);
-
-  await filterChain.next();
-  await filterChain.next();
-  await filterChain.next();
-  await filterChain.back();
-  await filterChain.back();
-  const res = await filterChain.back();
-  // const res = await filterChain.autoExecute();
-  console.log('=>(index.ts:51) res', res);
+  // console.log('=>(index.ts:101) scheduler.doublyLinked', scheduler.doublyLinked);
+  // await scheduler.next();
+  // await scheduler.next();
+  // await scheduler.back();
+  // await scheduler.next();
+  // await scheduler.back();
+  await scheduler.autoExecute();
 }
 
 
