@@ -2,7 +2,7 @@ export interface NodeData {
   [key: string]: any;
 
   name?: string;
-  callback?: (prev: any, ctx: any) => any;
+  callback?: (ctx: any) => any;
 }
 
 export interface LinkedNodeOptions {
