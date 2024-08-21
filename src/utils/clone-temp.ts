@@ -1,7 +1,7 @@
 import clone from "../../utils/clone";
 import fs from "fs-extra";
 import path from "path";
-import {copy, copyDir} from "../../utils/directory";
+import {copy, copyDir} from "../../utils/module/directory";
 import Logger from "../../utils/logger";
 import Loading from "../../utils/loading";
 

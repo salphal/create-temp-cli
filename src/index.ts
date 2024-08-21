@@ -21,7 +21,7 @@ import {
 } from "./utils/template";
 import Logger from "../utils/logger";
 import {camelcase, camelCase, CamelCase} from "../utils/camelcase";
-import {createDirectory} from "../utils/directory";
+import {createDirectory} from "../utils/module/directory";
 import {cloneTemplates} from "./utils/clone-temp";
 import Banner from "../utils/banner";
 
