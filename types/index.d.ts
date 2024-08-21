@@ -8,13 +8,6 @@ export interface TempInfo {
 
 export type TempInfoList = Array<TempInfo>;
 
-export interface PickerOption {
-	name: string;
-	value: string;
-}
-
-export type PickerOptionList = Array<PickerOption>;
-
 export type TempNameList = Array<string>;
 
 export interface Envs {
@@ -24,7 +17,6 @@ export interface Envs {
 	TEMP_CLI_OUTPUT_DIRECTORY?: string | undefined;
 	TEMP_CLI_OUTPUT_DIRECTORY_CHOICES?: string | undefined;
 }
-
 
 export interface TempConfig {
 	argv: any;
@@ -58,5 +50,11 @@ export interface TempContext {
 	/** 输出选项 */
 	outputPathChoices: PromptChoices;
 	/** 模版选项 */
-	tempChoices: PromptChoices;
+	tempNameChoices: PromptChoices;
+
+	replaceVariableMap: {
+		CompName: string;
+		compName: string;
+		fileName: string;
+	};
 }

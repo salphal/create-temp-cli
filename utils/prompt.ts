@@ -1,56 +1,104 @@
-import {input, select, confirm, checkbox, search} from '@inquirer/prompts';
+import prompts from "prompts";
 
 export interface PromptChoice {
-  name: string;
-  value: any;
-  description?: string;
-  disabled?: boolean;
+	title: string;
+	value: any;
+	description?: string;
+	disabled?: boolean;
 }
 
 export type PromptChoices = Array<PromptChoice>;
 
 
 /**
+ * prompts      v
+ * https://github.com/terkelg/prompts
+ * 功能更全
+ */
+
+/**
+ * @inquirer/prompts
  * https://github.com/SBoudrias/Inquirer.js
  */
 
 class Prompt {
 
-  /**
-   * https://github.com/SBoudrias/Inquirer.js/tree/main/packages/input
-   */
-  static async input(message: string, config: any = {}) {
-    return input({message, ...config});
-  }
+	/**
+	 * 文本输入
+	 */
+	static async input(message: string, config: any = {}) {
+		const res = await prompts({type: 'text', name: 'value', message, ...config});
+		return `${res.value || config.default}`;
+	}
 
-  /**
-   * 调用接口返回的数据并生成选项
-   * https://github.com/SBoudrias/Inquirer.js/blob/main/packages/search/README.md
-   */
-  static async search(message: string, options: () => Promise<Array<PromptChoice>>, config: any = {}) {
-    return search({message, source: options, ...config});
-  }
+	/**
+	 * 数字输入
+	 */
+	static async number(message: string, config: any = {}) {
+		const res = await prompts({type: 'number', name: 'value', message, ...config});
+		return +(res.value || config.default);
+	}
 
-  /**
-   * https://github.com/SBoudrias/Inquirer.js/tree/main/packages/select
-   */
-  static async select(message: string, options: PromptChoices, config: any = {}) {
-    return select({message, choices: options, ...config});
-  }
+	/**
+	 * 单选
+	 */
+	static async singleSelect(message: string, choices: PromptChoices, config: any = {}) {
+		const res = await prompts({type: 'select', name: 'value', message, choices, ...config});
+		return res.value || config.default;
+	}
 
-  /**
-   * https://github.com/SBoudrias/Inquirer.js/blob/main/packages/checkbox/README.md
-   */
-  static async checkbox(message: string, options: PromptChoices, config: any = {}) {
-    return checkbox({message, choices: options, ...config});
-  }
+	/**
+	 * 单选, 根据输入筛选
+	 */
+	static async autocomplete(message: string, choices: PromptChoices, config: any = {}) {
+		const res = await prompts({type: 'autocomplete', name: 'value', message, choices, ...config});
+		return res.value || config.default;
+	}
 
-  /**
-   * https://github.com/SBoudrias/Inquirer.js/blob/main/packages/confirm/README.md
-   */
-  static async confirm(message: string, config: any = {}) {
-    return confirm({message, ...config});
-  }
+	/**
+	 * 多选
+	 */
+	static async multiSelect(message: string, choices: PromptChoices, config: any = {}) {
+		const res = await prompts({type: 'multiselect', name: 'value', message, choices, ...config});
+		return res.value || config.default;
+	}
+
+	/**
+	 * 多选, 根据输入筛选
+	 */
+	static async autocompleteMultiselect(message: string, choices: PromptChoices, config: any = {}) {
+		const res = await prompts({type: 'autocompleteMultiselect', name: 'value', choices, message, ...config});
+		return res.value || config.default;
+	}
+
+	/**
+	 * y/n
+	 * @return boolean
+	 */
+	static async confirm(message: string, config: any = {}) {
+		const res = await prompts({type: 'confirm', name: 'value', message, initial: true, ...config});
+		return res.value || config.default;
+	}
+
+	/**
+	 * yes/no 选择( 默认 yes )
+	 * @return boolean
+	 */
+	static async toggle(message: string, config: any = {}) {
+		const res = await prompts({
+			type: 'toggle', name: 'value', message, active: 'yes', inactive: 'no', initial: true, ...config
+		});
+		return res.value || config.default;
+	}
+
+	/**
+	 * 根据指定字符分割输入内容, 返回列表
+	 * @return Array<any>
+	 */
+	static async list(message: string, config: any = {}) {
+		const res = await prompts({type: 'list', name: 'value', message, separator: ',', ...config});
+		return res.value || config.default;
+	}
 }
 
 export default Prompt;

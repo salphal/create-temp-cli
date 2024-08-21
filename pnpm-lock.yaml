@@ -14,9 +14,15 @@ importers:
       download:
         specifier: ^8.0.0
         version: 8.0.0
+      figlet:
+        specifier: ^1.7.0
+        version: 1.7.0
       git-clone:
         specifier: ^0.2.0
         version: 0.2.0
+      ora:
+        specifier: ^8.0.1
+        version: 8.0.1
       rimraf:
         specifier: ^6.0.1
         version: 6.0.1
@@ -60,9 +66,6 @@ importers:
       download-git-repo:
         specifier: ^3.0.2
         version: 3.0.2
-      figlet:
-        specifier: ^1.7.0
-        version: 1.7.0
       fs-extra:
         specifier: ^11.2.0
         version: 11.2.0
@@ -75,9 +78,6 @@ importers:
       minimist:
         specifier: ^1.2.8
         version: 1.2.8
-      ora:
-        specifier: ^8.0.1
-        version: 8.0.1
       prompts:
         specifier: ^2.4.2
         version: 2.4.2

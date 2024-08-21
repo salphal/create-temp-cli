@@ -6,7 +6,7 @@
  */
 
 
-const prompts = require('prompts');
+import prompts from 'prompts';
 
 /**
  * @param type - 执行类型, 为 null 则跳过
@@ -65,9 +65,9 @@ const questions = [
     name: 'select',
     message: 'Select 单选',
     choices: [
-      { title: 'Red', description: 'This option has a description', value: '#ff0000' },
-      { title: 'Green', value: '#00ff00', disabled: true },
-      { title: 'Blue', value: '#0000ff' }
+      {title: 'Red', description: 'This option has a description', value: '#ff0000'},
+      {title: 'Green', value: '#00ff00', disabled: true},
+      {title: 'Blue', value: '#0000ff'}
     ],
     initial: 1
   },
@@ -76,9 +76,9 @@ const questions = [
     name: 'multiSelect',
     message: 'Select 多选',
     choices: [
-      { title: 'Red', value: '#ff0000' },
-      { title: 'Green', value: '#00ff00', disabled: true },
-      { title: 'Blue', value: '#0000ff', selected: true }
+      {title: 'Red', value: '#ff0000'},
+      {title: 'Green', value: '#00ff00', disabled: true},
+      {title: 'Blue', value: '#0000ff', selected: true}
     ],
     max: 2,
     hint: '- Space to select. Return to submit'
@@ -88,11 +88,11 @@ const questions = [
     name: 'picker',
     message: 'Pick your favorite actor',
     choices: [
-      { title: 'Cage' },
-      { title: 'Clooney', value: 'silver-fox' },
-      { title: 'Gyllenhaal' },
-      { title: 'Gibson' },
-      { title: 'Grant' }
+      {title: 'Cage'},
+      {title: 'Clooney', value: 'silver-fox'},
+      {title: 'Gyllenhaal'},
+      {title: 'Gibson'},
+      {title: 'Grant'}
     ]
   },
 
@@ -109,7 +109,7 @@ const onCancel = prompt => {
 }
 
 (async () => {
-  const response = await prompts(questions, { onCancel });
+  const response = await prompts(questions, {onCancel});
   console.log(response);
 })();
 

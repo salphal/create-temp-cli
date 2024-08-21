@@ -1,4 +1,5 @@
 import download from './core/download';
+import Loading from "./loading";
 
 interface DownloadConfig {
   /** 远程仓库地址 */

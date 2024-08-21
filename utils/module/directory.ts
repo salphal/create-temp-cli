@@ -1,6 +1,6 @@
 import path from "path";
 import fs from "fs";
-import Logger from "./logger";
+import Logger from "../logger";
 
 
 /**

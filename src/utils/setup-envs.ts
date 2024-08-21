@@ -42,6 +42,6 @@ export function setupOutputDirectory(envs: Envs, ctx: TempContext) {
 export function setCustomOutputDirectoryList(envs: Envs, ctx: TempContext) {
   if (!envs.TEMP_CLI_OUTPUT_DIRECTORY_CHOICES) return;
   const outputDirectoryList = envs.TEMP_CLI_OUTPUT_DIRECTORY_CHOICES.split(',').filter(v => !!v);
-  const outputPathChoices: PromptChoices = outputDirectoryList.map(v => ({name: v, value: v}))
+  const outputPathChoices: PromptChoices = outputDirectoryList.map(v => ({title: v, value: v}))
   ctx.outputPathChoices = [...ctx.outputPathChoices, ...outputPathChoices];
 }
