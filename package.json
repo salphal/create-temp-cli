@@ -39,7 +39,6 @@
     "download-git-repo": "^3.0.2",
     "figlet": "^1.7.0",
     "fs-extra": "^11.2.0",
-    "inquirer": "^10.1.8",
     "kolorist": "^1.8.0",
     "log-symbols": "^7.0.0",
     "minimist": "^1.2.8",
@@ -50,6 +49,7 @@
     "unbuild": "^2.0.0"
   },
   "dependencies": {
+    "@inquirer/prompts": "^5.3.8",
     "download": "^8.0.0",
     "git-clone": "^0.2.0",
     "rimraf": "^6.0.1"

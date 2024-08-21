@@ -298,7 +298,7 @@ function createChoicesByTempNameList(tempNameList: TempNameList): PickerOptionLi
   if (!Array.isArray(tempNameList) || !tempNameList.length) return [];
   return tempNameList.map((name) => {
     return {
-      title: name,
+      name: name,
       value: name
     }
   });

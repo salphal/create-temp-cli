@@ -56,7 +56,7 @@ export interface IDoublyLinked {
   unshift(data: NodeData): void;
 
   /** 向链表中指定位置插入一个节点 */
-  insert(position: number, node: LinkedNode): void;
+  insert(position: number, data: NodeData): void;
 
   /** 通过索引删除相应的节点 */
   remove(compare: (data: NodeData) => boolean): void;
@@ -80,7 +80,7 @@ export interface IDoublyLinked {
   size(): number;
 
   /** 获取首节点 */
-  getHead(): NodeData | null;
+  getHead(): LinkedNode | null;
 
   /** 获取尾节点 */
   getTail(): NodeData | null;
