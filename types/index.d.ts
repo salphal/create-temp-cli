@@ -21,6 +21,7 @@ export interface Envs {
 export interface TempConfig {
 	argv: any;
 	__dirname: string;
+	__filename: string;
 	envs: Envs;
 }
 
