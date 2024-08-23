@@ -26,11 +26,11 @@ export const ${COMPNAME}_TABLE_COLUMNS = [
 ];
 
 export const ${compName}TableMockData = Mock.mock(() => {
-  return return Mock.mock({
+  return Mock.mock({
     "dataSource|20": [
       {
         id: '@guid()',
       }
     ]
   }).dataSource;
-};
+});

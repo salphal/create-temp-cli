@@ -4,6 +4,22 @@ import { useShallow } from 'zustand/react/shallow';
 import use${CompName}Store from './store';
 import { ${CompName}ContextProvider } from './context';
 import styles from './index.module.scss';
+import { Form, message as messageApi } from 'antd';
+
+const defaultPagination = {
+  currentPage: 1,
+  pageSize: 20,
+  total: 0
+};
+
+interface Pagination {
+  currentPage: number;
+  pageSize: number;
+  total: number;
+}
+
+interface FormData {
+}
 
 export interface ${CompName}Props {
   children?: any;
@@ -14,11 +30,85 @@ export interface ${CompName}Methods {
 
 const ${CompName}: React.FC<${CompName}Props> = (props: ${CompName}Props & ${CompName}Methods) => {
 
+  const [form] = Form.useForm();
+
   const {} = props;
 
   const { key } = use${CompName}Store(useShallow((state: any) => state));
 
-  useEffect(() => {}, []);
+  const [formData, setFormData] = useState<FormData>({});
+  const [loading, setLoading] = useState<boolean>(false);
+  const [dataSource, setDataSource] = useState<any[]>([]);
+  const [refreshTableCount, setRefreshTableCount] = useState<number>(0);
+  const [pagination, setPagination] = useState<Pagination>(defaultPagination);
+
+  useEffect(() => {
+    const { currentPage, pageSize } = pagination;
+    const params = {
+      currentPage,
+      pageSize
+    };
+    fetchDataSource(params);
+  }, [
+    pagination.currentPage,
+    pagination.pageSize,
+    refreshTableCount
+  ]);
+
+  const fetchDataSource = async (params: any) => {
+    try {
+
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const refreshTable = () => {
+    setRefreshTableCount(count => ++count);
+  };
+
+  const formOnValueChange = (changedValues: any, allChangedValues: any) => {
+    setFormData(allChangedValues);
+  };
+
+  const paginationOnChange = (currentPage: number, pageSize: number) => {
+    setPagination((pagination) => ({ ...pagination, currentPage, pageSize }));
+  };
+
+  const handle${CompName}EventAspect = (
+    type: string,
+    kwargs: any = {},
+    ...args: any[]
+  ) => {
+    const handles: any = {
+      create: handle${CompName}OnCreate,
+      delete: handle${CompName}OnDelete,
+      edit: handle${CompName}OnEdit,
+      query: handle${CompName}OnQuery,
+      reset: handle${CompName}OnReset
+    };
+    args =
+      Object.keys(kwargs).length || typeof kwargs !== 'object'
+        ? [kwargs, ...args]
+        : args;
+    handles[type] && handles?.[type](...args);
+  };
+
+  const handle${CompName}OnCreate = () => {};
+
+  const handle${CompName}OnDelete = () => {};
+
+  const handle${CompName}OnEdit = () => {};
+
+  const handle${CompName}OnQuery = () => {};
+
+  const handle${CompName}OnReset = () => {
+    form.resetFields();
+    setFormData({});
+    setLoading(false);
+    setDataSource([]);
+    setPagination(defaultPagination);
+  };
 
   return (
     <React.Fragment>
