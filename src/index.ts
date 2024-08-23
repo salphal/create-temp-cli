@@ -22,7 +22,6 @@ import {
   writeTempListToTarget
 } from "./utils/template";
 import Logger from "../utils/logger";
-import {CAMELCASE, camelcase, camelCase, CamelCase} from "../utils/camelcase";
 import {cloneTemplates} from "./utils/clone-temp";
 import FsExtra from "../utils/file";
 
