@@ -53,6 +53,7 @@ export interface TempContext {
 	/** 模版选项 */
 	tempNameChoices: PromptChoices;
 
+	/** 用于模版中的变量 */
 	replacements: {
 		CompName: string;
 		compName: string;
