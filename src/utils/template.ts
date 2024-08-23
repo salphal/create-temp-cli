@@ -3,6 +3,7 @@ import fs from "fs-extra";
 import path from "path";
 import {PromptChoices} from "../../utils/prompt";
 import Logger from "../../utils/logger";
+import {camelcase, CAMELCASE, camelCase, CamelCase} from "../../utils/camelcase";
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -65,6 +66,25 @@ export function tempFileNameToRealFileName(tempFileName: string, realFileName: s
 export function getCurTempInfoListByTempName(tempName: string, tempInfoList: TempInfoList) {
   if (!Array.isArray(tempInfoList) || !tempInfoList.length) return [];
   return tempInfoList.filter((tempInfo) => tempInfo.tempName === tempName);
+}
+
+export function getReplacements(variables: { compName: string, fileName: string }) {
+
+  const {fileName: file, compName: name} = variables;
+
+  const CompName = CamelCase(name);  // 首字母大写( eg: DemoComp )
+  const compName = camelCase(name);  // 首字母小写 ( eg: demoComp )
+  const COMPNAME = CAMELCASE(name);  // 首字母小写 ( eg: DEMOCOMP )
+  const className = camelcase(name); // 首字母小写 ( eg: demo-comp )
+  const fileName = camelcase(name);  // 全部字母小写( eg: demo-comp )
+
+  return {
+    CompName,
+    compName,
+    COMPNAME,
+    className,
+    fileName,
+  };
 }
 
 
@@ -169,18 +189,18 @@ export function getAllTempNameList(tempInfoList: TempInfoList, tempDirectoryPath
 export async function writeTempListToTarget(curTempInfoList: TempInfoList, config: {
   fileName: string,
   outputDirPath: string,
-  replaceVariableMap: any
+  replacements: any
 }) {
 
   if (!Array.isArray(curTempInfoList) || !curTempInfoList.length) return false;
 
-  const {fileName, outputDirPath, replaceVariableMap} = config;
-  if (!fileName || !outputDirPath || !replaceVariableMap) return false;
+  const {fileName, outputDirPath, replacements} = config;
+  if (!fileName || !outputDirPath || !replacements) return false;
 
   for (let i = 0; i < curTempInfoList.length; i++) {
 
     const {fileName: tempName, fullPath} = curTempInfoList[i];
-    const content = await replaceVariablesInFileByReplacements(fullPath, replaceVariableMap);
+    const content = await replaceVariablesInFileByReplacements(fullPath, replacements);
     const realFileName = tempFileNameToRealFileName(tempName, fileName);
     const outputFullPath = path.join(outputDirPath, fileName, realFileName);
 

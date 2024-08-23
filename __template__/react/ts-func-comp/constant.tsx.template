@@ -1,0 +1,36 @@
+import Mock from 'mockjs';
+
+export const ${COMPNAME}_FORM_KEYS = {
+  id: 'id'
+};
+
+export const ${COMPNAME}_FORM_LABELS = {
+  [${COMPNAME}_FORM_KEYS.id]: '唯一键'
+};
+
+export const ${COMPNAME}_TABLE_KEYS = {
+  id: 'id'
+};
+
+export const ${COMPNAME}_TABLE_LABELS = {
+  [${COMPNAME}_TABLE_KEYS.id]: '唯一键'
+};
+
+export const ${COMPNAME}_TABLE_COLUMNS = [
+  {
+    key: ${COMPNAME}_TABLE_KEYS.id,
+    dataIndex: ${COMPNAME}_TABLE_KEYS.id,
+    title: ${COMPNAME}_TABLE_LABELS[${COMPNAME}_TABLE_KEYS.id],
+    width: 200,
+  }
+];
+
+export const ${compName}TableMockData = Mock.mock(() => {
+  return return Mock.mock({
+    "dataSource|20": [
+      {
+        id: '@guid()',
+      }
+    ]
+  }).dataSource;
+};

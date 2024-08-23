@@ -1,0 +1,44 @@
+import { create } from 'zustand';
+
+export interface I${CompName}Store {
+  [key: string]: any;
+}
+
+export const initial${CompName} = {
+    key: {},
+};
+
+// useShallow(); 对象浅比较, 减少重绘
+// import { useShallow } from 'zustand/react/shallow';
+// const {
+//   key,
+// } = use${CompName}Store(useShallow((state: any) => state));
+const use${CompName}Store = create<I${CompName}Store>((set, get) => ({
+  ...initial${CompName},
+  // data: [],
+  // setData: () => set((state) => ({foo: "bar"})), // 将返回的对象与之前的对象合并
+  // getData: () => get().data.map((v: any) => !!v),
+}));
+
+export const set${CompName}Store = (props: any) =>
+    use${CompName}Store.setState((prev: any) => ({...prev, ...props}));
+
+export const set${CompName}Property = (
+    key: string,
+    value: any,
+    merge = false,
+    insertBefore = false,
+    isDeconstruct = false
+) =>
+    setStoreProperties(use${CompName}Store, key, value, merge, insertBefore, isDeconstruct);
+
+export const setKey = (value: any, merge = false, insertBefore = false, isDeconstruct = false) =>
+    set${CompName}Property('key', value, merge, insertBefore, isDeconstruct);
+
+export const resetKey = () =>
+    set${CompName}Property('key', initial${CompName}.key, false);
+
+export const reset${CompName}Store = () =>
+    use${CompName}Store.setState({...initial${CompName}});
+
+export default use${CompName}Store;

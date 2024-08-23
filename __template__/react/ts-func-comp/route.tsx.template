@@ -1,0 +1,16 @@
+import { ReactElement } from 'react';
+import ${CompName} from './${fileName}';
+
+const ${CompName}Routes = () => {
+
+  const routes: ReactElement | null = useRoutes([
+    {
+      path: "/",
+      element: <${CompName} />,
+    }
+  ]);
+
+  return routes;
+};
+
+export default ${CompName}Routes;

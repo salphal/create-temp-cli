@@ -53,9 +53,11 @@ export interface TempContext {
 	/** 模版选项 */
 	tempNameChoices: PromptChoices;
 
-	replaceVariableMap: {
+	replacements: {
 		CompName: string;
 		compName: string;
+		COMPNAME: string;
+		className: string;
 		fileName: string;
 	};
 }

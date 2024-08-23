@@ -18,11 +18,11 @@ import {
   createPromptChoices,
   getAllTempInfoByTempDirPathList,
   getAllTempNameList,
-  getCurTempInfoListByTempName,
+  getCurTempInfoListByTempName, getReplacements,
   writeTempListToTarget
 } from "./utils/template";
 import Logger from "../utils/logger";
-import {camelcase, camelCase, CamelCase} from "../utils/camelcase";
+import {CAMELCASE, camelcase, camelCase, CamelCase} from "../utils/camelcase";
 import {cloneTemplates} from "./utils/clone-temp";
 import FsExtra from "../utils/file";
 
@@ -73,10 +73,12 @@ const tempContext: TempContext = {
     fileName: '',
     outputPath: '',
   },
-  replaceVariableMap: {
+  replacements: {
     CompName: '',
-    fileName: '',
     compName: '',
+    COMPNAME: '',
+    className: '',
+    fileName: '',
   },
   tempNameChoices: [],
   outputPathChoices: [
@@ -184,12 +186,8 @@ const stepList: StepList = [
       };
 
       /** 模版中变量的映射集合 */
-      tempContext.replaceVariableMap = {
-        CompName: CamelCase(compName), // 首字母大写( eg: DemoComp )
-        compName: camelCase(compName), // 首字母小写 ( eg: demoExample )
-        fileName: camelcase(fileName), // 全部字母小写( eg: demo-example )
-      };
-      Logger.info(tempContext.replaceVariableMap);
+      tempContext.replacements = getReplacements({compName, fileName})
+      Logger.info(tempContext.replacements);
 
       return {
         code: ResCode.next,
@@ -271,7 +269,7 @@ const stepList: StepList = [
       const isWritten = await writeTempListToTarget(ctx.curTempInfoList, {
         fileName,
         outputDirPath,
-        replaceVariableMap: tempContext.replaceVariableMap
+        replacements: tempContext.replacements
       });
 
       if (isWritten) {

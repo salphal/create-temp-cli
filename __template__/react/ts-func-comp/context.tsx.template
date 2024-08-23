@@ -1,0 +1,16 @@
+import { Context, createContext } from 'react';
+
+export interface I${CompName}Context {
+  [key: string]: any;
+}
+
+const initial${CompName}Context: I${CompName}Context = {};
+
+const ${CompName}Context: Context<I${CompName}Context> =
+  createContext<I${CompName}Context>(initial${CompName}Context);
+
+export const ${CompName}ContextProvider = ${CompName}Context.Provider;
+
+export const ${CompName}ContextConsumer = ${CompName}Context.Consumer;
+
+export default ${CompName}Context;
