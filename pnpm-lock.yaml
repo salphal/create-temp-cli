@@ -32,6 +32,9 @@ importers:
       rimraf:
         specifier: ^6.0.1
         version: 6.0.1
+      ssh2:
+        specifier: ^1.15.0
+        version: 1.15.0
     devDependencies:
       '@types/download':
         specifier: ^8.0.5
