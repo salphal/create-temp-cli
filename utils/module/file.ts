@@ -215,12 +215,17 @@ class FsExtra {
   /**
    * 是否是 .json 文件
    *
-   * @param path
+   * @param filePath
    */
-  static async isJson(path: string) {
-    return new Promise((resolve, reject) => {
-
-
+  static async isJson(filePath: string) {
+    return new Promise(async (resolve, reject) => {
+      const isFile = await FsExtra.isFile(filePath);
+      const extname = path.extname(filePath);
+      if (isFile && extname.trim() === '.json') {
+        resolve(true);
+      } else {
+        resolve(false);
+      }
     });
   }
 
