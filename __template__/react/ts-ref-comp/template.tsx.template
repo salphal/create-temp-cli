@@ -1,0 +1,63 @@
+import React, { useState, useEffect, useRef, Ref, useImperativeHandle } from 'react';
+import classNames from 'classnames';
+import styles from './index.module.scss';
+
+export interface ${CompName}Props {
+  children?: any;
+}
+
+export interface ${CompName}Methods {
+}
+
+interface ${CompName}Ref  {
+}
+
+const ${CompName}: React.ForwardRefRenderFunction<${CompName}Ref, ${CompName}Props> = (
+  props: ${CompName}Props & ${CompName}Methods,
+  ref: Ref<${CompName}Ref | HTMLDivElement>
+) => {
+
+  const {} = props;
+
+  useImperativeHandle(ref, () => ({
+  }));
+
+  useEffect(() => {}, []);
+
+  const handle${CompName}EventAspect = (
+    type: string,
+    kwargs: any = {},
+    ...args: any[]
+  ) => {
+    const handles: any = {
+      confirm: handle${CompName}OnConfirm,
+      cancel: handle${CompName}OnCancel,
+      reset: handle${CompName}OnReset,
+    };
+    args =
+      Object.keys(kwargs).length || typeof kwargs !== 'object'
+        ? [kwargs, ...args]
+        : args;
+    handles[type] && handles?.[type](...args);
+  };
+
+  const handle${CompName}OnConfirm = () => {};
+
+  const handle${CompName}OnCancel = () => {};
+
+  const handle${CompName}OnReset = () => {
+  };
+
+  return (
+    <React.Fragment>
+
+      <div className={classNames([styles['${className}']])}>
+        {props.children}
+        props: {JSON.stringify(props)}<br/>
+      </div>
+
+    </React.Fragment>
+  );
+};
+
+export default React.forwardRef(${CompName});
