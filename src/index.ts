@@ -10,7 +10,7 @@ import {configDotenv} from "dotenv";
 import path from "path";
 import {fileURLToPath} from "url";
 
-import {Envs, TempConfig, TempContext, TempInfoList} from "../types";
+import {Envs, TempConfig, TempContext} from "../types";
 import Scheduler, {ResCode, StepList} from "../utils/core/scheduler";
 import Prompt from "../utils/prompt";
 import {setupEnvs} from "./utils/setup-envs";
@@ -18,12 +18,12 @@ import {
   createPromptChoices,
   getAllTempInfoByTempDirPathList,
   getAllTempNameList,
-  getCurTempInfoListByTempName, writeTempListToTarget
+  getCurTempInfoListByTempName,
+  writeTempListToTarget
 } from "./utils/template";
 import Logger from "../utils/logger";
 import {camelcase, camelCase, CamelCase} from "../utils/camelcase";
 import {cloneTemplates} from "./utils/clone-temp";
-import Banner from "../utils/banner";
 import FsExtra from "../utils/file";
 
 
@@ -298,7 +298,6 @@ const scheduler = new Scheduler({stepList});
 
 async function init(opts: any) {
   try {
-    Banner.show("Temp-cli")
     await scheduler.autoExecute();
   } catch (err: any) {
     Logger.error(err);

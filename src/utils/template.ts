@@ -184,6 +184,8 @@ export async function writeTempListToTarget(curTempInfoList: TempInfoList, confi
     const realFileName = tempFileNameToRealFileName(tempName, fileName);
     const outputFullPath = path.join(outputDirPath, fileName, realFileName);
 
+    if (['README.md'].includes(realFileName)) continue;
+
     fs.writeFile(outputFullPath, content as string, 'utf-8', (err) => {
       if (err) Logger.error(`${err}`);
     });
