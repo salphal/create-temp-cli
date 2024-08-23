@@ -9,7 +9,6 @@ export interface PromptChoice {
 
 export type PromptChoices = Array<PromptChoice>;
 
-
 /**
  * prompts      v
  * https://github.com/terkelg/prompts

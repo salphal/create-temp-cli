@@ -1,5 +1,4 @@
 import download from './core/download';
-import Loading from "./loading";
 
 interface DownloadConfig {
   /** 远程仓库地址 */
@@ -26,11 +25,9 @@ async function clone(config: DownloadConfig) {
      */
     const url = `${isDirect ? 'direct:' : ''}${remote}#${branch}`;
     download(url, outputPath, options, (err: any) => {
-      if (err) {
-        reject(err);
-      }
+      if (err) reject(err);
+      resolve(1);
     });
-    resolve(0);
   });
 }
 

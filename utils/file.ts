@@ -140,18 +140,18 @@ class FsExtra {
    *  - 如果目录结构不存在, 则创建
    *  - 如果目录存在, 则不进行创建
    *
-   * @param path {string} - 目录路径
+   * @param dirPath {string} - 目录路径
    *
    * mkdir -p /path/to
    */
-  static async makeDir(path: string) {
+  static async makeDir(dirPath: string) {
     return new Promise((resolve, reject) => {
-      fs.ensureDir(path, (err) => {
+      fs.ensureDir(dirPath, (err) => {
         if (err) {
           console.error(err);
           reject(0);
         } else {
-          console.log(`Successfully created ${path}`);
+          console.log(`Successfully created ${dirPath}`);
           resolve(1);
         }
       });
@@ -165,20 +165,37 @@ class FsExtra {
    *
    ** 目录本身不会被删除
    *
-   * @param path {string} - 目录路径
+   * @param dirPath {string} - 目录路径
    */
-  static async emptyDir(path: string) {
+  static async emptyDir(dirPath: string) {
     return new Promise((resolve, reject) => {
-      fs.emptyDir(path, (err) => {
+      fs.emptyDir(dirPath, (err) => {
         if (err) {
           console.error(err);
           resolve(0);
         } else {
-          console.log(`clear ${path}`);
-          console.log(`Successfully delete all sub-child in ${path}`);
+          console.log(`clear ${dirPath}`);
+          console.log(`Successfully delete all sub-child in ${dirPath}`);
           resolve(1);
         }
       });
+    });
+  }
+
+  /**
+   * 是否是空目录
+   *
+   * @param dirPath {string} - 目录路径
+   * @param compare
+   */
+  static async isEmptyDir(dirPath: string, compare?: (files: string[]) => boolean) {
+    return new Promise((resolve, reject) => {
+      const files = fs.readdirSync(dirPath);
+      if (typeof compare === 'function') {
+        resolve(compare(files));
+      } else {
+        resolve(files.length === 0);
+      }
     });
   }
 

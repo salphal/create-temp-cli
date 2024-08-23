@@ -15,17 +15,16 @@ import Scheduler, {ResCode, StepList} from "../utils/core/scheduler";
 import Prompt from "../utils/prompt";
 import {setupEnvs} from "./utils/setup-envs";
 import {
-  createChoicesByTempNameList,
+  createPromptChoices,
   getAllTempInfoByTempDirPathList,
   getAllTempNameList,
   getCurTempInfoListByTempName, writeTempListToTarget
 } from "./utils/template";
 import Logger from "../utils/logger";
 import {camelcase, camelCase, CamelCase} from "../utils/camelcase";
-import {createDirectory} from "../utils/module/directory";
 import {cloneTemplates} from "./utils/clone-temp";
 import Banner from "../utils/banner";
-import FsExtra from "../utils/module/file";
+import FsExtra from "../utils/file";
 
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -130,7 +129,7 @@ const stepList: StepList = [
       tempContext.tempNameList = tempNameList;
 
       /** 根据扫描模目录下的文件, 设置模版选项列表 */
-      tempContext.tempNameChoices = createChoicesByTempNameList(tempNameList);
+      tempContext.tempNameChoices = createPromptChoices(tempNameList);
 
       if (!allTempInfoList.length) {
         /** 模版目录下没有任何模版 */
@@ -250,14 +249,14 @@ const stepList: StepList = [
       const {questionResult: {fileName, tempName}, outputDirPath} = tempContext;
 
       /** 在项目根路径下创建默认输出目录 */
-      await createDirectory(tempContext.outputDirPath);
+      await FsExtra.makeDir(tempContext.outputDirPath);
 
       /**
        * 在输出目录下 创建输出的组件目录
        *  - 已有: 则清空该目录下的所有文件
        *  - 没有: 则创建一个
        */
-      const isCreated = await createDirectory(tempContext.outputDirPath, fileName);
+      const isCreated = await FsExtra.makeDir(path.join(tempContext.outputDirPath, fileName));
 
       if (!isCreated) {
         Logger.error(`Could not create directory: ${outputDirPath}/${fileName}`);
@@ -354,9 +353,7 @@ program
 program
   .command('test')
   .action(async (opts: any, cmd: any) => {
-    const p = path.resolve(__dirname, '__template__');
-    const res = await FsExtra.getFilesInfo(p);
-    console.log('=>(index.ts:355) res', res);
+    const res = await FsExtra.getFilesInfo(path.resolve(__dirname, '__template__'));
   });
 
 
