@@ -354,7 +354,8 @@ program
 program
   .command('test')
   .action(async (opts: any, cmd: any) => {
-    const res = await FsExtra.getFilesInfo('./__template__', 'tree');
+    const p = path.resolve(__dirname, '__template__');
+    const res = await FsExtra.getFilesInfo(p);
     console.log('=>(index.ts:355) res', res);
   });
 

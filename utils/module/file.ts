@@ -367,12 +367,12 @@ class FsExtra {
    * @param resultType {'list' | 'tree'} - 返回的结果类型
    *  - list: 返回一个包含所有文件信息的列表
    *  - tree: 返回一个文件树
-   * @param save {(data: any) => { [key: string]: any } } - 自定义处理文件信息的数据
+   * @param save {(fullPath: string) => { [key: string]: any } } - 自定义处理文件信息的数据
    */
   static async getFilesInfo(
     dirPath: string,
     resultType: 'list' | 'tree' = 'list',
-    save?: (data: any) => { [key: string]: any; }
+    save?: (fullPath: string) => { [key: string]: any; }
   ) {
     return new Promise(async (resolve, reject) => {
       return await FsExtra.readDir(dirPath, (fileNames) => {
@@ -390,7 +390,7 @@ class FsExtra {
                 fileTree[fileName] = nestedFiles;
               }
             } else {
-              const fileInfo = typeof save === 'function' ? save({fileName, fullPath}) : {fileName, fullPath};
+              const fileInfo = typeof save === 'function' ? save(fullPath) : path.parse(fullPath);
               if (resultType === 'list') fileList.push(fileInfo);
               if (resultType === 'tree') fileTree[fileName] = fileInfo;
             }
