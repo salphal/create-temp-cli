@@ -68,6 +68,11 @@ export function getCurTempInfoListByTempName(tempName: string, tempInfoList: Tem
   return tempInfoList.filter((tempInfo) => tempInfo.tempName === tempName);
 }
 
+/**
+ * 根据文件名和组件名生成 模版中替换的变量集合
+ *
+ * @param variables
+ */
 export function getReplacements(variables: { compName: string, fileName: string }) {
 
   const {fileName: file, compName: name} = variables;
