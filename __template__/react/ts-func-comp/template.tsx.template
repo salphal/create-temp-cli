@@ -28,7 +28,7 @@ const ${CompName}: React.FC<${CompName}Props> = (props: ${CompName}Props & ${Com
           {props.children}
           props: {JSON.stringify(props)}<br/>
         </div>
-      <${CompName}ContextProvider />
+      </ ${CompName}ContextProvider>
 
     </React.Fragment>
   );
