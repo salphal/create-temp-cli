@@ -11,5 +11,5 @@ export function camelcase(fileName: string): string {
 }
 
 export function CAMELCASE(fileName: string): string {
-  return fileName.toUpperCase();
+  return fileName.replace(/-/g, '_').toUpperCase();
 }

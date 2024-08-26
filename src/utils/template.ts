@@ -79,8 +79,8 @@ export function getReplacements(variables: { compName: string, fileName: string 
 
   const CompName = CamelCase(name);  // 首字母大写( eg: DemoComp )
   const compName = camelCase(name);  // 首字母小写 ( eg: demoComp )
-  const COMPNAME = CAMELCASE(name);  // 首字母小写 ( eg: DEMOCOMP )
-  const className = camelcase(name); // 首字母小写 ( eg: demo-comp )
+  const COMPNAME = CAMELCASE(file);  // 首字母小写 ( eg: DEMO_COMP )
+  const className = camelcase(file); // 首字母小写 ( eg: demo-comp )
   const fileName = camelcase(name);  // 全部字母小写( eg: demo-comp )
 
   return {
