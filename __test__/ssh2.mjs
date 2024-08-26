@@ -17,7 +17,7 @@ conn1.on('ready', () => {
   // Alternatively, you could use something like netcat or socat with exec()
   // instead of forwardOut(), depending on what the server allows
 
-  conn1.forwardOut('127.0.0.1', 0, '192.168.30.214', 22, (err, stream) => {
+  conn1.forwardIn('127.0.0.1', 22, '192.168.30.214', (err, stream) => {
 
     if (err) {
       console.log('FIRST :: forwardOut error: ' + err);
@@ -27,6 +27,7 @@ conn1.on('ready', () => {
     conn2.connect({
       sock: stream,
       username: 'root',
+      port: 22,
       password: 'Founder123',
     });
 
@@ -34,6 +35,7 @@ conn1.on('ready', () => {
 
 }).connect({
   host: '192.168.30.193',
+  port: 22,
   username: 'root',
   password: 'Founder123',
 });
