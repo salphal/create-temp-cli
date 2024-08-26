@@ -4,12 +4,17 @@ import path from "path";
 import Logger from "../../utils/logger";
 import Loading from "../../utils/loading";
 import FsExtra from "../../utils/file";
+import shell from "shelljs";
 
 
 /**
  * 下载预设模版和环境变量配置文件
  */
 export function cloneTemplates(ctx: any) {
+  if (!shell.which('git')) {
+    shell.echo('Sorry, this script requires git');
+    shell.exit(1);
+  }
   clone({
     remote: 'https://github.com/salphal/create-temp-cli.git',
     branch: 'main',

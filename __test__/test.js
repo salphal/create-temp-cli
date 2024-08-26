@@ -21,4 +21,4 @@ import fs from "fs-extra";
     console.log('=>(test.js:22) stats', stats.parentPath);
   });
 
-  }());
+}());
