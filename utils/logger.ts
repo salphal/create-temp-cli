@@ -4,6 +4,7 @@ import {
   red,
   yellow,
 } from 'kolorist';
+import Table from "./table";
 
 
 class Logger {
@@ -31,6 +32,10 @@ class Logger {
 
   static error(message: any, prefix?: string) {
     this.log(message, red, prefix)
+  }
+
+  static table(dataSource: Array<string[]>, columns: Array<{ align?: string, width?: number }> = [], config?: any) {
+    Table.print(dataSource, columns, config);
   }
 }
 

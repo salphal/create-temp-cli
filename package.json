@@ -4,7 +4,7 @@
   "description": "",
   "type": "module",
   "bin": {
-    "temp-cli": "index.js"
+    "front-cli": "index.js"
   },
   "files": [
     "index.js",
@@ -55,6 +55,7 @@
     "node-ssh": "^13.2.0",
     "ora": "^8.0.1",
     "rimraf": "^6.0.1",
-    "ssh2": "^1.15.0"
+    "ssh2": "^1.15.0",
+    "voici.js": "^2.1.0"
   }
 }

@@ -25,7 +25,7 @@ export interface SchedulerContext {
 	[key: string]: any;
 }
 
-class Scheduler {
+class StepScheduler {
 
 	context: SchedulerContext = {};
 	LinkedList: DoublyLinked = new DoublyLinked();
@@ -132,4 +132,4 @@ class Scheduler {
 	}
 }
 
-export default Scheduler;
+export default StepScheduler;

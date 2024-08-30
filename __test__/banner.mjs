@@ -7,7 +7,7 @@ import banner from 'figlet';
 
 class Banner {
 
-  static show(text) {
+  static print(text) {
     console.log(
       banner.textSync(text, {
         horizontalLayout: "default",
@@ -18,4 +18,4 @@ class Banner {
 }
 
 
-Banner.show("temp-cli");
+Banner.print("front-cli");

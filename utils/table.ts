@@ -1,19 +1,4 @@
-import {table} from 'table';
-
-/**
- * https://github.com/gajus/table
- */
-
-// Using commonjs?
-// const { table } = require('table');
-
-const data = [
-  ['name', 'age', 'gender'],
-  ['alpha', '18', 'male'],
-  ['beta', '20', 'female'],
-];
-
-console.log(table(data));
+import {table} from "table";
 
 class Table {
 
@@ -40,19 +25,17 @@ class Table {
 
   static defaultConfig = {
     title: null,
-    columnAlign: 'left',
-    columnWidth: 20,
+    columnWidth: null,
     outBorderType: 'double', // single | double
     verticalBorder: true,
     horizontalBorder: true,
   };
 
-  static print(data, columns, options = {}) {
+  static print(data: Array<string[]>, columns: Array<{ width?: number, align?: string }>, options = {}) {
 
     const {
       title,
-      columnAlign,
-      columnWidth,
+      columnWidth = 20,
       outBorderType = 'double',
       verticalBorder = false,
       horizontalBorder = false,
@@ -62,13 +45,10 @@ class Table {
     let tableColumns = data.map(() => ({alignment: 'left', width: columnWidth}));
 
     if (Array.isArray(columns) && columns.length) {
-      tableColumns = columns.map(column => ({
-        alignment: column.align || columnAlign,
-        width: column.width || columnWidth
-      }));
+      tableColumns = columns.map(column => ({alignment: column.align || 'left', width: column.width || columnWidth}));
     }
 
-    const config = {
+    const config: any = {
       columns,
     };
 
@@ -94,7 +74,7 @@ class Table {
 
     /** 垂直列边框是否展示 */
     if (!verticalBorder) {
-      config.drawVerticalLine = (lineIndex, columnCount) => {
+      config.drawVerticalLine = (lineIndex: number, columnCount: number) => {
         return lineIndex === 0 || lineIndex === columnCount;
       }
     }
@@ -103,5 +83,4 @@ class Table {
   }
 }
 
-
-Table.print(data, {});
+export default Table;

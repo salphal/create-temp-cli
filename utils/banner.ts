@@ -2,7 +2,7 @@ import banner from "figlet";
 
 class Banner {
 
-	static show(message: string) {
+	static print(message: string) {
 		banner.textSync(message, {
 			horizontalLayout: "default",
 			whitespaceBreak: true,
