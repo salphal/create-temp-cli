@@ -12,7 +12,8 @@ import {fileURLToPath} from "url";
 
 import {__test__} from "./test";
 import {TemplateCli} from "./clis/template";
-import {CliEnvs, Envs} from "../types/global";
+import {Envs} from "../types/global";
+import {CliEnvs} from "./clis/template/template";
 
 
 //-------------------------------------------------------------------------------------------------------------------//

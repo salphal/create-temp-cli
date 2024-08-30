@@ -1,7 +1,6 @@
 import path from "path";
 import {PromptChoices} from "../../../../utils/prompt";
-import {CliEnvs} from "../../../../types/global";
-import {TempContext} from "../template";
+import {CliEnvs, TempContext} from "../template";
 
 /**
  * 挂载环境变量中的配置
