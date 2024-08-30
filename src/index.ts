@@ -68,14 +68,14 @@ const tempContext: TempContext = {
 
   questionResult: {
     tempName: '',
-    compName: '',
     fileName: '',
     outputPath: '',
   },
   replacements: {
     CompName: '',
     compName: '',
-    COMPNAME: '',
+    COMP_NAME: '',
+    SHORT_COMP_NAME: '',
     className: '',
     fileName: '',
   },
@@ -166,7 +166,7 @@ const stepList: StepList = [
 
       const tempName = await Prompt.autocomplete("Please pick a template", tempContext.tempNameChoices);
 
-      const compName = await Prompt.input("Please enter component name. ( default: Template )", {default: "Template"});
+      // const compName = await Prompt.input("Please enter component name. ( default: Template )", {default: "Template"});
 
       const fileName = await Prompt.input("Please enter component file name. ( default: template )", {default: "template"})
 
@@ -179,13 +179,13 @@ const stepList: StepList = [
       /** 保存用户交互的结果 */
       tempContext.questionResult = {
         tempName,
-        compName,
+        // compName,
         fileName,
         outputPath,
       };
 
       /** 模版中变量的映射集合 */
-      tempContext.replacements = getReplacements({compName, fileName})
+      tempContext.replacements = getReplacements({fileName})
       Logger.info(tempContext.replacements);
 
       return {

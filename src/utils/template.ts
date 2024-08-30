@@ -3,7 +3,7 @@ import fs from "fs-extra";
 import path from "path";
 import {PromptChoices} from "../../utils/prompt";
 import Logger from "../../utils/logger";
-import {camelcase, CAMELCASE, camelCase, CamelCase} from "../../utils/camelcase";
+import {camelcase, CAMELCASE, camelCase, CamelCase, SHORTCAMELCASE} from "../../utils/camelcase";
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -73,20 +73,22 @@ export function getCurTempInfoListByTempName(tempName: string, tempInfoList: Tem
  *
  * @param variables
  */
-export function getReplacements(variables: { compName: string, fileName: string }) {
+export function getReplacements(variables: { fileName: string }) {
 
-  const {fileName: file, compName: name} = variables;
+  const {fileName: file} = variables;
 
-  const CompName = CamelCase(name);  // 首字母大写( eg: DemoComp )
-  const compName = camelCase(name);  // 首字母小写 ( eg: demoComp )
-  const COMPNAME = CAMELCASE(file);  // 首字母小写 ( eg: DEMO_COMP )
+  const CompName = CamelCase(file);  // 首字母大写( eg: DemoComp )
+  const compName = camelCase(file);  // 首字母小写 ( eg: demoComp )
+  const COMP_NAME = CAMELCASE(file);  // 首字母小写 ( eg: DEMO_COMP )
+  const SHORT_COMP_NAME = SHORTCAMELCASE(file);  // 首字母小写 ( eg: DEMO_COMP )
   const className = camelcase(file); // 首字母小写 ( eg: demo-comp )
-  const fileName = camelcase(name);  // 全部字母小写( eg: demo-comp )
+  const fileName = camelcase(file);  // 全部字母小写( eg: demo-comp )
 
   return {
     CompName,
     compName,
-    COMPNAME,
+    COMP_NAME,
+    SHORT_COMP_NAME,
     className,
     fileName,
   };

@@ -44,7 +44,7 @@ export interface TempContext {
 	/** 用户交互的结果 */
 	questionResult: {
 		tempName: string;
-		compName: string;
+		// compName: string;
 		fileName: string;
 		outputPath: string;
 	};
@@ -57,7 +57,8 @@ export interface TempContext {
 	replacements: {
 		CompName: string;
 		compName: string;
-		COMPNAME: string;
+		COMP_NAME: string;
+		SHORT_COMP_NAME: string;
 		className: string;
 		fileName: string;
 	};
