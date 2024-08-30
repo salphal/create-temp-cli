@@ -1,26 +1,26 @@
 import Mock from 'mockjs';
 
-export const ${COMPNAME}_FORM_KEYS = {
+export const ${SHORT_COMP_NAME}_FORM_KEYS = {
   id: 'id'
 };
 
-export const ${COMPNAME}_FORM_LABELS = {
-  [${COMPNAME}_FORM_KEYS.id]: '唯一键'
+export const ${SHORT_COMP_NAME}_FORM_LABELS = {
+  [${SHORT_COMP_NAME}_FORM_KEYS.id]: '唯一键'
 };
 
-export const ${COMPNAME}_TABLE_KEYS = {
+export const ${SHORT_COMP_NAME}_TABLE_KEYS = {
   id: 'id'
 };
 
-export const ${COMPNAME}_TABLE_LABELS = {
-  [${COMPNAME}_TABLE_KEYS.id]: '唯一键'
+export const ${SHORT_COMP_NAME}_TABLE_LABELS = {
+  [${SHORT_COMP_NAME}_TABLE_KEYS.id]: '唯一键'
 };
 
-export const ${COMPNAME}_TABLE_COLUMNS = [
+export const ${SHORT_COMP_NAME}_TABLE_COLUMNS = [
   {
-    key: ${COMPNAME}_TABLE_KEYS.id,
-    dataIndex: ${COMPNAME}_TABLE_KEYS.id,
-    title: ${COMPNAME}_TABLE_LABELS[${COMPNAME}_TABLE_KEYS.id],
+    key: ${SHORT_COMP_NAME}_TABLE_KEYS.id,
+    dataIndex: ${SHORT_COMP_NAME}_TABLE_KEYS.id,
+    title: ${SHORT_COMP_NAME}_TABLE_LABELS[${SHORT_COMP_NAME}_TABLE_KEYS.id],
     width: 200,
   }
 ];
