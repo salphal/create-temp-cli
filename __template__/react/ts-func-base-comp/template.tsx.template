@@ -1,8 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import classNames from 'classnames';
-import { useShallow } from 'zustand/react/shallow';
-import use${CompName}Store from './store';
-import { ${CompName}ContextProvider } from './context';
 import styles from './index.module.scss';
 import { Form, message as messageApi } from 'antd';
 
@@ -30,11 +27,9 @@ export interface ${CompName}Methods {
 
 const ${CompName}: React.FC<${CompName}Props> = (props: ${CompName}Props & ${CompName}Methods) => {
 
-  const [form] = Form.useForm();
-
   const {} = props;
 
-  const { key } = use${CompName}Store(useShallow((state: any) => state));
+  const [form] = Form.useForm();
 
   const [formData, setFormData] = useState<FormData>({});
   const [loading, setLoading] = useState<boolean>(false);
@@ -113,12 +108,10 @@ const ${CompName}: React.FC<${CompName}Props> = (props: ${CompName}Props & ${Com
   return (
     <React.Fragment>
 
-      <${CompName}ContextProvider value={{}}>
-        <div className={classNames([styles['${className}']])}>
-          {props.children}
-          props: {JSON.stringify(props)}<br/>
-        </div>
-      </ ${CompName}ContextProvider>
+      <div className={classNames([styles['${className}']])}>
+        {props.children}
+        props: {JSON.stringify(props)}<br/>
+      </div>
 
     </React.Fragment>
   );
