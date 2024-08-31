@@ -11,9 +11,10 @@ import path from "path";
 import {fileURLToPath} from "url";
 
 import {__test__} from "./test";
-import {TemplateCli} from "./clis/template";
 import {Envs} from "../types/global";
 import {CliEnvs} from "./clis/template/template";
+import {TemplateCli} from "./clis/template";
+import {PublishCli} from "./clis/publish";
 
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -51,6 +52,14 @@ const templateCli = new TemplateCli({
 });
 
 
+const publishCli = new PublishCli({
+  ctx: envVariables
+});
+
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+
 /**
  * 根据本地模版创建
  */
@@ -60,27 +69,48 @@ program
   .description('Create files based on templates')
   .version('1.0.0', '-v, --version');
 
+
+//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -//
+
+
+/**
+ * 根据模版创建文件
+ */
 program
   .command('create')
   .alias('ct')
-  .option('-cn [compName], --comp-name <compName>', 'Component name', 'Template')
-  .option('-fn [fileName], --file-name [fileName]', 'File name', 'template')
-  .option('-op [outputPath], --output-path [outputPath]', 'Output path', '.')
   .action((opts: any, cmd: any) => {
     templateCli.create();
   });
 
 
 /**
- * 下载 预设模版 和 环境变量配置文件 到本地
+ * 下载 预设模版/环境模版/配置模版等 到本地
  */
 program
   .command('download')
   .alias('dw')
-  .argument('<name>', 'template name')
   .action((name, opts: any, cmd: any) => {
     templateCli.cloneFile(name);
   });
+
+
+//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -//
+
+
+/**
+ * 根据配置发布本地静态文件到服务器
+ */
+program
+  .command('publish')
+  .alias('pb')
+  .action((name, opts: any, cmd: any) => {
+    publishCli.start();
+  });
+
+
+//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -//
+
 
 /**
  * 下载 预设模版 和 环境变量配置文件 到本地

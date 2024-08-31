@@ -132,3 +132,4 @@ dist
 __output__
 
 .idea
+.front-cli/__template__

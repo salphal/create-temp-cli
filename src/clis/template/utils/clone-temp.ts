@@ -4,6 +4,7 @@ import path from "path";
 import Logger from "../../../../utils/logger";
 import Loading from "../../../../utils/loading";
 import FsExtra from "../../../../utils/file";
+import {CONFIG_BASE_NAME} from "../../../constants/common";
 
 
 /**
@@ -37,7 +38,6 @@ export function cloneTemplates(name: string, ctx: any) {
     .then(async (res) => {
 
       const stat = fs.statSync(path.resolve(ctx.__dirname, '.tmp/__template__'));
-      Loading.start('Downloading __template__ directory and .temp_env file');
 
       if (stat.isDirectory() && ctx.__dirname) {
 
@@ -45,23 +45,25 @@ export function cloneTemplates(name: string, ctx: any) {
 
         if (name === 'template') {
           const tempSrc = path.resolve(__dirname, '.tmp/__template__');
-          const tempDst = path.resolve(__dirname, "__template__");
+          const tempDst = path.resolve(__dirname, `${CONFIG_BASE_NAME}/__template__`);
           await FsExtra.cp(tempSrc, tempDst);
-          Logger.success("Successfully downloaded __template__ directory");
+          Logger.success("Successfully downloaded ${baseName}__template__ directory");
         }
 
         if (name === 'env') {
           const envSrc = path.resolve(__dirname, '.tmp/.temp.env');
-          const envDst = path.resolve(__dirname, '.temp.env');
+          const envDst = path.resolve(__dirname, '.front-cli.temp.env');
           await FsExtra.cp(envSrc, envDst);
-          Logger.success("Successfully downloaded .temp.env file");
+          Logger.success("Successfully downloaded .front-cli.temp.env file");
         }
 
         const tmpPath = path.resolve(__dirname, '.tmp');
         await FsExtra.rm(tmpPath);
 
         Logger.success(`Success load ${name}`);
+
       }
+
     })
     .catch(err => {
       Logger.error(err);

@@ -1,0 +1,65 @@
+[
+  {
+    "envName": "dev",
+    "local": {
+      "outputName": "dist"
+    },
+    "server": {
+      "connect": {
+        "host": "192.168.1.1",
+        "username": "root",
+        "port": 22,
+        "password": "password",
+        "privateKey": "/path/to/my/key"
+      },
+      "backup": {
+        "format": "YYYY-MM-DD-hh-mm-ss",
+        "max": 5
+      },
+      "staticAbsolutePath": "/etc/nginx/html/demo",
+      "restartCommand": "nginx -s reload"
+    }
+  },
+  {
+    "envName": "test",
+    "local": {
+      "outputName": "dist"
+    },
+    "server": {
+      "connect": {
+        "host": "192.168.1.1",
+        "username": "root",
+        "port": 22,
+        "password": "password",
+        "privateKey": "/path/to/my/key"
+      },
+      "backup": {
+        "format": "YYYY-MM-DD-hh-mm-ss",
+        "max": 5
+      },
+      "staticAbsolutePath": "/etc/nginx/html/demo",
+      "restartCommand": "nginx -s reload"
+    }
+  },
+  {
+    "envName": "prod",
+    "local": {
+      "outputName": "dist"
+    },
+    "server": {
+      "connect": {
+        "host": "192.168.1.1",
+        "username": "root",
+        "port": 22,
+        "password": "password",
+        "privateKey": "/path/to/my/key"
+      },
+      "backup": {
+        "format": "YYYY-MM-DD-hh-mm-ss",
+        "max": 5
+      },
+      "staticAbsolutePath": "/etc/nginx/html/demo",
+      "restartCommand": "nginx -s reload"
+    }
+  }
+]

@@ -10,14 +10,12 @@ import {
   getReplacements, writeTempListToTarget
 } from "./utils/template";
 import Logger from "../../../utils/logger";
-import {TempInfoList} from "./template";
+import {CliEnvs, TempInfoList} from "./template";
 import {Envs} from "../../../types/global";
 import FsExtra from "../../../utils/file";
 import {cloneTemplates} from "./utils/clone-temp";
 
-interface TemplateContext {
-  [key: string]: any;
-
+interface TemplateContext extends Envs<CliEnvs> {
   /** 默认模版目录路径 */
   tempDirPath: string;
   /** 默认输出目录路径 */
@@ -56,7 +54,7 @@ interface TemplateContext {
 
 interface TemplateOptions {
   /** 外部注入的运行时上下文的数据 */
-  ctx: Envs & {};
+  ctx: Envs<CliEnvs> & {};
 }
 
 export class TemplateCli extends FrontCli<TemplateContext> {
@@ -94,6 +92,11 @@ export class TemplateCli extends FrontCli<TemplateContext> {
       {title: 'lib/components', value: 'lib/components'},
       {title: 'lib/hooks', value: 'lib/hooks'},
     ],
+
+    argv: {},
+    __dirname: "",
+    __filename: "",
+    envs: {}
   };
 
   stepList: StepList = [

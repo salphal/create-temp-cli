@@ -2,7 +2,7 @@ import StepScheduler, {ResCode, StepList} from "../../../utils/core/scheduler";
 import {FrontCli} from "../../../utils/core/front-cli";
 import {Envs} from "../../../types/global";
 
-interface I${CompName}Context {
+interface I${CompName}Context extends Envs  {
 }
 
 interface I${CompName}Options {
@@ -12,7 +12,12 @@ interface I${CompName}Options {
 
 export class ${CompName}Cli extends FrontCli<I${CompName}Context> {
 
-  context: I${CompName}Context = {};
+  context: I${CompName}Context = {
+    argv: {},
+    __dirname: "",
+    __filename: "",
+    envs: {}
+  };
 
   stepList: StepList = [
     {
