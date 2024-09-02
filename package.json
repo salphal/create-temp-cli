@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "dev": "unbuild --stub",
-    "build": "unbuild",
+    "build": "unbuild --minify",
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "npm run build"
   },

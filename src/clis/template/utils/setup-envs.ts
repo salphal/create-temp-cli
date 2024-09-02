@@ -1,5 +1,5 @@
 import path from "path";
-import {PromptChoices} from "../../../../utils";
+import {PromptChoices} from "@utils";
 import {CliEnvs, TempContext} from "../template";
 
 /**

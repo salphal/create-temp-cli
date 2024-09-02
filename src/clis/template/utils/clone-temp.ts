@@ -1,7 +1,7 @@
 import fs from "fs-extra";
 import path from "path";
-import {clone, FsExtra, Logger, Loading} from "../../../../utils";
-import {CONFIG_BASE_NAME} from "../../../constants/common";
+import {clone, FsExtra, Logger, Loading} from "@utils";
+import {CONFIG_BASE_NAME} from "@constants/common";
 
 
 /**

@@ -10,11 +10,11 @@ import {configDotenv} from "dotenv";
 import path from "path";
 import {fileURLToPath} from "url";
 
-import {__test__} from "./test";
-import {Envs} from "../types/global";
-import {CliEnvs} from "./clis/template/template";
-import {TemplateCli} from "./clis/template";
-import {PublishCli} from "./clis/publish";
+import {__test__} from "@/test";
+import {Envs} from "@src/types/global";
+import {CliEnvs} from "@clis/template/template";
+import {TemplateCli} from "@clis/template";
+import {PublishCli} from "@clis/publish";
 
 
 //-------------------------------------------------------------------------------------------------------------------//

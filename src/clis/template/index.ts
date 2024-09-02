@@ -1,5 +1,5 @@
 import path from "path";
-import {ResCode, StepList, StepScheduler, FrontCli, FsExtra, Logger, PromptChoices, Prompt} from "../../../utils";
+import {ResCode, StepList, StepScheduler, FrontCli, FsExtra, Logger, PromptChoices, Prompt} from "@utils";
 import {setupEnvs} from "./utils/setup-envs";
 import {
   createPromptChoices,
@@ -10,7 +10,7 @@ import {
   writeTempListToTarget
 } from "./utils/template";
 import {CliEnvs, TempInfoList} from "./template";
-import {Envs} from "../../../types/global";
+import {Envs} from "@src/types/global";
 import {cloneTemplates} from "./utils/clone-temp";
 
 interface TemplateContext extends Envs<CliEnvs> {

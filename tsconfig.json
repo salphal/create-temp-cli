@@ -10,6 +10,15 @@
     "declaration": false,
     "sourceMap": false,
     "noUnusedLocals": false,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    /** path alias */
+    "baseUrl": ".",
+    "paths": {
+      "@*": ["src/*"],
+      "@clis/*": ["src/clis/*"],
+      "@constants/*": ["src/constants/*"],
+      "@src/types/*": ["src/types/*"],
+      "@utils/*": ["src/utils/*"],
+    }
   }
 }

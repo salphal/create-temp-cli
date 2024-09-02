@@ -1,7 +1,7 @@
-import {ResCode, StepList, StepScheduler, FsExtra, Logger, FrontCli, PromptChoices, Prompt} from "../../../utils";
-import {Envs} from "../../../types/global";
+import {ResCode, StepList, StepScheduler, FsExtra, Logger, FrontCli, PromptChoices, Prompt} from "@utils";
+import {Envs} from "@src/types/global";
 import path from "path";
-import {CONFIG_BASE_NAME} from "../../constants/common";
+import {CONFIG_BASE_NAME} from "@constants/common";
 import {PublishConfigList} from "./publish";
 
 interface IPublishContext extends Envs {

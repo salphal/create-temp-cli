@@ -1,7 +1,7 @@
 import {TempInfo, TempInfoList} from "../template";
 import fs from "fs-extra";
 import path from "path";
-import {camelcase, CAMELCASE, camelCase, CamelCase, SHORTCAMELCASE, PromptChoices, Logger} from "../../../../utils";
+import {camelcase, CAMELCASE, camelCase, CamelCase, SHORTCAMELCASE, PromptChoices, Logger} from "@utils";
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
