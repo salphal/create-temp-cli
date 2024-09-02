@@ -99,5 +99,3 @@ export class Prompt {
 		return res.value || config.default;
 	}
 }
-
-export default Prompt;

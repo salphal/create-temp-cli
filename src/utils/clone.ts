@@ -1,4 +1,4 @@
-import {download} from './core/download';
+import {download} from './download';
 
 export interface DownloadConfig {
   /** 远程仓库地址 */
