@@ -366,7 +366,7 @@ export class FsExtra {
 	 *
 	 * @param path {string} - 路径
 	 */
-	static async isFile(path: string) {
+	static async isFile(path: string): Promise<boolean> {
 		return new Promise(async (resolve, reject) => {
 			const stat = await FsExtra.stat(path);
 			if (stat && typeof stat.isFile === 'function') {
@@ -381,7 +381,7 @@ export class FsExtra {
 	 *
 	 * @param path {string} - 路径
 	 */
-	static async isDir(path: string) {
+	static async isDir(path: string): Promise<boolean> {
 		return new Promise(async (resolve, reject) => {
 			const stat = await FsExtra.stat(path);
 			if (stat && typeof stat.isDirectory === 'function') {

@@ -1,100 +1,157 @@
 import path from "path";
 import fs from "fs-extra";
 import shell from "shelljs";
+import {FsExtra} from "@utils/file-extra";
 
 export class TarExtra {
 
-  /**
-   * 压缩文件( 默认压缩到文件所在目录 )
-   *
-   * tar -czvf dist.tar.gz dist
-   *
-   *
-   * @param src {string} - 输入的 文件/文件夹 的路径
-   * @param dest {string} - 输出目录的路径
-   */
-  static async compress(src: string, dest?: string) {
-    return new Promise((resolve, reject) => {
+	/**
+	 * 压缩文件( 默认压缩到文件所在目录 )
+	 *
+	 * tar -czvf dist.tar.gz dist
+	 *
+	 *
+	 * @param src {string} - 输入的 文件/文件夹 的路径
+	 * @param dest {string} - 输出目录的路径
+	 */
+	static async compress(src: string, dest?: string) {
+		return new Promise(async (resolve, reject) => {
 
-      if (!fs.existsSync(src)) {
-        console.error(`[ TarExtra.compress ]: ${src} is not exists`);
-        reject(false);
-      }
+			const iseExists = await this.iseExists(src);
 
-      const {dir, name} = path.parse(src);
+			if (!iseExists) {
+				console.error(`[ Tar Compress Err ]: ${src} is not exists`);
+				reject(false);
+			}
 
-      let srcName = name;
-      let destName = name;
+			const {dir, name} = path.parse(src);
 
-      if (!(/.*(\.tar\.gz)$/.test(destName))) {
-        if (destName.indexOf('.') !== -1) {
-          const baseName = destName.slice(0, destName.indexOf('.') + 1);
-          srcName = baseName;
-          destName = `${baseName}.tar.gz`;
-        }
-      }
+			const fileName = this.getFileName(name);
+			const destName = `${fileName}.tar.gz`;
 
-      destName = `${destName}.tar.gz`;
+			const cdSrcDirCmd = `cd ${dir}`;
+			const compressCmd = `tar -czvf ${destName} ${fileName}`;
+			const mvDistCmd = (destDir: string) => `mv ${dir}/${destName} ${destDir}`
 
-      const command = `cd ${dir} && tar -czvf ${destName} ${srcName}`;
-      console.error(`[ Compress Command ]: ${command}`);
+			const cmdList = [
+				cdSrcDirCmd,
+				compressCmd,
+			];
 
-      shell.exec(command, (error, stdout, stderr) => {
-        if (error !== 0) {
-          console.error('[ Tar Compress Err ]', error);
-          reject(false);
-        }
-        console.log(`[ TarExtra.compress ]: Success compress ${src} to ${dest || dir}`);
-        resolve(`${dir}/${destName}`);
-      });
-    });
-  }
+			if (typeof dest === 'string' && !!dest) {
+				const destIsDir = await this.isDir(dest);
+				if (destIsDir) {
+					cmdList.push(mvDistCmd(dest));
+				}
+			}
 
-  /**
-   * 解压文件( 默认解压到文件所在目录 )
-   *
-   * tar -xzvf dist.tar.gz
-   *
-   * @param src {string} - 输入的 文件/文件夹 的路径
-   */
-  static async decompress(src: string) {
-    return new Promise((resolve, reject) => {
+			const command = this.getCmd(cmdList);
+			console.error(`[ Compress Command ]: ${command}`);
 
-      const {dir, name, ext = '.gz'} = path.parse(src);
+			shell.exec(command, (error, stdout, stderr) => {
+				if (error !== 0) {
+					console.error('[ Tar Compress Err ]:', error);
+					reject(false);
+				}
+				console.log(`[ TarExtra.compress ]: Success compress ${src} to ${dest || dir}`);
+				resolve(`${dir}/${destName}`);
+			});
+		});
+	}
 
-      let destName = name;
-      let srcName = `${name}${ext}`;
+	/**
+	 * 解压文件( 默认解压到文件所在目录 )
+	 *
+	 * tar -xzvf dist.tar.gz
+	 *
+	 * @param src {string} - 输入的 文件/文件夹 的路径
+	 * @param dest
+	 */
+	static async decompress(src: string, dest?: string) {
+		return new Promise(async (resolve, reject) => {
 
-      if (!(/.*(\.tar\.gz)$/.test(srcName))) {
-        if (srcName.indexOf('.') !== -1) {
-          const baseName = srcName.slice(0, srcName.indexOf('.') + 1);
-          srcName = `${baseName}.tar.gz`;
-          destName = baseName;
-          src = path.join(dir, srcName);
-        }
-      }
+			const isFile = await this.isFile(src);
 
-      if (!fs.existsSync(src)) {
-        console.error(`[ TarExtra Decompress Err ]: ${src} is not exists`);
-        reject(false);
-      }
+			if (!isFile) {
+				reject(false);
+			}
 
-      srcName = `${srcName}.tar.gz`;
+			if (!this.isTarGzExt(src)) {
+				reject(false);
+			}
 
-      if (destName.indexOf('.') !== -1) {
-        destName = destName.slice(0, destName.indexOf('.') + 1);
-      }
+			const {dir, name} = path.parse(src);
 
-      const command = `cd ${dir} && tar -xzvf ${srcName}`;
+			const fileName = this.getFileName(name);
+			const destName = `${fileName}.tar.gz`;
 
-      shell.exec(command, (error, stdout, stderr) => {
-        if (error !== 0) {
-          console.error('[ Tar Decompress Err ]', error);
-          reject(false);
-        }
-        console.log(`[ TarExtra.decompress ]: Success decompress ${dir}/${srcName} to ${dir}`);
-        resolve(`${dir}/${destName}`)
-      });
-    });
-  }
+			const cdSrcDirCmd = `cd ${dir}`;
+			const compressCmd = `tar -xzvf ${destName}`;
+			const mvDistCmd = (destDir: string) => `mv ${dir}/${fileName} ${destDir}`
+
+			const cmdList = [
+				cdSrcDirCmd,
+				compressCmd,
+			];
+
+			if (typeof dest === 'string' && !!dest) {
+				const destIsDir = await this.isDir(dest);
+				if (destIsDir) {
+					cmdList.push(mvDistCmd(dest));
+				}
+			}
+
+			const command = this.getCmd(cmdList);
+			console.error(`[ Compress Command ]: ${command}`);
+
+			shell.exec(command, (error, stdout, stderr) => {
+				if (error !== 0) {
+					console.error('[ Tar Decompress Err ]', error);
+					reject(false);
+				}
+				console.log(`[ TarExtra.decompress ]: Success decompress ${dir}/${fileName} to ${dest || dir}`);
+				resolve(`${dir}/${destName}`)
+			});
+
+		});
+	}
+
+	static async iseExists(path: string) {
+		return await FsExtra.pathExists(path);
+	}
+
+	static async isFile(path: string) {
+		return await FsExtra.isFile(path);
+	}
+
+	static async isDir(path: string) {
+		return await FsExtra.isDir(path);
+	}
+
+	static isTarGzExt(fileName: string) {
+		return /.*(\.tar\.gz)$/.test(fileName);
+	}
+
+	static getFileName(fullPath: string): string {
+		if (typeof fullPath !== 'string' || fullPath.length <= 0) return "";
+		const pathList = fullPath.split(path.sep);
+		const name = pathList[pathList.length - 1];
+		if (name.indexOf('.') !== -1) {
+			return name.slice(0, name.indexOf('.'));
+		}
+		return name;
+	}
+
+	static getCmd(cmdList: string[]) {
+		console.log("=>(tar-extra.ts:179) cmdList", cmdList);
+		let command = "";
+		cmdList.forEach((cmd, i) => {
+			if (i === 0) {
+				command += `${cmd}`;
+			} else {
+				command += ` && ${cmd}`;
+			}
+		});
+		return command;
+	}
 }
