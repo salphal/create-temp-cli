@@ -82,5 +82,3 @@ export class Table {
     console.log(table(data, config));
   }
 }
-
-export default Table;

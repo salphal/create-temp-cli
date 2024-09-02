@@ -9,5 +9,3 @@ export class Banner {
 		})
 	}
 }
-
-export default Banner;

@@ -1,19 +1,17 @@
-import StepScheduler, {ResCode, StepList} from "../../../utils/core/scheduler";
-import {FrontCli} from "../../../utils/core/front-cli";
 import path from "path";
-import Prompt, {PromptChoices} from "../../../utils/prompt";
+import {ResCode, StepList, StepScheduler, FrontCli, FsExtra, Logger, PromptChoices, Prompt} from "../../../utils";
 import {setupEnvs} from "./utils/setup-envs";
 import {
   createPromptChoices,
   getAllTempInfoByTempDirPathList,
-  getAllTempNameList, getCurTempInfoListByTempName,
-  getReplacements, writeTempListToTarget
+  getAllTempNameList,
+  getCurTempInfoListByTempName,
+  getReplacements,
+  writeTempListToTarget
 } from "./utils/template";
 import {CliEnvs, TempInfoList} from "./template";
 import {Envs} from "../../../types/global";
-import FsExtra from "../../../utils/file-extra";
 import {cloneTemplates} from "./utils/clone-temp";
-import Logger from "../../../utils/print/logger";
 
 interface TemplateContext extends Envs<CliEnvs> {
   /** 默认模版目录路径 */

@@ -8,7 +8,6 @@ import {error} from "shelljs";
  * https://github.com/jprichardson/node-fs-extra
  */
 
-
 export class FsExtra {
 
 	/**
@@ -435,5 +434,3 @@ export class FsExtra {
 	}
 }
 
-
-export default FsExtra;

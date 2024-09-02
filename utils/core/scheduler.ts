@@ -25,7 +25,7 @@ export interface SchedulerContext {
 	[key: string]: any;
 }
 
-class StepScheduler {
+export class StepScheduler {
 
 	context: SchedulerContext = {};
 	LinkedList: DoublyLinked = new DoublyLinked();
@@ -131,5 +131,3 @@ class StepScheduler {
 		return func.constructor.name === "AsyncFunction";
 	}
 }
-
-export default StepScheduler;

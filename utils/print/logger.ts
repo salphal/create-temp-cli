@@ -4,7 +4,7 @@ import {
   red,
   yellow,
 } from 'kolorist';
-import Table from "./table";
+import {Table} from "./table";
 
 
 export class Logger {
@@ -38,5 +38,3 @@ export class Logger {
     Table.print(dataSource, columns, config);
   }
 }
-
-export default Logger;

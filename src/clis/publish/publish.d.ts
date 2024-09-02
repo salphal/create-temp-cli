@@ -1,10 +1,9 @@
-
-interface LocalConfig {
+export interface LocalConfig {
 	/** 构建产物的名称 */
 	outputName: string;
 }
 
-interface ServerConfig {
+export interface ServerConfig {
 	/** 连接服务器的配置信息 */
 	connect: {
 		/** ip地址 */

@@ -18,7 +18,7 @@ const rm = rimraf.sync;
  * @param {Object} opts
  * @param {Function} fn
  */
-function download(repo: any, dest: string, opts: any, fn: Function) {
+export function download(repo: any, dest: string, opts: any, fn: Function) {
   if (typeof opts === 'function') {
     fn = opts
     opts = null
@@ -165,5 +165,3 @@ function getUrl(repo: any, clone: string) {
 
   return url
 }
-
-export default download;

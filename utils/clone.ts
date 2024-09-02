@@ -1,4 +1,4 @@
-import download from './core/download';
+import {download} from './core/download';
 
 export interface DownloadConfig {
   /** 远程仓库地址 */
@@ -30,5 +30,3 @@ export async function clone(config: DownloadConfig) {
     });
   });
 }
-
-export default clone;

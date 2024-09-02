@@ -17,5 +17,3 @@ export class Loading {
 		this.spinner.stop();
 	}
 }
-
-export default Loading;
