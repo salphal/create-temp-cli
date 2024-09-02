@@ -1,7 +1,6 @@
 import path from "path";
-import fs from "fs-extra";
 import shell from "shelljs";
-import {FsExtra} from "@utils/file-extra";
+import {FsExtra} from "./file-extra";
 
 export class TarExtra {
 
