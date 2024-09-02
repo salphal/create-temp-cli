@@ -6,10 +6,10 @@
     },
     "server": {
       "connect": {
-        "host": "192.168.1.1",
+        "host": "192.168.30.193",
         "username": "root",
         "port": 22,
-        "password": "password",
+        "password": "Founder123",
         "privateKey": "/path/to/my/key"
       },
       "backup": {
@@ -27,10 +27,17 @@
     },
     "server": {
       "connect": {
-        "host": "192.168.1.1",
+        "host": "192.168.90.100",
         "username": "root",
         "port": 22,
         "password": "password",
+        "privateKey": "/path/to/my/key"
+      },
+      "jumpServer": {
+        "host": "192.168.30.193",
+        "username": "root",
+        "port": 22,
+        "password": "Founder123",
         "privateKey": "/path/to/my/key"
       },
       "backup": {

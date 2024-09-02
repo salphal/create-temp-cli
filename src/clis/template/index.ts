@@ -1,6 +1,5 @@
 import path from "path";
 import {ResCode, StepList, StepScheduler, FrontCli, FsExtra, Logger, PromptChoices, Prompt} from "@utils";
-import {setupEnvs} from "./utils/setup-envs";
 import {
   createPromptChoices,
   getAllTempInfoByTempDirPathList,
@@ -9,9 +8,10 @@ import {
   getReplacements,
   writeTempListToTarget
 } from "./utils/template";
-import {CliEnvs, TempInfoList} from "./template";
 import {Envs} from "@src/types/global";
+import {CliEnvs, TempInfoList, TempNameList} from "./template";
 import {cloneTemplates} from "./utils/clone-temp";
+import {setupEnvs} from "./utils/setup-envs";
 
 interface TemplateContext extends Envs<CliEnvs> {
   /** 默认模版目录路径 */
@@ -25,7 +25,7 @@ interface TemplateContext extends Envs<CliEnvs> {
   /** 模版目录列表 */
   tempDirPathList: string[];
   /** 获取所有去重的模版名列表 */
-  tempNameList: string[];
+  tempNameList: TempNameList;
 
   /** 用户交互的结果 */
   questionResult: {

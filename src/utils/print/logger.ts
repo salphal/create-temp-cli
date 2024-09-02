@@ -5,6 +5,7 @@ import {
   yellow,
 } from 'kolorist';
 import {Table} from "./table";
+import {Banner} from "@utils";
 
 
 export class Logger {
@@ -36,5 +37,9 @@ export class Logger {
 
   static table(dataSource: Array<string[]>, columns: Array<{ align?: string, width?: number }> = [], config?: any) {
     Table.print(dataSource, columns, config);
+  }
+
+  static banner(message: string) {
+    Banner.print(message);
   }
 }

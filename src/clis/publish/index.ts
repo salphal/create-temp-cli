@@ -1,15 +1,17 @@
-import {ResCode, StepList, StepScheduler, FsExtra, Logger, FrontCli, PromptChoices, Prompt} from "@utils";
+import {FrontCli, FsExtra, Logger, Prompt, PromptChoices, ResCode, StepList, StepScheduler, TarExtra} from "@utils";
 import {Envs} from "@src/types/global";
 import path from "path";
 import {CONFIG_BASE_NAME} from "@constants/common";
-import {PublishConfigList} from "./publish";
+import {PublishConfig, PublishConfigList} from "./publish";
+import {getPublishConfigByEnvName} from "@clis/publish/utils/publish";
 
 interface IPublishContext extends Envs {
   /** 部署信息配置列表 */
   publishConfigList: PublishConfigList;
-  /**  */
-  publishConfigOptions: PromptChoices;
-
+  /** 用户选择的部署信息 */
+  currentPublishConfig: PublishConfig;
+  /** 部署配置选项 */
+  envNameConfigChoices: PromptChoices;
 }
 
 interface IPublishOptions {
@@ -22,7 +24,28 @@ export class PublishCli extends FrontCli<IPublishContext> {
   context: IPublishContext = {
 
     publishConfigList: [],
-    publishConfigOptions: [],
+    currentPublishConfig: {
+      envName: "dev",
+      local: {
+        outputName: "dist"
+      },
+      server: {
+        connect: {
+          host: "192.168.1.1",
+          username: "root",
+          port: 22,
+          password: "password",
+          privateKey: "/path/to/my/key"
+        },
+        "backup": {
+          format: "YYYY-MM-DD-hh-mm-ss",
+          max: 5
+        },
+        staticAbsolutePath: "/etc/nginx/html/demo",
+        restartCommand: "nginx -s reload"
+      }
+    },
+    envNameConfigChoices: [],
 
     argv: {},
     __dirname: "",
@@ -45,8 +68,6 @@ export class PublishCli extends FrontCli<IPublishContext> {
           return;
         }
 
-        console.log("=>(index.ts:39) isFile", isFile);
-
         const publishConfigList = await FsExtra.readJson(jsonPath) as PublishConfigList;
 
         if (!Array.isArray(publishConfigList) || !publishConfigList.length) {
@@ -56,18 +77,13 @@ export class PublishCli extends FrontCli<IPublishContext> {
 
         this.context.publishConfigList = publishConfigList;
 
-        const publishConfigOptions = publishConfigList.map(config => {
+        this.context.envNameConfigChoices = publishConfigList.map(config => {
           const {envName, server: {connect: {host}}} = config;
           return {
             title: `[${envName}]:${host}`,
             value: envName
           };
         });
-
-        this.context.publishConfigOptions = publishConfigOptions;
-
-        console.log("=>(index.ts:62) publishConfigOptions", publishConfigOptions);
-        console.log("=>(index.ts:41) publishConfigList", publishConfigList);
 
         return {
           code: ResCode.next,
@@ -80,11 +96,16 @@ export class PublishCli extends FrontCli<IPublishContext> {
       remark: ``,
       callback: async (ctx: IPublishContext) => {
         const {} = this.context;
-        console.log('=> step_02', ctx);
 
-        const res = await Prompt.autocomplete('', this.context.publishConfigOptions);
-        console.log("=>(index.ts:90) res", res);
+        const envName = await Prompt.autocomplete('Please select publishing environment', this.context.envNameConfigChoices);
 
+        this.context.currentPublishConfig = getPublishConfigByEnvName(envName, this.context.publishConfigList);
+
+        const srcPath = await TarExtra.compress('/Users/alpha/github/front-cli/test');
+        console.log('=>(index.ts:105) srcPath', srcPath);
+
+        // const destPath = await TarExtra.decompress('/Users/alpha/github/front-cli/test');
+        // console.log('=>(index.ts:107) destPath', destPath);
 
         return {
           code: ResCode.next,
