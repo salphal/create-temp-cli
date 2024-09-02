@@ -7,7 +7,7 @@ import {
 import Table from "./table";
 
 
-class Logger {
+export class Logger {
 
   static prefix = '[ Log ]: '
 

@@ -1,10 +1,10 @@
 import clone from "../../../../utils/clone";
 import fs from "fs-extra";
 import path from "path";
-import Logger from "../../../../utils/logger";
-import Loading from "../../../../utils/loading";
-import FsExtra from "../../../../utils/file";
+import FsExtra from "../../../../utils/file-extra";
 import {CONFIG_BASE_NAME} from "../../../constants/common";
+import Logger from "../../../../utils/print/logger";
+import Loading from "../../../../utils/print/loading";
 
 
 /**

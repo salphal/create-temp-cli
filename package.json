@@ -32,6 +32,8 @@
     "@types/node": "^22.2.0",
     "@types/prompts": "^2.4.9",
     "@types/shelljs": "^0.8.15",
+    "@types/ssh2": "^1.15.1",
+    "@types/ssh2-sftp-client": "^9.0.4",
     "child_process": "^1.0.2",
     "commander": "^12.1.0",
     "cross-spawn": "^7.0.3",
@@ -44,6 +46,7 @@
     "prompts": "^2.4.2",
     "shelljs": "^0.8.5",
     "table": "^6.8.2",
+    "ts-node": "^10.9.2",
     "unbuild": "^2.0.0"
   },
   "dependencies": {
@@ -56,6 +59,7 @@
     "ora": "^8.0.1",
     "rimraf": "^6.0.1",
     "ssh2": "^1.15.0",
+    "ssh2-sftp-client": "^11.0.0",
     "voici.js": "^2.1.0"
   }
 }

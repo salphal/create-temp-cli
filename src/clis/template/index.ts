@@ -9,11 +9,11 @@ import {
   getAllTempNameList, getCurTempInfoListByTempName,
   getReplacements, writeTempListToTarget
 } from "./utils/template";
-import Logger from "../../../utils/logger";
 import {CliEnvs, TempInfoList} from "./template";
 import {Envs} from "../../../types/global";
-import FsExtra from "../../../utils/file";
+import FsExtra from "../../../utils/file-extra";
 import {cloneTemplates} from "./utils/clone-temp";
+import Logger from "../../../utils/print/logger";
 
 interface TemplateContext extends Envs<CliEnvs> {
   /** 默认模版目录路径 */

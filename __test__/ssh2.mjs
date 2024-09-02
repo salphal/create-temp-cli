@@ -3,6 +3,10 @@ import {Client} from 'ssh2';
 
 /**
  * https://github.com/mscdex/ssh2
+ *
+ *
+ * https://blog.csdn.net/qq_39147299/article/details/134712434
+ *
  * @type {Client}
  */
 
@@ -17,7 +21,7 @@ conn1.on('ready', () => {
   // Alternatively, you could use something like netcat or socat with exec()
   // instead of forwardOut(), depending on what the server allows
 
-  conn1.forwardIn('127.0.0.1', 22, '192.168.30.214', (err, stream) => {
+  conn1.forwardIn('192.168.1.241', 22 , (err, stream) => {
 
     if (err) {
       console.log('FIRST :: forwardOut error: ' + err);
@@ -28,16 +32,16 @@ conn1.on('ready', () => {
       sock: stream,
       username: 'root',
       port: 22,
-      password: 'Founder123',
+      password: 'Liang1992@12',
     });
 
   });
 
 }).connect({
-  host: '192.168.30.193',
+  host: '192.168.1.158',
   port: 22,
   username: 'root',
-  password: 'Founder123',
+  password: 'Liang1992@12',
 });
 
 conn2.on('ready', () => {

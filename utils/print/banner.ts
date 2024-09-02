@@ -1,6 +1,6 @@
 import banner from "figlet";
 
-class Banner {
+export class Banner {
 
 	static print(message: string) {
 		banner.textSync(message, {

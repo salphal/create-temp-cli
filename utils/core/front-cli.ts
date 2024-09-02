@@ -1,6 +1,6 @@
 import StepScheduler, {StepList} from "./scheduler";
-import Logger from "../logger";
 import {Envs} from "../../types/global";
+import Logger from "../print/logger";
 
 export interface IFrontCliOptions {
   [key: string]: any;

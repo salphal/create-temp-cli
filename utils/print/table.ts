@@ -1,6 +1,6 @@
 import {table} from "table";
 
-class Table {
+export class Table {
 
   static border = {
     topBody: `─`,

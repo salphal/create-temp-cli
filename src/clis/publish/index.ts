@@ -1,12 +1,18 @@
 import StepScheduler, {ResCode, StepList} from "../../../utils/core/scheduler";
 import {FrontCli} from "../../../utils/core/front-cli";
 import {Envs} from "../../../types/global";
-import FsExtra from "../../../utils/file";
+import FsExtra from "../../../utils/file-extra";
 import path from "path";
 import {CONFIG_BASE_NAME} from "../../constants/common";
 import {PublishConfigList} from "./publish";
+import Logger from "../../../utils/print/logger";
+import Prompt, {PromptChoices} from "../../../utils/prompt";
 
 interface IPublishContext extends Envs {
+	/** 部署信息配置列表 */
+	publishConfigList: PublishConfigList;
+	/**  */
+	publishConfigOptions: PromptChoices;
 
 }
 
@@ -18,6 +24,10 @@ interface IPublishOptions {
 export class PublishCli extends FrontCli<IPublishContext> {
 
 	context: IPublishContext = {
+
+		publishConfigList: [],
+		publishConfigOptions: [],
+
 		argv: {},
 		__dirname: "",
 		__filename: "",
@@ -32,17 +42,36 @@ export class PublishCli extends FrontCli<IPublishContext> {
 				const {__dirname} = this.context;
 
 				const jsonPath = path.resolve(__dirname, `${CONFIG_BASE_NAME}/publish.config.json`);
-				console.log("=>(index.ts:28) jsonPath", jsonPath);
-
-				// fs.stat(jsonPath, (err, stats) => {
-				// 	console.log("=>(index.ts:46) stats", stats);
-				// });
 
 				const isFile = await FsExtra.isFile(jsonPath);
+
+				if (!isFile) {
+					return;
+				}
+
 				console.log("=>(index.ts:39) isFile", isFile);
 
-				const configList = await FsExtra.readJson(jsonPath) as PublishConfigList;
-				console.log("=>(index.ts:28) configList", configList);
+				const publishConfigList = await FsExtra.readJson(jsonPath) as PublishConfigList;
+
+				if (!Array.isArray(publishConfigList) || !publishConfigList.length) {
+					Logger.error('');
+					return;
+				}
+
+				this.context.publishConfigList = publishConfigList;
+
+				const publishConfigOptions = publishConfigList.map(config => {
+					const {envName, server: {connect: {host}}} = config;
+					return {
+						title: `[${envName}]:${host}`,
+						value: envName
+					};
+				});
+
+				this.context.publishConfigOptions = publishConfigOptions;
+
+				console.log("=>(index.ts:62) publishConfigOptions", publishConfigOptions);
+				console.log("=>(index.ts:41) publishConfigList", publishConfigList);
 
 				return {
 					code: ResCode.next,
@@ -56,6 +85,11 @@ export class PublishCli extends FrontCli<IPublishContext> {
 			callback: async (ctx: IPublishContext) => {
 				const {} = this.context;
 				console.log('=> step_02', ctx);
+
+				const res = await Prompt.autocomplete('', this.context.publishConfigOptions);
+				console.log("=>(index.ts:90) res", res);
+
+
 				return {
 					code: ResCode.next,
 					data: {}

@@ -1,6 +1,6 @@
 import ora from "ora";
 
-class Loading {
+export class Loading {
 
 	static spinner = ora({
 		prefixText: "",

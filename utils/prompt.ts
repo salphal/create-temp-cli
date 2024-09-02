@@ -20,7 +20,7 @@ export type PromptChoices = Array<PromptChoice>;
  * https://github.com/SBoudrias/Inquirer.js
  */
 
-class Prompt {
+export class Prompt {
 
 	/**
 	 * 文本输入

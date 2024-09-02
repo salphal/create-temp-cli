@@ -1,5 +1,6 @@
 import fs from "fs-extra";
 import path from "path";
+import {error} from "shelljs";
 
 
 /**
@@ -8,7 +9,7 @@ import path from "path";
  */
 
 
-class FsExtra {
+export class FsExtra {
 
 	/**
 	 * 复制 文件/目录
@@ -104,7 +105,7 @@ class FsExtra {
 		return new Promise((resolve, reject) => {
 			fs.readFile(path, {...options}, (err, data) => {
 				if (err) {
-					console.error('[ READ ERR ]',err);
+					console.error('[ READ ERR ]', err);
 					reject(null);
 				} else {
 					resolve(data);
@@ -125,7 +126,7 @@ class FsExtra {
 		return new Promise((resolve, reject) => {
 			fs.outputFile(path, data, {...options}, (err) => {
 				if (err) {
-					console.error('[ WRITE ERR ]',err);
+					console.error('[ WRITE ERR ]', err);
 					reject(0);
 				} else {
 					console.log(`Successfully wrote data to ${path}`);
@@ -148,7 +149,7 @@ class FsExtra {
 		return new Promise((resolve, reject) => {
 			fs.ensureDir(dirPath, (err) => {
 				if (err) {
-					console.error('[ MAKEDIR ERR ]',err);
+					console.error('[ MAKEDIR ERR ]', err);
 					reject(0);
 				} else {
 					console.log(`Successfully created ${dirPath}`);
@@ -171,7 +172,7 @@ class FsExtra {
 		return new Promise((resolve, reject) => {
 			fs.emptyDir(dirPath, (err) => {
 				if (err) {
-					console.error('[ EMPTYDIR ERR ]',err);
+					console.error('[ EMPTYDIR ERR ]', err);
 					resolve(0);
 				} else {
 					console.log(`clear ${dirPath}`);
@@ -217,7 +218,7 @@ class FsExtra {
 			}
 			fs.readdir(dirPath, async (err, fileNames) => {
 				if (err) {
-					console.error('[ READDIR ERR ]',err);
+					console.error('[ READDIR ERR ]', err);
 					reject(err);
 				} else {
 					if (typeof callback === 'function') {
@@ -255,7 +256,7 @@ class FsExtra {
 		return new Promise((resolve, reject) => {
 			fs.readJSON(path, {}, (err, data) => {
 				if (err) {
-					console.error('[ READJSON ERR ]',err);
+					console.error('[ READJSON ERR ]', err);
 					reject(null);
 				} else {
 					resolve(data);
@@ -275,7 +276,7 @@ class FsExtra {
 		return new Promise((resolve, reject) => {
 			fs.outputJSON(path, obj, {...options}, (err) => {
 				if (err) {
-					console.error('[ WRITEJSON ERR ]',err);
+					console.error('[ WRITEJSON ERR ]', err);
 					reject(0);
 				} else {
 					console.log(`Successfully wrote data to ${path}`);
@@ -294,7 +295,7 @@ class FsExtra {
 		return new Promise((resolve, reject) => {
 			fs.pathExists(path, (err, exists) => {
 				if (err) {
-					console.error('[ PATHEXISTS ERR ]',err);
+					console.error('[ PATHEXISTS ERR ]', err);
 					reject(0);
 				} else {
 					console.log(`${path} ${exists ? 'already' : 'does not'} exists.`);
@@ -346,18 +347,17 @@ class FsExtra {
 	 * @param path {string} - 路径
 	 */
 	static async stat(path: string): Promise<fs.Stats> {
-		return new Promise((resolve, reject) => {
-			try {
+		return new Promise(async (resolve, reject) => {
+			const isExists = await FsExtra.pathExists(path);
+			if (isExists) {
 				fs.stat(path, (err, stats) => {
 					if (err || !stats) {
-						console.error('[ STAT ERR ]',err);
+						console.error('[ STAT ERR ]', err);
 						reject(false);
 					} else {
 						resolve(stats);
 					}
 				});
-			} catch (err) {
-				reject(false);
 			}
 		});
 	}

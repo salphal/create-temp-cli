@@ -1,6 +1,6 @@
 import download from './core/download';
 
-interface DownloadConfig {
+export interface DownloadConfig {
   /** 远程仓库地址 */
   remote: string;
   /** 远程分支名( 默认 master ) */
@@ -13,7 +13,7 @@ interface DownloadConfig {
   options?: any;
 }
 
-async function clone(config: DownloadConfig) {
+export async function clone(config: DownloadConfig) {
   const {remote, branch, outputPath, isDirect = true, options = {clone: true}} = config;
   return new Promise((resolve, reject) => {
     /**
