@@ -16,7 +16,7 @@ export class TarExtra {
 	static async compress(src: string, dest?: string) {
 		return new Promise(async (resolve, reject) => {
 
-			const iseExists = await this.iseExists(src);
+			const iseExists = await this.isExists(src);
 
 			if (!iseExists) {
 				console.error(`[ Tar Compress Err ]: ${src} is not exists`);
@@ -45,7 +45,7 @@ export class TarExtra {
 			}
 
 			const command = this.getCmd(cmdList);
-			console.error(`[ Compress Command ]: ${command}`);
+			console.log(`[ Compress Command ]: ${command}`);
 
 			shell.exec(command, (error, stdout, stderr) => {
 				if (error !== 0) {
@@ -101,7 +101,7 @@ export class TarExtra {
 			}
 
 			const command = this.getCmd(cmdList);
-			console.error(`[ Compress Command ]: ${command}`);
+			console.log(`[ Compress Command ]: ${command}`);
 
 			shell.exec(command, (error, stdout, stderr) => {
 				if (error !== 0) {
@@ -115,7 +115,7 @@ export class TarExtra {
 		});
 	}
 
-	static async iseExists(path: string) {
+	static async isExists(path: string) {
 		return await FsExtra.pathExists(path);
 	}
 
@@ -142,7 +142,6 @@ export class TarExtra {
 	}
 
 	static getCmd(cmdList: string[]) {
-		console.log("=>(tar-extra.ts:179) cmdList", cmdList);
 		let command = "";
 		cmdList.forEach((cmd, i) => {
 			if (i === 0) {
