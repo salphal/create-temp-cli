@@ -7,7 +7,6 @@ import {
   ResCode,
   StepList,
   StepScheduler,
-  TarExtra,
 } from '@utils';
 import { Envs } from '@src/types/global';
 import path from 'path';
