@@ -13,4 +13,5 @@ export * from './download/clone';
 export * from './camelcase';
 export * from './file-extra';
 export * from './prompt';
+export * from './shell-exra';
 // export * from "./tar-extra";
