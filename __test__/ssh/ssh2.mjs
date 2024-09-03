@@ -56,12 +56,13 @@ sshClient.on('ready', () => {
             stream
               .on('close', (code, signal) => {
                 console.log('Stream :: close :: code: ' + code + ', signal: ' + signal);
-                innerSSHClient.end();
-                sshClient.end();
+                // innerSSHClient.end();
+                // sshClient.end();
               })
               .on('data', (data) => {
                 console.log('STDOUT: ' + data);
-              }).stderr.on('data', (data) => {
+              })
+              .stderr.on('data', (data) => {
               console.log('STDERR: ' + data);
             });
           });
@@ -93,6 +94,7 @@ sshClient.on('ready', () => {
       });
     }
   );
+
 });
 
 sshClient.connect(jumpServerConfig);

@@ -107,7 +107,7 @@ export class PublishCli extends FrontCli<IPublishContext> {
 
 				// const destPath = await TarExtra.decompress('/Users/alpha/github/front-cli/test.tar.gz');
 				// const destPath = await TarExtra.decompress("/Users/alphal/github/create-temp-cli/test.tar.gz");
-				const destPath = await TarExtra.decompress("/Users/alphal/github/create-temp-cli/test.tar.gz", "/Users/alphal/github/create-temp-cli/__output__");
+				// const destPath = await TarExtra.decompress("/Users/alphal/github/create-temp-cli/test.tar.gz", "/Users/alphal/github/create-temp-cli/__output__");
 				// console.log('=>(index.ts:107) destPath', destPath);
 
 				return {
