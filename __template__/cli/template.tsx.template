@@ -1,6 +1,5 @@
-import StepScheduler, {ResCode, StepList} from "../../../utils/core/scheduler";
-import {FrontCli} from "../../../utils/core/front-cli";
-import {Envs} from "../../../types/global";
+import {FrontCli, ResCode, StepList, StepScheduler} from "@utils";
+import {Envs} from "@type/env";
 
 interface I${CompName}Context extends Envs  {
 }
