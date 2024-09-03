@@ -1,6 +1,6 @@
 import downloadUrl from 'download';
 import gitClone from 'git-clone';
-import { rimraf } from 'rimraf'
+import {rimraf} from 'rimraf';
 
 const rm = rimraf.sync;
 
