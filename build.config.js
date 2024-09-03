@@ -54,7 +54,7 @@ export default defineBuildConfig({
     '@': path.resolve(__dirname, 'src'),
     '@clis': path.resolve(__dirname, 'src/clis'),
     '@constants': path.resolve(__dirname, 'src/constants'),
-    '@src/types': path.resolve(__dirname, 'src/types'),
+    '@type': path.resolve(__dirname, 'src/type'),
     '@utils': path.resolve(__dirname, 'src/utils'),
   },
   /**
