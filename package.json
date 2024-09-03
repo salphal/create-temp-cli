@@ -47,19 +47,15 @@
     "shelljs": "^0.8.5",
     "table": "^6.8.2",
     "ts-node": "^10.9.2",
-    "unbuild": "^2.0.0"
+    "unbuild": "^2.0.0",
+    "@inquirer/prompts": "^5.3.8"
   },
   "dependencies": {
-    "@inquirer/prompts": "^5.3.8",
     "download": "^8.0.0",
-    "figlet": "^1.7.0",
     "git-clone": "^0.2.0",
-    "glob": "^11.0.0",
-    "node-ssh": "^13.2.0",
-    "ora": "^8.0.1",
     "rimraf": "^6.0.1",
-    "ssh2": "^1.15.0",
-    "ssh2-sftp-client": "^11.0.0",
-    "voici.js": "^2.1.0"
+    "figlet": "^1.7.0",
+    "ora": "^8.0.1",
+    "ssh2": "^1.15.0"
   }
 }
