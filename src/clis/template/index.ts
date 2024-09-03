@@ -17,7 +17,7 @@ import {
   getReplacements,
   writeTempListToTarget,
 } from './utils/template';
-import { Envs } from '@src/types/global';
+import { Envs } from '@type/env';
 import { CliEnvs, TempInfoList, TempNameList } from './template';
 import { cloneTemplates } from './utils/clone-temp';
 import { setupEnvs } from './utils/setup-envs';

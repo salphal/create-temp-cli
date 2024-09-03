@@ -8,7 +8,7 @@ import {
   StepList,
   StepScheduler,
 } from '@utils';
-import { Envs } from '@src/types/global';
+import { Envs } from '@type/env';
 import path from 'path';
 import { CONFIG_BASE_NAME } from '@constants/common';
 import { PublishConfig, PublishConfigList } from './publish';
