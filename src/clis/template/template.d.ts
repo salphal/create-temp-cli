@@ -1,4 +1,4 @@
-import {PromptChoices} from "../utils/prompt";
+import { PromptChoices } from '../utils/prompt';
 
 export interface CliEnvs {
   [key: string]: string | undefined;

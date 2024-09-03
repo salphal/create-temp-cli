@@ -1,4 +1,4 @@
-import {Client, ClientChannel} from 'ssh2';
+import { Client, ClientChannel } from 'ssh2';
 
 interface BaseConfig {
   host: string;
@@ -7,11 +7,9 @@ interface BaseConfig {
   password: string;
 }
 
-export interface ServerConfig extends BaseConfig {
-}
+export interface ServerConfig extends BaseConfig {}
 
-export interface JumpServerConfig extends BaseConfig {
-}
+export interface JumpServerConfig extends BaseConfig {}
 
 export interface SSHConfig {
   serverConfig: ServerConfig;
@@ -19,7 +17,6 @@ export interface SSHConfig {
 }
 
 class SSH {
-
   config: SSHConfig;
 
   /** 服务器配置 */
@@ -42,46 +39,38 @@ class SSH {
    * 直接连接服务器
    */
   async connect(stream?: ClientChannel) {
-
     const _this = this;
-    console.log("[ connect server config ]", _this.serverConfig);
+    console.log('[ connect server config ]', _this.serverConfig);
 
     return new Promise(function (resolve, reject) {
-
       _this.client
         .on('ready', () => {
-
-          console.log("[ connect ready ]");
+          console.log('[ connect ready ]');
 
           // _this.exec('ll');
           _this.exec('ip addr show | grep 192');
           resolve(_this);
-
         })
         .on('error', (err) => {
-
-          console.log("[ connect error ]", err);
+          console.log('[ connect error ]', err);
           reject(err);
-
         })
         .on('close', () => {
-
           console.log('[ connect closed ]');
-
         })
         .connect(
           stream
             ? {
-              sock: stream, // Use the forwarded stream to connect to the inner server
-              username: _this.serverConfig.username,
-              password: _this.serverConfig.password,
-            }
+                sock: stream, // Use the forwarded stream to connect to the inner server
+                username: _this.serverConfig.username,
+                password: _this.serverConfig.password,
+              }
             : {
-              host: _this.serverConfig.host,
-              port: _this.serverConfig.port,
-              username: _this.serverConfig.username,
-              password: _this.serverConfig.password
-            }
+                host: _this.serverConfig.host,
+                port: _this.serverConfig.port,
+                username: _this.serverConfig.username,
+                password: _this.serverConfig.password,
+              },
         );
     });
   }
@@ -90,16 +79,13 @@ class SSH {
    * 跳板机连接服务器
    */
   async forwardOutConnect() {
-
     const _this = this;
-    console.log("[ forward connect server config ]", _this.jumpServerConfig);
+    console.log('[ forward connect server config ]', _this.jumpServerConfig);
 
     return new Promise((resolve, reject) => {
-
       _this.jumpClient
         .on('ready', () => {
-
-          console.log("[ forwardout connect ready ]");
+          console.log('[ forwardout connect ready ]');
 
           _this.jumpClient.forwardOut(
             _this.jumpServerConfig.host,
@@ -107,7 +93,6 @@ class SSH {
             _this.serverConfig.host,
             _this.serverConfig.port,
             async (err, stream) => {
-
               if (err) {
                 console.error('[ forward connect err ]', err);
                 reject(err);
@@ -116,25 +101,21 @@ class SSH {
 
               const ssh = await this.connect(stream);
               if (ssh) resolve(ssh);
-            }
-          )
+            },
+          );
         })
         .on('error', (err) => {
-
-          console.log("[ forwardout connect error ]");
+          console.log('[ forwardout connect error ]');
           reject(err);
-
         })
         .on('close', () => {
-
-          console.log("[ forwardout connect closed ]");
-
+          console.log('[ forwardout connect closed ]');
         })
         .connect({
           host: _this.jumpServerConfig.host,
           port: _this.jumpServerConfig.port,
           username: _this.jumpServerConfig.username,
-          password: _this.jumpServerConfig.password
+          password: _this.jumpServerConfig.password,
         });
     });
   }
@@ -146,14 +127,13 @@ class SSH {
    * @param isEnd {boolean} - 是否是最后一条, 如果是则关闭连接
    */
   async exec(cmd: string, isEnd = false) {
-
     const _this = this;
     console.log(`[ exec command ]: ${cmd}`);
 
     return new Promise((resolve, reject) => {
       _this.client.exec(cmd, (err, stream) => {
         if (err) {
-          console.log("[ exec err ]", err);
+          console.log('[ exec err ]', err);
           reject(err);
         }
 
@@ -190,8 +170,7 @@ class SSH {
           /**
            * 处理来自标准错误输出的错误信息
            */
-          .stderr
-          .on('data', (data) => {
+          .stderr.on('data', (data) => {
             console.log('[ exec stderr ]', data);
             stderr += data.toString();
             reject(stderr);
@@ -209,13 +188,10 @@ class SSH {
    * eg: upload("/path/to/dist.tar.gz", "/opt/dist.tar.gz");
    */
   async upload(localPath: string, remotePath: string): Promise<void> {
-
     const _this = this;
 
     return new Promise((resolve, reject) => {
-
       _this.client.sftp((err, sftp) => {
-
         if (err) {
           console.error('[ upload err ]:', err);
           reject(err);
@@ -229,7 +205,6 @@ class SSH {
           console.log(`[ upload ]: success upload ${localPath} to ${remotePath}`);
           resolve();
         });
-
       });
     });
   }
@@ -243,13 +218,10 @@ class SSH {
    * eg: .download('/opt/dist.tar.gz', '/path/to/dist.tar.gz');
    */
   async download(remotePath: string, localPath: string): Promise<void> {
-
     const _this = this;
 
     return new Promise((resolve, reject) => {
-
       _this.client.sftp((err, sftp) => {
-
         if (err) {
           console.error('[ download error ]:', err);
           reject(err);
@@ -263,7 +235,6 @@ class SSH {
           console.log(`[ download ]: success download ${remotePath} to ${localPath}`);
           resolve();
         });
-
       });
     });
   }
@@ -282,7 +253,7 @@ class SSH {
     const all = hasAll ? '-a' : '';
     const command = path ? `ls "${path}" ${all}` : `ls ${all}`;
     try {
-      const result = await this.exec(command) as string;
+      const result = (await this.exec(command)) as string;
       return result.trim().split('\n');
     } catch (err) {
       throw new Error(`Failed to list directory: ${err}`);
@@ -321,19 +292,19 @@ class SSH {
 
   async exist(path: string) {
     const command = `[ -e "${path}" ] && echo "true" || echo "false"`;
-    const result = await this.exec(command) as string;
+    const result = (await this.exec(command)) as string;
     return result.trim() === 'true';
   }
 
   async isFile(path: string) {
     const command = `[ -f "${path}" ] && echo "true" || echo "false"`;
-    const result = await this.exec(command) as string;
+    const result = (await this.exec(command)) as string;
     return result.trim() === 'true';
   }
 
   async isDir(path: string) {
     const command = `[ -d "${path}" ] && echo "true" || echo "false"`;
-    const result = await this.exec(command) as string;
+    const result = (await this.exec(command)) as string;
     return result.trim() === 'true';
   }
 
@@ -362,5 +333,4 @@ class SSH {
     const command = `tar -xzvf ${remoteTarPath} -C ${outputDir}`;
     return await this.exec(command);
   }
-
 }

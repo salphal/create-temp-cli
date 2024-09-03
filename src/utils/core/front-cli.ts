@@ -1,6 +1,6 @@
-import {StepList, StepScheduler} from "./scheduler";
-import {Envs} from "@src/types/global";
-import {Logger} from "../print/logger";
+import { StepList, StepScheduler } from './scheduler';
+import { Envs } from '@src/types/global';
+import { Logger } from '../print/logger';
 
 export interface IFrontCliOptions {
   [key: string]: any;
@@ -9,7 +9,6 @@ export interface IFrontCliOptions {
 }
 
 export abstract class FrontCli<T> {
-
   /** 存储入参 */
   options: IFrontCliOptions;
 

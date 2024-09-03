@@ -1,140 +1,159 @@
-import {FrontCli, FsExtra, Logger, Prompt, PromptChoices, ResCode, StepList, StepScheduler, TarExtra} from "@utils";
-import {Envs} from "@src/types/global";
-import path from "path";
-import {CONFIG_BASE_NAME} from "@constants/common";
-import {PublishConfig, PublishConfigList} from "./publish";
-import {getPublishConfigByEnvName} from "@clis/publish/utils/publish";
+import {
+  FrontCli,
+  FsExtra,
+  Logger,
+  Prompt,
+  PromptChoices,
+  ResCode,
+  StepList,
+  StepScheduler,
+  TarExtra,
+} from '@utils';
+import { Envs } from '@src/types/global';
+import path from 'path';
+import { CONFIG_BASE_NAME } from '@constants/common';
+import { PublishConfig, PublishConfigList } from './publish';
+import { getPublishConfigByEnvName } from '@clis/publish/utils/publish';
 
 interface IPublishContext extends Envs {
-	/** 部署信息配置列表 */
-	publishConfigList: PublishConfigList;
-	/** 用户选择的部署信息 */
-	currentPublishConfig: PublishConfig;
-	/** 部署配置选项 */
-	envNameConfigChoices: PromptChoices;
+  /** 部署信息配置列表 */
+  publishConfigList: PublishConfigList;
+  /** 用户选择的部署信息 */
+  currentPublishConfig: PublishConfig;
+  /** 部署配置选项 */
+  envNameConfigChoices: PromptChoices;
 }
 
 interface IPublishOptions {
-	/** 外部注入的运行时上下文的数据 */
-	ctx: Envs & {};
+  /** 外部注入的运行时上下文的数据 */
+  ctx: Envs & {};
 }
 
 export class PublishCli extends FrontCli<IPublishContext> {
+  context: IPublishContext = {
+    publishConfigList: [],
+    currentPublishConfig: {
+      envName: 'dev',
+      local: {
+        outputName: 'dist',
+      },
+      server: {
+        connect: {
+          host: '192.168.1.1',
+          username: 'root',
+          port: 22,
+          password: 'password',
+          privateKey: '/path/to/my/key',
+        },
+        backup: {
+          format: 'YYYY-MM-DD-hh-mm-ss',
+          max: 5,
+        },
+        staticAbsolutePath: '/etc/nginx/html/demo',
+        restartCommand: 'nginx -s reload',
+      },
+    },
+    envNameConfigChoices: [],
 
-	context: IPublishContext = {
+    argv: {},
+    __dirname: '',
+    __filename: '',
+    envs: {},
+  };
 
-		publishConfigList: [],
-		currentPublishConfig: {
-			envName: "dev",
-			local: {
-				outputName: "dist"
-			},
-			server: {
-				connect: {
-					host: "192.168.1.1",
-					username: "root",
-					port: 22,
-					password: "password",
-					privateKey: "/path/to/my/key"
-				},
-				"backup": {
-					format: "YYYY-MM-DD-hh-mm-ss",
-					max: 5
-				},
-				staticAbsolutePath: "/etc/nginx/html/demo",
-				restartCommand: "nginx -s reload"
-			}
-		},
-		envNameConfigChoices: [],
+  stepList: StepList = [
+    {
+      name: 'step_01',
+      remark: ``,
+      callback: async (ctx: IPublishContext) => {
+        const { __dirname } = this.context;
 
-		argv: {},
-		__dirname: "",
-		__filename: "",
-		envs: {}
-	};
+        const jsonPath = path.resolve(__dirname, `${CONFIG_BASE_NAME}/publish.config.json`);
 
-	stepList: StepList = [
-		{
-			name: "step_01",
-			remark: ``,
-			callback: async (ctx: IPublishContext) => {
-				const {__dirname} = this.context;
+        const isFile = await FsExtra.isFile(jsonPath);
 
-				const jsonPath = path.resolve(__dirname, `${CONFIG_BASE_NAME}/publish.config.json`);
+        if (!isFile) {
+          return;
+        }
 
-				const isFile = await FsExtra.isFile(jsonPath);
+        const publishConfigList = (await FsExtra.readJson(jsonPath)) as PublishConfigList;
 
-				if (!isFile) {
-					return;
-				}
+        if (!Array.isArray(publishConfigList) || !publishConfigList.length) {
+          Logger.error('');
+          return;
+        }
 
-				const publishConfigList = await FsExtra.readJson(jsonPath) as PublishConfigList;
+        this.context.publishConfigList = publishConfigList;
 
-				if (!Array.isArray(publishConfigList) || !publishConfigList.length) {
-					Logger.error('');
-					return;
-				}
+        this.context.envNameConfigChoices = publishConfigList.map((config) => {
+          const {
+            envName,
+            server: {
+              connect: { host },
+            },
+          } = config;
+          return {
+            title: `[${envName}]:${host}`,
+            value: envName,
+          };
+        });
 
-				this.context.publishConfigList = publishConfigList;
+        return {
+          code: ResCode.next,
+          data: {},
+        };
+      },
+    },
+    {
+      name: 'step_02',
+      remark: ``,
+      callback: async (ctx: IPublishContext) => {
+        const {} = this.context;
 
-				this.context.envNameConfigChoices = publishConfigList.map(config => {
-					const {envName, server: {connect: {host}}} = config;
-					return {
-						title: `[${envName}]:${host}`,
-						value: envName
-					};
-				});
+        const envName = await Prompt.autocomplete(
+          'Please select publishing environment',
+          this.context.envNameConfigChoices,
+        );
 
-				return {
-					code: ResCode.next,
-					data: {}
-				}
-			}
-		},
-		{
-			name: "step_02",
-			remark: ``,
-			callback: async (ctx: IPublishContext) => {
-				const {} = this.context;
+        this.context.currentPublishConfig = getPublishConfigByEnvName(
+          envName,
+          this.context.publishConfigList,
+        );
 
-				const envName = await Prompt.autocomplete('Please select publishing environment', this.context.envNameConfigChoices);
+        // const srcPath = await TarExtra.compress("/Users/alphal/github/create-temp-cli/test");
+        // const srcPath = await TarExtra.compress("/Users/alphal/github/create-temp-cli/test", "/Users/alphal/github/create-temp-cli/__output__");
+        // console.log('=>(index.ts:105) srcPath', srcPath);
 
-				this.context.currentPublishConfig = getPublishConfigByEnvName(envName, this.context.publishConfigList);
+        // const destPath = await TarExtra.decompress('/Users/alpha/github/front-cli/test.tar.gz');
+        // const destPath = await TarExtra.decompress("/Users/alphal/github/create-temp-cli/test.tar.gz");
+        // const destPath = await TarExtra.decompress("/Users/alphal/github/create-temp-cli/test.tar.gz", "/Users/alphal/github/create-temp-cli/__output__");
+        // console.log('=>(index.ts:107) destPath', destPath);
 
-				// const srcPath = await TarExtra.compress("/Users/alphal/github/create-temp-cli/test");
-				// const srcPath = await TarExtra.compress("/Users/alphal/github/create-temp-cli/test", "/Users/alphal/github/create-temp-cli/__output__");
-				// console.log('=>(index.ts:105) srcPath', srcPath);
+        return {
+          code: ResCode.next,
+          data: {},
+        };
+      },
+    },
+    {
+      name: 'step_03',
+      remark: ``,
+      callback: async (ctx: IPublishContext) => {
+        const {} = this.context;
+        console.log('=> step_03', ctx);
+        return {
+          code: ResCode.end,
+          data: {},
+        };
+      },
+    },
+  ];
 
-				// const destPath = await TarExtra.decompress('/Users/alpha/github/front-cli/test.tar.gz');
-				// const destPath = await TarExtra.decompress("/Users/alphal/github/create-temp-cli/test.tar.gz");
-				// const destPath = await TarExtra.decompress("/Users/alphal/github/create-temp-cli/test.tar.gz", "/Users/alphal/github/create-temp-cli/__output__");
-				// console.log('=>(index.ts:107) destPath', destPath);
+  scheduler: StepScheduler;
 
-				return {
-					code: ResCode.next,
-					data: {}
-				}
-			}
-		},
-		{
-			name: "step_03",
-			remark: ``,
-			callback: async (ctx: IPublishContext) => {
-				const {} = this.context;
-				console.log('=> step_03', ctx);
-				return {
-					code: ResCode.end,
-					data: {}
-				}
-			}
-		}
-	];
-
-	scheduler: StepScheduler;
-
-	constructor(options: IPublishOptions) {
-		super(options);
-		this.context = {...this.context, ...options.ctx};
-		this.scheduler = new StepScheduler({stepList: this.stepList});
-	}
+  constructor(options: IPublishOptions) {
+    super(options);
+    this.context = { ...this.context, ...options.ctx };
+    this.scheduler = new StepScheduler({ stepList: this.stepList });
+  }
 }

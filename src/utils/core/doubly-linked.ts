@@ -12,7 +12,6 @@ export interface LinkedNodeOptions {
 }
 
 export class LinkedNode {
-
   /** 节点数据 */
   data: NodeData;
   /** 上一个节点 */
@@ -21,18 +20,16 @@ export class LinkedNode {
   next: LinkedNode | null;
 
   constructor(options: LinkedNodeOptions) {
-    const {data, prev = null, next = null} = options;
+    const { data, prev = null, next = null } = options;
     this.data = data;
     this.prev = prev;
     this.next = next;
   }
 }
 
-export interface DoublyLinkedOptions {
-}
+export interface DoublyLinkedOptions {}
 
 export interface IDoublyLinked {
-
   /** 首节点  */
   head: LinkedNode | null;
   /** 尾节点 */
@@ -87,16 +84,14 @@ export interface IDoublyLinked {
 }
 
 export class DoublyLinked implements IDoublyLinked {
-
   head: LinkedNode | null = null;
   tail: LinkedNode | null = null;
   length = 0;
 
-  constructor(options?: DoublyLinkedOptions) {
-  }
+  constructor(options?: DoublyLinkedOptions) {}
 
   append(data: NodeData) {
-    const newNode = new LinkedNode({data});
+    const newNode = new LinkedNode({ data });
     if (this.length === 0) {
       this.head = newNode;
       this.tail = newNode;
@@ -112,7 +107,7 @@ export class DoublyLinked implements IDoublyLinked {
     if (position < 0 || position > this.length) {
       return false;
     }
-    const newNode = new LinkedNode({data});
+    const newNode = new LinkedNode({ data });
     if (length === 0) {
       this.head = newNode;
       this.tail = newNode;
@@ -185,7 +180,7 @@ export class DoublyLinked implements IDoublyLinked {
       current = current.next;
     }
     if (!current || !this._isLinkedNode(current)) return null;
-    current.data = {...current.data, ...data};
+    current.data = { ...current.data, ...data };
     return true;
   }
 

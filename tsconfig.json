@@ -18,7 +18,7 @@
       "@clis/*": ["src/clis/*"],
       "@constants/*": ["src/constants/*"],
       "@src/types/*": ["src/types/*"],
-      "@utils/*": ["src/utils/*"],
+      "@utils/*": ["src/utils/*"]
     }
   }
 }

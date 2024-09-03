@@ -4,10 +4,10 @@
 export function CamelCase(fileName: string): string {
   return fileName
     .split(/[-_\s]/)
-    .map(v => v.trim())
-    .filter(v => !!v)
-    .map(v => v.replace(/(^\w)/, (match) => match.toUpperCase()))
-    .join("");
+    .map((v) => v.trim())
+    .filter((v) => !!v)
+    .map((v) => v.replace(/(^\w)/, (match) => match.toUpperCase()))
+    .join('');
 }
 
 /**
@@ -16,10 +16,12 @@ export function CamelCase(fileName: string): string {
 export function camelCase(fileName: string): string {
   return fileName
     .split(/[-_\s]/)
-    .map(v => v.trim())
-    .filter(v => !!v)
-    .map((v, i) => v.replace(/(^\w)/, (match) => i === 0 ? match.toLowerCase() : match.toUpperCase()))
-    .join("");
+    .map((v) => v.trim())
+    .filter((v) => !!v)
+    .map((v, i) =>
+      v.replace(/(^\w)/, (match) => (i === 0 ? match.toLowerCase() : match.toUpperCase())),
+    )
+    .join('');
 }
 
 /**
@@ -28,10 +30,10 @@ export function camelCase(fileName: string): string {
 export function camelcase(fileName: string): string {
   return fileName
     .split(/[-_\s]/)
-    .map(v => v.trim())
-    .filter(v => !!v)
-    .map(v => v.toLowerCase())
-    .join("-");
+    .map((v) => v.trim())
+    .filter((v) => !!v)
+    .map((v) => v.toLowerCase())
+    .join('-');
 }
 
 /**
@@ -40,10 +42,10 @@ export function camelcase(fileName: string): string {
 export function CAMELCASE(fileName: string): string {
   return fileName
     .split(/[-_\s]/)
-    .map(v => v.trim())
-    .filter(v => !!v)
-    .map(v => v.toUpperCase())
-    .join("_");
+    .map((v) => v.trim())
+    .filter((v) => !!v)
+    .map((v) => v.toUpperCase())
+    .join('_');
 }
 
 /**
@@ -52,6 +54,6 @@ export function CAMELCASE(fileName: string): string {
 export function SHORTCAMELCASE(fileName: string): string {
   return fileName
     .split(/[-_\s]/)
-    .map(v => v.slice(0, 1).toUpperCase())
-    .join("");
+    .map((v) => v.slice(0, 1).toUpperCase())
+    .join('');
 }

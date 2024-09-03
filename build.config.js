@@ -1,10 +1,10 @@
 import path from 'node:path';
 import url from 'node:url';
-import {defineBuildConfig} from 'unbuild';
-import {configDotenv} from "dotenv";
+import { defineBuildConfig } from 'unbuild';
+import { configDotenv } from 'dotenv';
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
-configDotenv({path: path.resolve(__dirname, '.env')});
+configDotenv({ path: path.resolve(__dirname, '.env') });
 
 let entries = ['src/index'];
 let sourcemap = false;
@@ -18,22 +18,22 @@ if (process.env.ENV_MODE === 'development') {
     {
       builder: 'mkdist',
       input: 'src/clis',
-      outDir: 'dist/clis'
+      outDir: 'dist/clis',
     },
     {
       builder: 'mkdist',
       input: 'src/constants',
-      outDir: 'dist/constants'
+      outDir: 'dist/constants',
     },
     {
       builder: 'mkdist',
       input: 'src/types',
-      outDir: 'dist/types'
+      outDir: 'dist/types',
     },
     {
       builder: 'mkdist',
       input: 'src/utils',
-      outDir: 'dist/utils'
+      outDir: 'dist/utils',
     },
   ];
   sourcemap = true;
@@ -61,7 +61,7 @@ export default defineBuildConfig({
    * 配置用于指定构建过程中的文本替换规则
    */
   replace: {
-    __ENV__: process.env.NODE_ENV || 'development'
+    __ENV__: process.env.NODE_ENV || 'development',
   },
   /**
    * rollup 配置
@@ -74,19 +74,17 @@ export default defineBuildConfig({
     },
     output: [
       {
-        name: "index",
-        format: "esm"
-      }
-    ]
+        name: 'index',
+        format: 'esm',
+      },
+    ],
   },
   /**
    * rollup 勾子
    */
   hooks: {
     'rollup:options'(ctx, options) {
-      options.plugins = [
-        options.plugins,
-      ]
+      options.plugins = [options.plugins];
     },
 
     // "build:prepare": (ctx: BuildContext) => void | Promise<void>,

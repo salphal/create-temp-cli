@@ -1,17 +1,26 @@
-import path from "path";
-import {ResCode, StepList, StepScheduler, FrontCli, FsExtra, Logger, PromptChoices, Prompt} from "@utils";
+import path from 'path';
+import {
+  ResCode,
+  StepList,
+  StepScheduler,
+  FrontCli,
+  FsExtra,
+  Logger,
+  PromptChoices,
+  Prompt,
+} from '@utils';
 import {
   createPromptChoices,
   getAllTempInfoByTempDirPathList,
   getAllTempNameList,
   getCurTempInfoListByTempName,
   getReplacements,
-  writeTempListToTarget
-} from "./utils/template";
-import {Envs} from "@src/types/global";
-import {CliEnvs, TempInfoList, TempNameList} from "./template";
-import {cloneTemplates} from "./utils/clone-temp";
-import {setupEnvs} from "./utils/setup-envs";
+  writeTempListToTarget,
+} from './utils/template';
+import { Envs } from '@src/types/global';
+import { CliEnvs, TempInfoList, TempNameList } from './template';
+import { cloneTemplates } from './utils/clone-temp';
+import { setupEnvs } from './utils/setup-envs';
 
 interface TemplateContext extends Envs<CliEnvs> {
   /** 默认模版目录路径 */
@@ -56,7 +65,6 @@ interface TemplateOptions {
 }
 
 export class TemplateCli extends FrontCli<TemplateContext> {
-
   context: TemplateContext = {
     tempDirPath: '',
     outputDirPath: '',
@@ -80,27 +88,26 @@ export class TemplateCli extends FrontCli<TemplateContext> {
     },
     tempNameChoices: [],
     outputPathChoices: [
-      {title: '__output__', value: '.'},
-      {title: 'src/pages', value: 'src/pages'},
-      {title: 'src/views', value: 'src/views'},
-      {title: 'src/components', value: 'src/components'},
-      {title: 'src/hooks', value: 'src/hooks'},
-      {title: 'src/store', value: 'src/store'},
-      {title: 'lib', value: 'lib'},
-      {title: 'lib/components', value: 'lib/components'},
-      {title: 'lib/hooks', value: 'lib/hooks'},
+      { title: '__output__', value: '.' },
+      { title: 'src/pages', value: 'src/pages' },
+      { title: 'src/views', value: 'src/views' },
+      { title: 'src/components', value: 'src/components' },
+      { title: 'src/hooks', value: 'src/hooks' },
+      { title: 'src/store', value: 'src/store' },
+      { title: 'lib', value: 'lib' },
+      { title: 'lib/components', value: 'lib/components' },
+      { title: 'lib/hooks', value: 'lib/hooks' },
     ],
 
     argv: {},
-    __dirname: "",
-    __filename: "",
-    envs: {}
+    __dirname: '',
+    __filename: '',
+    envs: {},
   };
 
   stepList: StepList = [
-
     {
-      name: "step1",
+      name: 'step1',
       remark: `
       - 载入环境变量
       - 扫描模版目录下的所有模版文件
@@ -108,8 +115,7 @@ export class TemplateCli extends FrontCli<TemplateContext> {
         - 根据模版信息文件生成模版选项选项列表
     `,
       callback: async (ctx: any) => {
-
-        const {tempDirPathList, envs, __dirname} = this.context;
+        const { tempDirPathList, envs, __dirname } = this.context;
 
         const tempDirPath = path.join(__dirname, '__template__');
         const outputDirPath = path.join(__dirname, '__output__');
@@ -126,7 +132,7 @@ export class TemplateCli extends FrontCli<TemplateContext> {
         this.context.allTempInfoList = allTempInfoList;
 
         /** 获取所有 去重的模版名列表 */
-        const tempNameList = getAllTempNameList(allTempInfoList, tempDirPathList)
+        const tempNameList = getAllTempNameList(allTempInfoList, tempDirPathList);
         this.context.tempNameList = tempNameList;
 
         /** 根据扫描模目录下的文件, 设置模版选项列表 */
@@ -134,7 +140,7 @@ export class TemplateCli extends FrontCli<TemplateContext> {
 
         if (!allTempInfoList.length) {
           /** 模版目录下没有任何模版 */
-          Logger.error('Template directory is empty, has nothing templates')
+          Logger.error('Template directory is empty, has nothing templates');
           process.exit(1);
         } else if (!this.context.tempNameChoices.length) {
           /** 模版选项为空 */
@@ -144,13 +150,13 @@ export class TemplateCli extends FrontCli<TemplateContext> {
 
         return {
           code: ResCode.next,
-          data: {}
+          data: {},
         };
       },
     },
 
     {
-      name: "step2",
+      name: 'step2',
       remark: `
       用户交互获取数据
         1. 选择模版
@@ -163,17 +169,29 @@ export class TemplateCli extends FrontCli<TemplateContext> {
           - 否: 默认输出路径( __output__ )
     `,
       callback: async (ctx: any) => {
-
-        const tempName = await Prompt.autocomplete("Please pick a template", this.context.tempNameChoices);
+        const tempName = await Prompt.autocomplete(
+          'Please pick a template',
+          this.context.tempNameChoices,
+        );
 
         // const compName = await Prompt.input("Please enter component name. ( default: Template )", {default: "Template"});
 
-        const fileName = await Prompt.input("Please enter component file name. ( default: template )", {default: "template"})
+        const fileName = await Prompt.input(
+          'Please enter component file name. ( default: template )',
+          { default: 'template' },
+        );
 
-        let outputPath = await Prompt.input("Please enter output directory path. ( default: __output__ ), If enter x then select custom output directory map", {default: '.'});
+        let outputPath = await Prompt.input(
+          'Please enter output directory path. ( default: __output__ ), If enter x then select custom output directory map',
+          { default: '.' },
+        );
 
         if (outputPath.trim().toLowerCase() === 'x') {
-          outputPath = await Prompt.autocomplete("Please pick a template", this.context.outputPathChoices, {default: '.'});
+          outputPath = await Prompt.autocomplete(
+            'Please pick a template',
+            this.context.outputPathChoices,
+            { default: '.' },
+          );
         }
 
         /** 保存用户交互的结果 */
@@ -185,26 +203,29 @@ export class TemplateCli extends FrontCli<TemplateContext> {
         };
 
         /** 模版中变量的映射集合 */
-        this.context.replacements = getReplacements({fileName})
+        this.context.replacements = getReplacements({ fileName });
         Logger.info(this.context.replacements);
 
         return {
           code: ResCode.next,
-          data: {}
+          data: {},
         };
       },
     },
 
     {
-      name: "step3",
+      name: 'step3',
       remark: `
 			根据用户选择的信息更新配置
 				- 更新当前选中的模版
 				- 更新输出路径
 		`,
       callback: async (ctx: any) => {
-
-        const {questionResult: {tempName, outputPath}, allTempInfoList, __dirname} = this.context;
+        const {
+          questionResult: { tempName, outputPath },
+          allTempInfoList,
+          __dirname,
+        } = this.context;
 
         /**
          * 获取当前模板信息的文件列表
@@ -228,13 +249,13 @@ export class TemplateCli extends FrontCli<TemplateContext> {
           code: ResCode.next,
           data: {
             curTempInfoList,
-          }
+          },
         };
       },
     },
 
     {
-      name: "step4",
+      name: 'step4',
       remark: `
 			根据配置信息
 				1. 创建输出目录( 若已有则清空该目录, 若没有则创建 )
@@ -242,8 +263,11 @@ export class TemplateCli extends FrontCli<TemplateContext> {
 					a. 替换文件中的变量
 		`,
       callback: async (ctx: any) => {
-
-        const {questionResult: {tempName}, replacements: {fileName}, outputDirPath} = this.context;
+        const {
+          questionResult: { tempName },
+          replacements: { fileName },
+          outputDirPath,
+        } = this.context;
 
         /** 在项目根路径下创建默认输出目录 */
         await FsExtra.makeDir(this.context.outputDirPath);
@@ -268,7 +292,7 @@ export class TemplateCli extends FrontCli<TemplateContext> {
         const isWritten = await writeTempListToTarget(ctx.curTempInfoList, {
           fileName,
           outputDirPath,
-          replacements: this.context.replacements
+          replacements: this.context.replacements,
         });
 
         if (isWritten) {
@@ -280,19 +304,18 @@ export class TemplateCli extends FrontCli<TemplateContext> {
 
         return {
           code: ResCode.end,
-          data: {}
+          data: {},
         };
-      }
-    }
-
+      },
+    },
   ];
 
   scheduler: StepScheduler;
 
   constructor(options: TemplateOptions) {
     super(options);
-    this.context = {...this.context, ...options.ctx};
-    this.scheduler = new StepScheduler({stepList: this.stepList});
+    this.context = { ...this.context, ...options.ctx };
+    this.scheduler = new StepScheduler({ stepList: this.stepList });
   }
 
   create() {

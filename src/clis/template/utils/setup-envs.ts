@@ -1,6 +1,6 @@
-import path from "path";
-import {PromptChoices} from "@utils";
-import {CliEnvs, TempContext} from "../template";
+import path from 'path';
+import { PromptChoices } from '@utils';
+import { CliEnvs, TempContext } from '../template';
 
 /**
  * 挂载环境变量中的配置
@@ -20,7 +20,7 @@ export function setupEnvs(envs: CliEnvs, ctx: TempContext) {
  */
 export function setupTempDirs(envs: CliEnvs, ctx: TempContext) {
   if (!envs.TEMP_CLI_TEMPLATE_DIRECTORY) return;
-  const tempDirPathList = envs.TEMP_CLI_TEMPLATE_DIRECTORY.split(',').filter(v => !!v);
+  const tempDirPathList = envs.TEMP_CLI_TEMPLATE_DIRECTORY.split(',').filter((v) => !!v);
   ctx.tempDirPathList = Array.from(new Set([...tempDirPathList, ...ctx.tempDirPathList]));
 }
 
@@ -41,7 +41,7 @@ export function setupOutputDirectory(envs: CliEnvs, ctx: TempContext) {
  */
 export function setCustomOutputDirectoryList(envs: CliEnvs, ctx: TempContext) {
   if (!envs.TEMP_CLI_OUTPUT_DIRECTORY_CHOICES) return;
-  const outputDirectoryList = envs.TEMP_CLI_OUTPUT_DIRECTORY_CHOICES.split(',').filter(v => !!v);
-  const outputPathChoices: PromptChoices = outputDirectoryList.map(v => ({title: v, value: v}))
+  const outputDirectoryList = envs.TEMP_CLI_OUTPUT_DIRECTORY_CHOICES.split(',').filter((v) => !!v);
+  const outputPathChoices: PromptChoices = outputDirectoryList.map((v) => ({ title: v, value: v }));
   ctx.outputPathChoices = [...ctx.outputPathChoices, ...outputPathChoices];
 }

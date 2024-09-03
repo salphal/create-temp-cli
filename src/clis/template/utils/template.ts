@@ -1,14 +1,19 @@
-import {TempInfo, TempInfoList} from "../template";
-import fs from "fs-extra";
-import path from "path";
-import {camelcase, CAMELCASE, camelCase, CamelCase, SHORTCAMELCASE, PromptChoices, Logger} from "@utils";
-
+import { TempInfo, TempInfoList } from '../template';
+import fs from 'fs-extra';
+import path from 'path';
+import {
+  camelcase,
+  CAMELCASE,
+  camelCase,
+  CamelCase,
+  SHORTCAMELCASE,
+  PromptChoices,
+  Logger,
+} from '@utils';
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
 /* 工具函数 */
-
 
 /**
  * 根据完整路径获取模版名称
@@ -36,7 +41,7 @@ export function createPromptChoices(list: string[]): PromptChoices {
   if (!Array.isArray(list) || !list.length) return [];
   return list.map((name: string) => ({
     title: name,
-    value: name
+    value: name,
   }));
 }
 
@@ -49,7 +54,9 @@ export function createPromptChoices(list: string[]): PromptChoices {
  */
 export function tempFileNameToRealFileName(tempFileName: string, realFileName: string) {
   const filename = tempFileName
-    .replace(/(^[a-zA-Z]+)\./, (match) => (['template.'].includes(match) ? `${realFileName}.` : match))
+    .replace(/(^[a-zA-Z]+)\./, (match) =>
+      ['template.'].includes(match) ? `${realFileName}.` : match,
+    )
     .replace(/(\.template$)/, '');
   Logger.info(`Rename file "${tempFileName}" to "${filename}"`);
   return filename;
@@ -72,15 +79,14 @@ export function getCurTempInfoListByTempName(tempName: string, tempInfoList: Tem
  * @param variables
  */
 export function getReplacements(variables: { fileName: string }) {
+  const { fileName: file } = variables;
 
-  const {fileName: file} = variables;
-
-  const CompName = CamelCase(file);  // 首字母大写( eg: DemoComp )
-  const compName = camelCase(file);  // 首字母小写 ( eg: demoComp )
-  const COMP_NAME = CAMELCASE(file);  // 首字母小写 ( eg: DEMO_COMP )
-  const SHORT_COMP_NAME = SHORTCAMELCASE(file);  // 首字母小写 ( eg: DEMO_COMP )
+  const CompName = CamelCase(file); // 首字母大写( eg: DemoComp )
+  const compName = camelCase(file); // 首字母小写 ( eg: demoComp )
+  const COMP_NAME = CAMELCASE(file); // 首字母小写 ( eg: DEMO_COMP )
+  const SHORT_COMP_NAME = SHORTCAMELCASE(file); // 首字母小写 ( eg: DEMO_COMP )
   const className = camelcase(file); // 首字母小写 ( eg: demo-comp )
-  const fileName = camelcase(file);  // 全部字母小写( eg: demo-comp )
+  const fileName = camelcase(file); // 全部字母小写( eg: demo-comp )
 
   return {
     CompName,
@@ -92,12 +98,9 @@ export function getReplacements(variables: { fileName: string }) {
   };
 }
 
-
 //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -//
 
-
 /* 逻辑函数 */
-
 
 /**
  * 替换模版文件中的变量
@@ -107,7 +110,7 @@ export function getReplacements(variables: { fileName: string }) {
  */
 export async function replaceVariablesInFileByReplacements(
   filePath: string,
-  replaceVariableMap: { [key: string]: any }
+  replaceVariableMap: { [key: string]: any },
 ) {
   return new Promise((resolve, reject) => {
     fs.readFile(filePath, 'utf8', (err, data) => {
@@ -145,7 +148,7 @@ export async function getAllTempInfoList(templateDirectoryPath: string): Promise
               tempName: getTempNameByFullPath(fullPath),
               fileName,
               fullPath,
-              ...path.parse(fullPath)
+              ...path.parse(fullPath),
             });
           }
         }
@@ -159,7 +162,9 @@ export async function getAllTempInfoList(templateDirectoryPath: string): Promise
  * 获取所有 模版目录下的 所有模版
  * @param tempDirPathList {Array<string>} - 模版目录列表
  */
-export async function getAllTempInfoByTempDirPathList(tempDirPathList: string[]): Promise<TempInfoList> {
+export async function getAllTempInfoByTempDirPathList(
+  tempDirPathList: string[],
+): Promise<TempInfoList> {
   return new Promise<TempInfoList>(async (resolve, reject) => {
     const tempInfoList: any[] = [];
     for (let i = 0; i < tempDirPathList.length; i++) {
@@ -176,13 +181,17 @@ export async function getAllTempInfoByTempDirPathList(tempDirPathList: string[])
  * @param tempInfoList - 模版信息列表
  * @param tempDirectoryPathList - 模版目录列表
  */
-export function getAllTempNameList(tempInfoList: TempInfoList, tempDirectoryPathList: Array<string>): Array<string> {
+export function getAllTempNameList(
+  tempInfoList: TempInfoList,
+  tempDirectoryPathList: Array<string>,
+): Array<string> {
   if (!Array.isArray(tempInfoList) || !tempInfoList.length) return [];
   const allTempNames = tempInfoList.map((v: TempInfo) => v.tempName);
-  return Array.from(new Set(allTempNames))
-    .filter((tempName) =>
-      tempDirectoryPathList.some((tempDirectoryPath) =>
-        fs.lstatSync(`${tempDirectoryPath}/${tempName}`).isDirectory()));
+  return Array.from(new Set(allTempNames)).filter((tempName) =>
+    tempDirectoryPathList.some((tempDirectoryPath) =>
+      fs.lstatSync(`${tempDirectoryPath}/${tempName}`).isDirectory(),
+    ),
+  );
 }
 
 /**
@@ -191,20 +200,21 @@ export function getAllTempNameList(tempInfoList: TempInfoList, tempDirectoryPath
  * @param curTempInfoList
  * @param config
  */
-export async function writeTempListToTarget(curTempInfoList: TempInfoList, config: {
-  fileName: string,
-  outputDirPath: string,
-  replacements: any
-}) {
-
+export async function writeTempListToTarget(
+  curTempInfoList: TempInfoList,
+  config: {
+    fileName: string;
+    outputDirPath: string;
+    replacements: any;
+  },
+) {
   if (!Array.isArray(curTempInfoList) || !curTempInfoList.length) return false;
 
-  const {fileName, outputDirPath, replacements} = config;
+  const { fileName, outputDirPath, replacements } = config;
   if (!fileName || !outputDirPath || !replacements) return false;
 
   for (let i = 0; i < curTempInfoList.length; i++) {
-
-    const {fileName: tempName, fullPath} = curTempInfoList[i];
+    const { fileName: tempName, fullPath } = curTempInfoList[i];
     const content = await replaceVariablesInFileByReplacements(fullPath, replacements);
     const realFileName = tempFileNameToRealFileName(tempName, fileName);
     const outputFullPath = path.join(outputDirPath, fileName, realFileName);
@@ -218,6 +228,5 @@ export async function writeTempListToTarget(curTempInfoList: TempInfoList, confi
 
   return true;
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

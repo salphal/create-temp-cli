@@ -1,4 +1,4 @@
-import {download} from './download';
+import { download } from './download';
 
 export interface DownloadConfig {
   /** 远程仓库地址 */
@@ -14,7 +14,7 @@ export interface DownloadConfig {
 }
 
 export async function clone(config: DownloadConfig) {
-  const {remote, branch, outputPath, isDirect = true, options = {clone: true}} = config;
+  const { remote, branch, outputPath, isDirect = true, options = { clone: true } } = config;
   return new Promise((resolve, reject) => {
     /**
      * 使用 http 从 master 处的 Github 存储库下载

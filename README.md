@@ -1,7 +1,5 @@
 # create-temp-cli
 
-
-
 ### Options
 
 ```

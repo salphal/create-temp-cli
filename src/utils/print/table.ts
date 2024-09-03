@@ -1,7 +1,6 @@
-import {table} from "table";
+import { table } from 'table';
 
 export class Table {
-
   static border = {
     topBody: `─`,
     topJoin: `┬`,
@@ -20,8 +19,8 @@ export class Table {
     joinBody: `─`,
     joinLeft: `├`,
     joinRight: `┤`,
-    joinJoin: `┼`
-  }
+    joinJoin: `┼`,
+  };
 
   static defaultConfig = {
     title: null,
@@ -31,21 +30,27 @@ export class Table {
     horizontalBorder: true,
   };
 
-  static print(data: Array<string[]>, columns: Array<{ width?: number, align?: string }>, options = {}) {
-
+  static print(
+    data: Array<string[]>,
+    columns: Array<{ width?: number; align?: string }>,
+    options = {},
+  ) {
     const {
       title,
       columnWidth = 20,
       outBorderType = 'double',
       verticalBorder = false,
       horizontalBorder = false,
-    } = {...this.defaultConfig, ...options};
+    } = { ...this.defaultConfig, ...options };
 
     /** 列对齐方式: 默认全部左对齐 */
-    let tableColumns = data.map(() => ({alignment: 'left', width: columnWidth}));
+    let tableColumns = data.map(() => ({ alignment: 'left', width: columnWidth }));
 
     if (Array.isArray(columns) && columns.length) {
-      tableColumns = columns.map(column => ({alignment: column.align || 'left', width: column.width || columnWidth}));
+      tableColumns = columns.map((column) => ({
+        alignment: column.align || 'left',
+        width: column.width || columnWidth,
+      }));
     }
 
     const config: any = {
@@ -59,7 +64,7 @@ export class Table {
       config.header = {
         alignment: 'center',
         content: title,
-      }
+      };
     }
 
     /** 外边框样式: 单边 | 双边 ( 默认: 单边 ) */
@@ -76,7 +81,7 @@ export class Table {
     if (!verticalBorder) {
       config.drawVerticalLine = (lineIndex: number, columnCount: number) => {
         return lineIndex === 0 || lineIndex === columnCount;
-      }
+      };
     }
 
     console.log(table(data, config));

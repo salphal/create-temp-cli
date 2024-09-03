@@ -1,4 +1,1 @@
-export const __test__ = () => {
-
-
-};
+export const __test__ = () => {};
