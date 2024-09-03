@@ -15,7 +15,8 @@
     "dev": "unbuild --stub",
     "build": "unbuild --minify",
     "typecheck": "tsc --noEmit",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "prettier": "prettier ./src/**/**/*.ts --write --check --fix"
   },
   "engines": {
     "node": "^18.0.0 || >=20.0.0"
@@ -24,6 +25,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@inquirer/prompts": "^5.3.8",
     "@types/download": "^8.0.5",
     "@types/figlet": "^1.5.8",
     "@types/fs-extra": "^11.0.4",
@@ -43,19 +45,19 @@
     "kolorist": "^1.8.0",
     "log-symbols": "^7.0.0",
     "minimist": "^1.2.8",
+    "prettier": "^3.3.3",
     "prompts": "^2.4.2",
     "shelljs": "^0.8.5",
     "table": "^6.8.2",
     "ts-node": "^10.9.2",
-    "unbuild": "^2.0.0",
-    "@inquirer/prompts": "^5.3.8"
+    "unbuild": "^2.0.0"
   },
   "dependencies": {
     "download": "^8.0.0",
-    "git-clone": "^0.2.0",
-    "rimraf": "^6.0.1",
     "figlet": "^1.7.0",
+    "git-clone": "^0.2.0",
     "ora": "^8.0.1",
+    "rimraf": "^6.0.1",
     "ssh2": "^1.15.0"
   }
 }
