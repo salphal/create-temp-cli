@@ -48,7 +48,7 @@ export default defineBuildConfig({
   sourcemap,
   // declaration: true, // 指定是否生成 .d.ts 声明文件
   /**
-   *
+   * 路径别名
    */
   alias: {
     '@': path.resolve(__dirname, 'src'),
