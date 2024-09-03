@@ -1,8 +1,7 @@
-import fs from "fs-extra";
-import path from "path";
+import fs from 'fs-extra';
+import path from 'path';
 
 (async function () {
-
   const str = '/Users/alphal/github/create-temp-cli/.front-cli/publish.config1.json';
 
   // fs.pathExists(path, (err, exists) => {
@@ -22,7 +21,7 @@ import path from "path";
   // });
 
   function getFileName(fullPath) {
-    if (typeof fullPath !== 'string' || fullPath.length <= 0) return "";
+    if (typeof fullPath !== 'string' || fullPath.length <= 0) return '';
     const pathList = fullPath.split(path.sep);
     const name = pathList[pathList.length - 1];
     if (name.indexOf('.') !== -1) {
@@ -31,8 +30,5 @@ import path from "path";
     return name;
   }
 
-  console.log("=>(test.js:25) getFileName", getFileName(str));
-
-
-
-}());
+  console.log('=>(test.js:25) getFileName', getFileName(str));
+})();

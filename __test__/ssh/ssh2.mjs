@@ -63,8 +63,8 @@ sshClient.on('ready', () => {
                 console.log('STDOUT: ' + data);
               })
               .stderr.on('data', (data) => {
-              console.log('STDERR: ' + data);
-            });
+                console.log('STDERR: ' + data);
+              });
           });
 
           innerSSHClient.exec('pwd', (err, stream) => {
@@ -77,11 +77,11 @@ sshClient.on('ready', () => {
               })
               .on('data', (data) => {
                 console.log('STDOUT: ' + data);
-              }).stderr.on('data', (data) => {
-              console.log('STDERR: ' + data);
-            });
+              })
+              .stderr.on('data', (data) => {
+                console.log('STDERR: ' + data);
+              });
           });
-
         })
         .on('error', (err) => {
           console.log('Inner SSH error:', err);
@@ -92,9 +92,8 @@ sshClient.on('ready', () => {
         username: serverConfig.username,
         password: serverConfig.password,
       });
-    }
+    },
   );
-
 });
 
 sshClient.connect(jumpServerConfig);

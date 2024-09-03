@@ -1,23 +1,10 @@
 #!/usr/bin/env node
 
-
 /**
  * https://github.com/marvinhagemeister/kolorist/blob/main/src/index.ts
  */
 
-
-import {
-  blue,
-  cyan,
-  green,
-  gray,
-  magenta,
-  red,
-  white,
-  yellow,
-  black
-} from 'kolorist';
-
+import { blue, cyan, green, gray, magenta, red, white, yellow, black } from 'kolorist';
 
 class Color {
   static black(message) {
@@ -57,7 +44,6 @@ class Color {
   }
 }
 
-
 const test = `
 ${Color.black('black')}
 ${Color.red('red')}
@@ -70,4 +56,4 @@ ${Color.white('white')}
 ${Color.gray('gray')}
 `;
 
-console.log("=>(color.cjs:18) test", test);
+console.log('=>(color.cjs:18) test', test);

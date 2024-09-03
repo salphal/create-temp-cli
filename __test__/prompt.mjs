@@ -1,10 +1,8 @@
 #!/usr/bin/env node
 
-
 /**
  * https://github.com/terkelg/prompts
  */
-
 
 import prompts from 'prompts';
 
@@ -29,13 +27,13 @@ const questions = [
     name: 'number',
     message: '数字输入',
     min: 2,
-    max: 10
+    max: 10,
   },
   {
     type: 'confirm',
     name: 'confirm',
     message: '确认 弹窗',
-    initial: true
+    initial: true,
   },
   {
     type: 'toggle',
@@ -43,13 +41,13 @@ const questions = [
     message: '是/否 确认弹窗',
     initial: true,
     active: 'yes',
-    inactive: 'no'
+    inactive: 'no',
   },
 
   {
     type: 'password',
     name: 'password',
-    message: '密码输入'
+    message: '密码输入',
   },
 
   {
@@ -57,7 +55,7 @@ const questions = [
     name: 'list',
     message: '输入列表',
     initial: '',
-    separator: ','
+    separator: ',',
   },
 
   {
@@ -65,35 +63,35 @@ const questions = [
     name: 'select',
     message: 'Select 单选',
     choices: [
-      {title: 'Red', description: 'This option has a description', value: '#ff0000'},
-      {title: 'Green', value: '#00ff00', disabled: true},
-      {title: 'Blue', value: '#0000ff'}
+      { title: 'Red', description: 'This option has a description', value: '#ff0000' },
+      { title: 'Green', value: '#00ff00', disabled: true },
+      { title: 'Blue', value: '#0000ff' },
     ],
-    initial: 1
+    initial: 1,
   },
   {
     type: 'multiselect',
     name: 'multiSelect',
     message: 'Select 多选',
     choices: [
-      {title: 'Red', value: '#ff0000'},
-      {title: 'Green', value: '#00ff00', disabled: true},
-      {title: 'Blue', value: '#0000ff', selected: true}
+      { title: 'Red', value: '#ff0000' },
+      { title: 'Green', value: '#00ff00', disabled: true },
+      { title: 'Blue', value: '#0000ff', selected: true },
     ],
     max: 2,
-    hint: '- Space to select. Return to submit'
+    hint: '- Space to select. Return to submit',
   },
   {
     type: 'autocomplete',
     name: 'picker',
     message: 'Pick your favorite actor',
     choices: [
-      {title: 'Cage'},
-      {title: 'Clooney', value: 'silver-fox'},
-      {title: 'Gyllenhaal'},
-      {title: 'Gibson'},
-      {title: 'Grant'}
-    ]
+      { title: 'Cage' },
+      { title: 'Clooney', value: 'silver-fox' },
+      { title: 'Gyllenhaal' },
+      { title: 'Gibson' },
+      { title: 'Grant' },
+    ],
   },
 
   {
@@ -103,13 +101,12 @@ const questions = [
   },
 ];
 
-const onCancel = prompt => {
+const onCancel = (prompt) => {
   console.log('Never stop prompting!');
   return true;
-}
+};
 
 (async () => {
-  const response = await prompts(questions, {onCancel});
+  const response = await prompts(questions, { onCancel });
   console.log(response);
 })();
-

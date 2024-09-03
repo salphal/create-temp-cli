@@ -1,4 +1,4 @@
-import {table} from 'table';
+import { table } from 'table';
 
 /**
  * https://github.com/gajus/table
@@ -16,7 +16,6 @@ const data = [
 console.log(table(data));
 
 class Table {
-
   static border = {
     topBody: `─`,
     topJoin: `┬`,
@@ -35,8 +34,8 @@ class Table {
     joinBody: `─`,
     joinLeft: `├`,
     joinRight: `┤`,
-    joinJoin: `┼`
-  }
+    joinJoin: `┼`,
+  };
 
   static defaultConfig = {
     title: null,
@@ -48,7 +47,6 @@ class Table {
   };
 
   static print(data, columns, options = {}) {
-
     const {
       title,
       columnAlign,
@@ -56,15 +54,15 @@ class Table {
       outBorderType = 'double',
       verticalBorder = false,
       horizontalBorder = false,
-    } = {...this.defaultConfig, ...options};
+    } = { ...this.defaultConfig, ...options };
 
     /** 列对齐方式: 默认全部左对齐 */
-    let tableColumns = data.map(() => ({alignment: 'left', width: columnWidth}));
+    let tableColumns = data.map(() => ({ alignment: 'left', width: columnWidth }));
 
     if (Array.isArray(columns) && columns.length) {
-      tableColumns = columns.map(column => ({
+      tableColumns = columns.map((column) => ({
         alignment: column.align || columnAlign,
-        width: column.width || columnWidth
+        width: column.width || columnWidth,
       }));
     }
 
@@ -79,7 +77,7 @@ class Table {
       config.header = {
         alignment: 'center',
         content: title,
-      }
+      };
     }
 
     /** 外边框样式: 单边 | 双边 ( 默认: 单边 ) */
@@ -96,12 +94,11 @@ class Table {
     if (!verticalBorder) {
       config.drawVerticalLine = (lineIndex, columnCount) => {
         return lineIndex === 0 || lineIndex === columnCount;
-      }
+      };
     }
 
     console.log(table(data, config));
   }
 }
-
 
 Table.print(data, {});

@@ -1,17 +1,14 @@
 import ora from 'ora';
 
-
 /**
  * https://github.com/sindresorhus/ora
  */
 
-
 class Loading {
-
   static spinner = ora({
-    prefixText: "",
-    suffixText: "...",
-    color: 'yellow'
+    prefixText: '',
+    suffixText: '...',
+    color: 'yellow',
   });
 
   static start(message) {
@@ -24,9 +21,8 @@ class Loading {
   }
 }
 
-Loading.start("loading");
+Loading.start('loading');
 
 setTimeout(() => {
   Loading.end();
 }, 3000);
-

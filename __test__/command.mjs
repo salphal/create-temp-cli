@@ -1,12 +1,10 @@
 #!/usr/bin/env node
 
-
 /**
  * https://github.com/tj/commander.js/blob/HEAD/Readme_zh-CN.md
  */
 
-
-import {program} from "commander";
+import { program } from 'commander';
 
 /**
  * 根据入参顺序定义参数
@@ -33,23 +31,27 @@ import {program} from "commander";
  *  @param defaultValue {string} - 参数默认值
  */
 
-
 program
   .name('create-temp') // 名称
   .usage('[...options]')
   .description('Create files based on templates') // 描述
   .version('1.0.0', '-v, --version') // 版本号
   // 自定义帮助提示信息
-  .addHelpText("before", () => "--------------------------------------------------------------------")
-  .addHelpText("after", () => "--------------------------------------------------------------------");
-
+  .addHelpText(
+    'before',
+    () => '--------------------------------------------------------------------',
+  )
+  .addHelpText(
+    'after',
+    () => '--------------------------------------------------------------------',
+  );
 
 const validateFirstParam = (param) => {
   if (typeof param === 'string') {
-    program.error('Param not a number.')
+    program.error('Param not a number.');
   }
   return param;
-}
+};
 
 program
   .command('demo') // 匹配命令的模版
@@ -59,12 +61,12 @@ program
   .argument('<second>', 'second parameter') // 根据入参顺序定义参数
   .option('-p, --param <optional-parameter>', 'optional parameter', 'defaultValue') // 具名参数
   .requiredOption('-m, --must <required-parameter>', 'required parameter', 'defaultValue') // 必填具名参数( 必须填写值, 或者具有默认值 )
-  .action((first, second, opts, cmd) => { // 若匹配成功, 则执行该回调
+  .action((first, second, opts, cmd) => {
+    // 若匹配成功, 则执行该回调
     console.log('=>(index.ts:68) first', first); // 只有顺序入参数可以这样取值
     console.log('=>(index.ts:68) second', second); // 只有顺序入参数可以这样取值
     console.log('=>(index.ts:68) opts', opts); // option 定义的参数集合
   });
-
 
 program
   .command('react')
@@ -76,7 +78,6 @@ program
   .action((opts, cmd) => {
     console.log('=>(index.ts:85) opts', opts);
   });
-
 
 /**
  * 解析参数

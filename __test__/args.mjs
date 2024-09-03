@@ -1,13 +1,10 @@
 #!/usr/bin/env node
 
-
 /**
  * https://github.com/minimistjs/minimist
  */
 
-
-import args from "minimist";
-
+import args from 'minimist';
 
 /**
  * 参数解析
@@ -23,18 +20,16 @@ import args from "minimist";
  */
 
 const argv = args(process.argv.slice(2), {
-  default: {help: false}, // 设置参数默认值
-  alias: {h: 'help'}, // 设置参数别名
+  default: { help: false }, // 设置参数默认值
+  alias: { h: 'help' }, // 设置参数别名
   string: [], // 这里设置的参数名会始终解析为字符串
   boolean: [], // 这里设置的参数名会始终解析为布尔值
 });
 
-
 console.log('=>(index.ts:16) argv', argv);
-
 
 /**
  * 执行当前进程的目录路径
  */
-const __dirname = process.cwd()
+const __dirname = process.cwd();
 console.log('=>(index.ts:17) cwd', cwd);

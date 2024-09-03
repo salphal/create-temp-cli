@@ -1,8 +1,8 @@
-import path from "path";
+import path from 'path';
 
 const str = '/Users/alpha/github/front-cli/dist.tar.gz';
 
-const {name, dir} = path.parse(str);
+const { name, dir } = path.parse(str);
 console.log('=>(tar.mjs:6) dir', dir);
 console.log('=>(tar.mjs:6) name', name);
 

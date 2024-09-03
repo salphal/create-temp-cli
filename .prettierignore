@@ -131,7 +131,6 @@ dist
 .pnp.*
 
 __template__
-__test__
 docs
 pnpm-lock.yaml
 README.md

@@ -1,10 +1,8 @@
 const download = require('download-git-repo');
 
-
 /**
  * https://gitlab.com/flippidippi/download-git-repo
  */
-
 
 /**
  * @param config
@@ -15,7 +13,7 @@ const download = require('download-git-repo');
  *  @property options {*} - clone 配置对象( 请求头等 )
  */
 async function clone(config) {
-  const {remote, branch, isDirect = true, outputPath, options = {clone: true}} = config;
+  const { remote, branch, isDirect = true, outputPath, options = { clone: true } } = config;
   return new Promise((resolve, reject) => {
     /**
      * 使用 http 从 master 处的 Github 存储库下载
@@ -26,21 +24,24 @@ async function clone(config) {
      */
     const url = `${isDirect ? 'direct:' : ''}${remote}#${branch}`;
     console.log('=>(download.cjs:28) url', url);
-    download('direct:https://github.com/salphal/create-temp-cli.git#main', outputPath, options, (err) => {
-    // download(url, outputPath, options, (err) => {
-      if (err) {
-        reject(err);
-      }
-    });
+    download(
+      'direct:https://github.com/salphal/create-temp-cli.git#main',
+      outputPath,
+      options,
+      (err) => {
+        // download(url, outputPath, options, (err) => {
+        if (err) {
+          reject(err);
+        }
+      },
+    );
     resolve();
   });
 }
-
 
 clone({
   // direct:https://github.com/salphal/create-temp-cli.git#main
   remote: 'https://github.com/salphal/create-temp-cli.git',
   branch: 'main',
-  outputPath: '.tmp'
+  outputPath: '.tmp',
 });
-
