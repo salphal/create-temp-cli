@@ -12,8 +12,8 @@
     "dist"
   ],
   "scripts": {
-    "dev": "unbuild --stub",
-    "build": "unbuild --minify",
+    "dev": "NODE_ENV=development unbuild --stub",
+    "build": "NODE_ENV=production unbuild --minify",
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "npm run build",
     "prettier": "prettier . --write --check --fix"

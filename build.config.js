@@ -1,15 +1,10 @@
 import path from 'node:path';
-import url from 'node:url';
 import { defineBuildConfig } from 'unbuild';
-import { configDotenv } from 'dotenv';
-
-const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
-configDotenv({ path: path.resolve(__dirname, '.env') });
 
 let entries = ['src/index'];
 let sourcemap = false;
 
-if (process.env.ENV_MODE === 'development') {
+if (process.env.NODE_ENV === 'development') {
   entries = [
     'src/index',
     /**
