@@ -57,7 +57,11 @@ const publishCli = new PublishCli({
 program
   .name('front-cli')
   .usage('[ create | init ]')
-  .description('Create files based on templates')
+  .description(
+    `
+  - Create components based on templates.
+  - Release products based on configuration.`,
+  )
   .version('1.0.0', '-v, --version');
 
 //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -//
