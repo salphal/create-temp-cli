@@ -86,23 +86,5 @@ export default defineBuildConfig({
     'rollup:options'(ctx, options) {
       options.plugins = [options.plugins];
     },
-
-    // "build:prepare": (ctx: BuildContext) => void | Promise<void>,
-    // "build:before": (ctx: BuildContext) => void | Promise<void>,
-    // "build:done": (ctx: BuildContext) => void | Promise<void>,
-    // "rollup:options": (ctx: BuildContext, options: RollupOptions) => void | Promise<void>,
-    // "rollup:build": (ctx: BuildContext, build: RollupBuild) => void | Promise<void>,
-    // "rollup:dts:options": (ctx: BuildContext, options: RollupOptions) => void | Promise<void>,
-    // "rollup:dts:build": (ctx: BuildContext, build: RollupBuild) => void | Promise<void>,
-    // "rollup:done": (ctx: BuildContext) => void | Promise<void>,
-    // "mkdist:entries": (ctx: BuildContext, entries: MkdistBuildEntry[]) => void | Promise<void>,
-    // "mkdist:entry:options": (ctx: BuildContext, entry: MkdistBuildEntry, options: MkdistOptions) => void | Promise<void>,
-    // "mkdist:entry:build": (ctx: BuildContext, entry: MkdistBuildEntry, output: {writtenFiles: string[];}) => void | Promise<void>,
-    // "mkdist:done": (ctx: BuildContext) => void | Promise<void>,
-    // "untyped:entries": (ctx: BuildContext, entries: UntypedBuildEntry[]) => void | Promise<void>,
-    // "untyped:entry:options": (ctx: BuildContext, entry: UntypedBuildEntry, options: any) => void | Promise<void>,
-    // "untyped:entry:schema": (ctx: BuildContext, entry: UntypedBuildEntry, schema: Schema) => void | Promise<void>,
-    // "untyped:entry:outputs": (ctx: BuildContext, entry: UntypedBuildEntry, outputs: UntypedOutputs) => void | Promise<void>,
-    // "untyped:done": (ctx: BuildContext) => void | Promise<void>,
   },
 });
