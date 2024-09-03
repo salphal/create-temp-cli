@@ -21,6 +21,7 @@ import { Envs } from '@type/env';
 import { CliEnvs, TempInfoList, TempNameList } from './template';
 import { cloneTemplates } from './utils/clone-temp';
 import { setupEnvs } from './utils/setup-envs';
+import { CONFIG_BASE_NAME } from '@constants/common';
 
 interface TemplateContext extends Envs<CliEnvs> {
   /** 默认模版目录路径 */
@@ -117,7 +118,7 @@ export class TemplateCli extends FrontCli<TemplateContext> {
       callback: async (ctx: any) => {
         const { tempDirPathList, envs, __dirname } = this.context;
 
-        const tempDirPath = path.join(__dirname, '__template__');
+        const tempDirPath = path.join(__dirname, `${CONFIG_BASE_NAME}/__template__`);
         const outputDirPath = path.join(__dirname, '__output__');
 
         this.context.tempDirPath = tempDirPath;

@@ -79,6 +79,7 @@ program
  */
 program
   .command('download')
+  .argument('<name>', 'File Name')
   .alias('dw')
   .action((name, opts: any, cmd: any) => {
     templateCli.cloneFile(name);
