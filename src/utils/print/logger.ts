@@ -5,7 +5,7 @@ import {
   yellow,
 } from 'kolorist';
 import {Table} from "./table";
-import {Banner} from "@utils";
+import {Banner} from "./banner";
 
 
 export class Logger {
