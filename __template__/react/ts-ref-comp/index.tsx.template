@@ -9,13 +9,13 @@ const defaultPagination = {
   total: 0
 };
 
-interface Pagination {
+interface IPagination {
   currentPage: number;
   pageSize: number;
   total: number;
 }
 
-interface FormData {
+interface IFormData {
 }
 
 export interface ${CompName}Props {
@@ -37,11 +37,11 @@ const ${CompName}: React.ForwardRefRenderFunction<${CompName}Ref, ${CompName}Pro
 
   const [form] = Form.useForm();
 
-  const [formData, setFormData] = useState<FormData>({});
+  const [formData, setFormData] = useState<IFormData>({});
   const [loading, setLoading] = useState<boolean>(false);
   const [dataSource, setDataSource] = useState<any[]>([]);
   const [refreshTableCount, setRefreshTableCount] = useState<number>(0);
-  const [pagination, setPagination] = useState<Pagination>(defaultPagination);
+  const [pagination, setPagination] = useState<IPagination>(defaultPagination);
 
   useImperativeHandle(ref, () => ({
   }));
