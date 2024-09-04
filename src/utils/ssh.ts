@@ -5,6 +5,7 @@ interface BaseConfig {
   port: number;
   username: string;
   password: string;
+  privateKey?: string;
 }
 
 export interface ServerConfig extends BaseConfig {}
@@ -12,8 +13,8 @@ export interface ServerConfig extends BaseConfig {}
 export interface JumpServerConfig extends BaseConfig {}
 
 export interface SSHConfig {
-  serverConfig: ServerConfig;
-  jumpServerConfig: JumpServerConfig;
+  connect: ServerConfig;
+  jumpServer: JumpServerConfig;
 }
 
 class SSH {
@@ -31,8 +32,8 @@ class SSH {
 
   constructor(config: SSHConfig) {
     this.config = config;
-    this.serverConfig = config.serverConfig;
-    this.jumpServerConfig = config.jumpServerConfig;
+    this.serverConfig = config.connect;
+    this.jumpServerConfig = config.jumpServer;
   }
 
   /**
