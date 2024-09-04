@@ -285,8 +285,8 @@ export class SSH {
     return await this.exec(command);
   }
 
-  async rm(path: string) {
-    const command = `rm -rf ${path}`;
+  async rm(...paths: string[]) {
+    const command = `rm -rf ${paths.join(' ')}`;
     return await this.exec(command);
   }
 
