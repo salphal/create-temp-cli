@@ -1,7 +1,6 @@
 import shell from 'shelljs';
 
 export class ShellExtra {
-
   static _exec(stat) {
     console.log('[ _exec stat ]', stat);
     stat.code !== 0 && console.log(stat.stderr);
@@ -98,9 +97,7 @@ export class ShellExtra {
     if (!dest) command = `tar -xzvf ${src} -C $(dirname ${src})`;
     return this.exec(command);
   }
-
 }
-
 
 // console.log(ShellExtra.which('git'));
 // console.log(ShellExtra.cd('/'));

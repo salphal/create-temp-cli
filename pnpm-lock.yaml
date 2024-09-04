@@ -23,6 +23,9 @@ importers:
       rimraf:
         specifier: ^6.0.1
         version: 6.0.1
+      shelljs:
+        specifier: ^0.8.5
+        version: 0.8.5
       ssh2:
         specifier: ^1.15.0
         version: 1.15.0
@@ -87,9 +90,6 @@ importers:
       prompts:
         specifier: ^2.4.2
         version: 2.4.2
-      shelljs:
-        specifier: ^0.8.5
-        version: 0.8.5
       table:
         specifier: ^6.8.2
         version: 6.8.2
