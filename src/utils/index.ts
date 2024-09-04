@@ -13,7 +13,7 @@ export * from './download/clone';
 export * from './camelcase';
 export * from './file-extra';
 export * from './path-extra';
-export * from './shell-exra';
+export * from './shell-extra';
 export * from './tar-cmd';
 export * from './prompt';
 export * from './ssh';
