@@ -1,6 +1,4 @@
 import shell from 'shelljs';
-import path from 'path';
-import { PathExtra } from '@utils/path-extra';
 import { TarCmd } from '@utils/tar-cmd';
 
 export class ShellExtra {
