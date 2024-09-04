@@ -56,7 +56,7 @@ const publishCli = new PublishCli({
  */
 program
   .name('front-cli')
-  .usage('[ create | init ]')
+  .usage('[ create | download | publish ]')
   .description(
     `
   - Create components based on templates.
