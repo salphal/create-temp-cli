@@ -1,4 +1,7 @@
 import { Client, ClientChannel } from 'ssh2';
+import path from 'path';
+import { PathExtra } from '@utils/path-extra';
+import { TarCmd } from '@utils/tar-cmd';
 
 interface BaseConfig {
   host: string;
@@ -14,37 +17,37 @@ export interface JumpServerConfig extends BaseConfig {}
 
 export interface SSHConfig {
   connect: ServerConfig;
-  jumpServer: JumpServerConfig;
+  jumpServer?: JumpServerConfig;
 }
 
-class SSH {
+export class SSH {
   config: SSHConfig;
 
   /** 服务器配置 */
   serverConfig: ServerConfig;
   /** 跳板机配置 */
-  jumpServerConfig: JumpServerConfig;
+  jumpServerConfig: JumpServerConfig | undefined;
 
   /** 服务器客户端 */
-  client = new Client();
+  _client = new Client();
   /** 跳板机客户端 */
-  jumpClient = new Client();
+  _jumpClient = new Client();
 
   constructor(config: SSHConfig) {
     this.config = config;
     this.serverConfig = config.connect;
-    this.jumpServerConfig = config.jumpServer;
+    if (config.jumpServer) this.jumpServerConfig = config.jumpServer;
   }
 
   /**
    * 直接连接服务器
    */
-  async connect(stream?: ClientChannel) {
+  async connect(stream?: ClientChannel): Promise<SSH> {
     const _this = this;
     console.log('[ connect server config ]', _this.serverConfig);
 
     return new Promise(function (resolve, reject) {
-      _this.client
+      _this._client
         .on('ready', () => {
           console.log('[ connect ready ]');
 
@@ -79,18 +82,24 @@ class SSH {
   /**
    * 跳板机连接服务器
    */
-  async forwardOutConnect() {
+  async forwardOutConnect(): Promise<SSH> {
     const _this = this;
+
+    if (!_this.jumpServerConfig) {
+      console.log('[ forward connect err ]: jumpServerConfig is not exists');
+      return Promise.reject(false);
+    }
+
     console.log('[ forward connect server config ]', _this.jumpServerConfig);
 
     return new Promise((resolve, reject) => {
-      _this.jumpClient
+      _this._jumpClient
         .on('ready', () => {
-          console.log('[ forwardout connect ready ]');
+          console.log('[ forward connect ready ]');
 
-          _this.jumpClient.forwardOut(
-            _this.jumpServerConfig.host,
-            _this.jumpServerConfig.port,
+          _this._jumpClient.forwardOut(
+            _this.jumpServerConfig!.host,
+            _this.jumpServerConfig!.port,
             _this.serverConfig.host,
             _this.serverConfig.port,
             async (err, stream) => {
@@ -113,10 +122,10 @@ class SSH {
           console.log('[ forwardout connect closed ]');
         })
         .connect({
-          host: _this.jumpServerConfig.host,
-          port: _this.jumpServerConfig.port,
-          username: _this.jumpServerConfig.username,
-          password: _this.jumpServerConfig.password,
+          host: _this.jumpServerConfig!.host,
+          port: _this.jumpServerConfig!.port,
+          username: _this.jumpServerConfig!.username,
+          password: _this.jumpServerConfig!.password,
         });
     });
   }
@@ -132,7 +141,7 @@ class SSH {
     console.log(`[ exec command ]: ${cmd}`);
 
     return new Promise((resolve, reject) => {
-      _this.client.exec(cmd, (err, stream) => {
+      _this._client.exec(cmd, (err, stream) => {
         if (err) {
           console.log('[ exec err ]', err);
           reject(err);
@@ -164,16 +173,16 @@ class SSH {
            * 处理来自标准输出的正常命令输出
            */
           .on('data', (data: ArrayBuffer) => {
-            console.log('[ exec result ]', data.toString());
             stdout += data.toString();
+            console.log('[ exec result ]', stdout);
             resolve(stdout);
           })
           /**
            * 处理来自标准错误输出的错误信息
            */
           .stderr.on('data', (data) => {
-            console.log('[ exec stderr ]', data);
             stderr += data.toString();
+            console.log('[ exec stderr ]', stderr);
             reject(stderr);
           });
       });
@@ -192,7 +201,7 @@ class SSH {
     const _this = this;
 
     return new Promise((resolve, reject) => {
-      _this.client.sftp((err, sftp) => {
+      _this._client.sftp((err, sftp) => {
         if (err) {
           console.error('[ upload err ]:', err);
           reject(err);
@@ -222,7 +231,7 @@ class SSH {
     const _this = this;
 
     return new Promise((resolve, reject) => {
-      _this.client.sftp((err, sftp) => {
+      _this._client.sftp((err, sftp) => {
         if (err) {
           console.error('[ download error ]:', err);
           reject(err);
@@ -241,12 +250,12 @@ class SSH {
   }
 
   end() {
-    this.client.end();
-    this.jumpClient.end();
+    this._client.end();
+    this._jumpClient.end();
   }
 
   async pwd() {
-    const command = ``;
+    const command = `pwd`;
     return await this.exec(command);
   }
 
@@ -276,8 +285,8 @@ class SSH {
     return await this.exec(command);
   }
 
-  async rm(src: string, dest: string) {
-    const command = `rm -rf ${src} ${dest}`;
+  async rm(path: string) {
+    const command = `rm -rf ${path}`;
     return await this.exec(command);
   }
 
@@ -312,26 +321,35 @@ class SSH {
   /**
    * 压缩文件
    *
-   * @param remotePath {string} - 远程文件的路径
-   * @param outputTarPath {string} - 压缩文件的路径
+   * @param src {string} - 远程文件的路径
+   * @param dest {string} - 压缩文件的路径
    *
    * eg: tar('/opt/dist', '/opt/dist.tar.gz');
    */
-  async tar(remotePath: string, outputTarPath: string) {
-    const command = `tar -czvf ${outputTarPath} -C $(dirname ${remotePath}) $(basename ${remotePath})`;
+  async tar(src: string, dest: string | null = null) {
+    const command = TarCmd.getTarCmd(src, dest);
     return await this.exec(command);
   }
 
   /**
    * 解压文件
    *
-   * @param remoteTarPath {string} -
-   * @param outputDir {string} -
+   * @param src {string} -
+   * @param dest {string} -
    *
    * eg: untar('/opt/dist.tar.gz', '/opt');
    */
-  async untar(remoteTarPath: string, outputDir: string) {
-    const command = `tar -xzvf ${remoteTarPath} -C ${outputDir}`;
+  async untar(src: string, dest: string | null = null) {
+    const command = TarCmd.getUnTarCmd(src, dest);
     return await this.exec(command);
   }
 }
+
+// const ssh = new SSH({});
+// ssh
+//   .connect()
+//   .then((client) => {
+//      client.end();
+//   })
+//   .catch((err) => {})
+//   .finally(() => {});

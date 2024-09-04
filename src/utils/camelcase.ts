@@ -54,6 +54,6 @@ export function CAMELCASE(fileName: string): string {
 export function SHORTCAMELCASE(fileName: string): string {
   return fileName
     .split(/[-_\s]/)
-    .map((v) => v.slice(0, 1).toUpperCase())
+    .map((v) => (v.length >= 1 ? v.slice(0, 1).toUpperCase() : ''))
     .join('');
 }

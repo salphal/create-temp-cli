@@ -12,6 +12,8 @@ export * from './download/clone';
 
 export * from './camelcase';
 export * from './file-extra';
-export * from './prompt';
+export * from './path-extra';
 export * from './shell-exra';
+export * from './tar-cmd';
+export * from './prompt';
 export * from './ssh';

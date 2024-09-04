@@ -1,4 +1,7 @@
 import shell from 'shelljs';
+import path from 'path';
+import { PathExtra } from '@utils/path-extra';
+import { TarCmd } from '@utils/tar-cmd';
 
 export class ShellExtra {
   static _exec(stat: any) {
@@ -86,15 +89,29 @@ export class ShellExtra {
     }
   }
 
+  /**
+   * @param src {string} - 资源来源路径
+   * @param dest {string | null} - 压缩目标路径
+   *
+   * eg:
+   *  - tar("/path/to/dist.tar.gz");
+   *  - tar("/path/to/dist", "/path/to/dist.tar.gz");
+   */
   static tar(src: string, dest: string | null = null) {
-    let command = `tar -czvf ${dest} -C $(dirname ${src}) $(basename ${src})`;
-    if (!dest) command = `tar -czvf ${src + '.tar.gz'} -C $(dirname ${src}) $(basename ${src})`;
+    const command = TarCmd.getTarCmd(src, dest);
     return this.exec(command);
   }
 
+  /**
+   * @param src {string} - 资源来源路径
+   * @param dest {string | null} - 解缩目标路径
+   *
+   * eg:
+   *  - untar("/path/to/dist.tar.gz");
+   *  - untar("/path/to/dist.tar.gz", "/path/to);
+   */
   static untar(src: string, dest: string | null = null) {
-    let command = `tar -xzvf ${src} -C ${dest}`;
-    if (!dest) command = `tar -xzvf ${src} -C $(dirname ${src})`;
+    const command = TarCmd.getUnTarCmd(src, dest);
     return this.exec(command);
   }
 }
