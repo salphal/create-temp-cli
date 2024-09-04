@@ -52,7 +52,7 @@ export class SSH {
           console.log('[ connect ready ]');
 
           // _this.exec('ll');
-          _this.exec('ip addr show | grep 192');
+          // _this.exec('ip addr show | grep 192.168');
           resolve(_this);
         })
         .on('error', (err) => {

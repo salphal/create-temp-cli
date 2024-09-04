@@ -59,8 +59,6 @@ program
   .alias('dm') // 定义 command 别名
   .argument('<first>', 'first parameter', validateFirstParam) // 根据入参顺序定义参数
   .argument('<second>', 'second parameter') // 根据入参顺序定义参数
-  .option('-p, --param <optional-parameter>', 'optional parameter', 'defaultValue') // 具名参数
-  .requiredOption('-m, --must <required-parameter>', 'required parameter', 'defaultValue') // 必填具名参数( 必须填写值, 或者具有默认值 )
   .action((first, second, opts, cmd) => {
     // 若匹配成功, 则执行该回调
     console.log('=>(index.ts:68) first', first); // 只有顺序入参数可以这样取值
@@ -71,12 +69,12 @@ program
 program
   .command('react')
   .alias('r')
-  .option('-cn [compName], --comp-name <compName>', 'Component name', 'camelCase')
-  .option('-fn [fileName], --file-name [fileName]', 'File name', 'camel-case')
-  .option('-ty [templateType], --template-type <templateType>', 'Template type')
-  .option('-op [outputPath], --output-path [outputPath]', 'Output path')
+  .option('-p, --optional <optional>', 'optional parameter') // 具名参数
+  .requiredOption('-m, --required <required>', 'required parameter', 'defaultValue') // 必填具名参数( 必须填写值, 或者具有默认值 )
   .action((opts, cmd) => {
     console.log('=>(index.ts:85) opts', opts);
+    console.log('=>(index.ts:85) opts.optional', opts.optional);
+    console.log('=>(index.ts:85) opts.required', opts.required);
   });
 
 /**

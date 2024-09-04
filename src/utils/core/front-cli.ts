@@ -26,8 +26,9 @@ export abstract class FrontCli<T> {
   }
 
   /** 自动执行 */
-  start() {
+  start(params?: any) {
     try {
+      this.context = { ...this.context, ...params };
       this.scheduler.autoExecute();
     } catch (err: any) {
       Logger.error(err);

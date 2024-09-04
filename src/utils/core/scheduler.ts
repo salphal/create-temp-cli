@@ -2,8 +2,8 @@ import { DoublyLinked, LinkedNode } from './doubly-linked';
 
 export const ResCode = {
   back: -1,
-  stop: 0,
   next: 1,
+  jump: 2,
   end: 99,
 };
 
@@ -93,34 +93,41 @@ export class StepScheduler {
         console.log('[ Log ]: Execute node error, ', err);
         reject(err);
       }
-      const { code, data = {} } = res;
-      if (code === ResCode.back) {
-        if (this.currentNode!.prev) {
-          this._isStart = false;
-          this.currentNode = this.currentNode!.prev;
+      if (res && typeof res.code === 'number') {
+        const { code, data = {} } = res;
+        if (code === ResCode.back) {
+          if (this.currentNode!.prev) {
+            this._isStart = false;
+            this.currentNode = this.currentNode!.prev;
+          } else {
+            this._isStart = true;
+          }
+          resolve(this.context);
+        } else if (code === ResCode.next) {
+          if (this.currentNode!.next) {
+            this._isEnd = false;
+            this.currentNode = this.currentNode!.next;
+          } else {
+            this._isEnd = true;
+          }
+          this.context = { ...this.context, ...data };
+          resolve(this.context);
+        } else if (code === ResCode.jump) {
+          if (this.currentNode!.next && this.currentNode!.next.next) {
+            this._isEnd = false;
+            this.currentNode = this.currentNode!.next!.next;
+          } else {
+            this._isEnd = true;
+          }
+        } else if (code === ResCode.end) {
+          console.log('[ Log ]: All steps completed. ');
         } else {
-          this._isStart = true;
-        }
-        resolve(this.context);
-      } else if (code === ResCode.next) {
-        if (this.currentNode!.next) {
-          this._isEnd = false;
-          this.currentNode = this.currentNode!.next;
-        } else {
-          this._isEnd = true;
-        }
-        this.context = { ...this.context, ...data };
-        resolve(this.context);
-      } else if (code === ResCode.stop) {
-      } else if (code === ResCode.end) {
-      } else {
-        if (res !== undefined && res !== null) {
           console.log(
             `[ Log ]: Please return legal result: { code, data, msg }, current return:`,
             res,
           );
+          reject(null);
         }
-        reject(null);
       }
     });
   }

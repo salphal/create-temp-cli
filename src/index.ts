@@ -13,6 +13,7 @@ import { Envs } from '@type/env';
 import { CliEnvs } from '@clis/template/template';
 import { TemplateCli } from '@clis/template';
 import { PublishCli } from '@clis/publish';
+import { Logger } from '@utils';
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -97,15 +98,28 @@ program
 program
   .command('publish')
   .alias('pb')
-  .action((name, opts: any, cmd: any) => {
-    publishCli.start();
+  .option('-t, --type <type>', 'Rollback', 'publish')
+  .action((opts: any, cmd: any) => {
+    console.log('=>(index.ts:103) opts.type', opts.type);
+    if (typeof opts.type === 'string' && opts.type.length) {
+      publishCli.start({ type: opts.type });
+    } else {
+      Logger.table(
+        [
+          ['parameter', 'description'],
+          ['publish( default )', 'Publish dist to server'],
+          ['rollback', 'Roll back the specified version'],
+        ],
+        [{ width: 20 }, { width: 50 }],
+        {
+          title: 'front-cli publish -t [ publish | rollback ]',
+        },
+      );
+    }
   });
 
 //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -//
 
-/**
- * 下载 预设模版 和 环境变量配置文件 到本地
- */
 program.command('test').action(async (opts: any, cmd: any) => {
   __test__();
 });
