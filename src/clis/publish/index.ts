@@ -16,9 +16,7 @@ import { CONFIG_BASE_NAME } from '@constants/common';
 import { PublishConfig, PublishConfigList } from './publish';
 import { getPublishConfigByEnvName } from '@clis/publish/utils/publish';
 import { SSH } from '@utils';
-import dayjs from 'dayjs';
 import { createBackupName, filterExpiredFiles } from '@clis/publish/utils/backup';
-import * as process from 'process';
 
 interface IPublishContext extends Envs {
   /** 部署信息配置列表 */
