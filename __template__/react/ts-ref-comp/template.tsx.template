@@ -1,6 +1,22 @@
 import React, { useState, useEffect, useRef, Ref, useImperativeHandle } from 'react';
 import classNames from 'classnames';
 import styles from './index.module.scss';
+import { Form, message as messageApi } from 'antd';
+
+const defaultPagination = {
+  currentPage: 1,
+  pageSize: 20,
+  total: 0
+};
+
+interface Pagination {
+  currentPage: number;
+  pageSize: number;
+  total: number;
+}
+
+interface FormData {
+}
 
 export interface ${CompName}Props {
   children?: any;
@@ -19,10 +35,49 @@ const ${CompName}: React.ForwardRefRenderFunction<${CompName}Ref, ${CompName}Pro
 
   const {} = props;
 
+  const [form] = Form.useForm();
+
+  const [formData, setFormData] = useState<FormData>({});
+  const [loading, setLoading] = useState<boolean>(false);
+  const [dataSource, setDataSource] = useState<any[]>([]);
+  const [refreshTableCount, setRefreshTableCount] = useState<number>(0);
+  const [pagination, setPagination] = useState<Pagination>(defaultPagination);
+
   useImperativeHandle(ref, () => ({
   }));
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    const { currentPage, pageSize } = pagination;
+    const params = {
+      currentPage,
+      pageSize
+    };
+    fetchDataSource(params);
+  }, [
+    pagination.currentPage,
+    pagination.pageSize,
+    refreshTableCount
+  ]);
+
+  const fetchDataSource = async (params: any) => {
+    try {
+
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const refreshTable = () => {
+    setRefreshTableCount(count => ++count);
+  };
+
+  const formOnValueChange = (changedValues: any, allChangedValues: any) => {
+    setFormData(allChangedValues);
+  };
+
+  const paginationOnChange = (currentPage: number, pageSize: number) => {
+    setPagination((pagination) => ({ ...pagination, currentPage, pageSize }));
+  };
 
   const handle${CompName}EventAspect = (
     type: string,
