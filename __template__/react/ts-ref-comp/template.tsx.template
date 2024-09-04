@@ -101,6 +101,11 @@ const ${CompName}: React.ForwardRefRenderFunction<${CompName}Ref, ${CompName}Pro
   const handle${CompName}OnCancel = () => {};
 
   const handle${CompName}OnReset = () => {
+    form.resetFields();
+    setFormData({});
+    setLoading(false);
+    setDataSource([]);
+    setPagination(defaultPagination);
   };
 
   return (
