@@ -2,9 +2,11 @@ import {
   FrontCli,
   FsExtra,
   Logger,
+  PathExtra,
   Prompt,
   PromptChoices,
   ResCode,
+  ShellExtra,
   StepList,
   StepScheduler,
 } from '@utils';
@@ -13,6 +15,10 @@ import path from 'path';
 import { CONFIG_BASE_NAME } from '@constants/common';
 import { PublishConfig, PublishConfigList } from './publish';
 import { getPublishConfigByEnvName } from '@clis/publish/utils/publish';
+import { SSH } from '@utils';
+import dayjs from 'dayjs';
+import { createBackupName, filterExpiredFiles } from '@clis/publish/utils/backup';
+import * as process from 'process';
 
 interface IPublishContext extends Envs {
   /** 部署信息配置列表 */
@@ -34,7 +40,7 @@ export class PublishCli extends FrontCli<IPublishContext> {
     currentPublishConfig: {
       envName: 'dev',
       local: {
-        outputName: 'dist',
+        outputName: 'dist.tar.gz',
       },
       server: {
         connect: {
@@ -44,12 +50,15 @@ export class PublishCli extends FrontCli<IPublishContext> {
           password: 'password',
           privateKey: '/path/to/my/key',
         },
+        isBackup: true,
         backup: {
+          dirName: 'time-machine',
           format: 'YYYY-MM-DD-hh-mm-ss',
           max: 5,
         },
-        staticAbsolutePath: '/etc/nginx/html/demo',
-        restartCommand: 'nginx -s reload',
+        publishDir: '/etc/nginx/html/demo',
+        appName: 'dist',
+        restartCmd: 'nginx -s reload',
       },
     },
     envNameConfigChoices: [],
@@ -63,7 +72,9 @@ export class PublishCli extends FrontCli<IPublishContext> {
   stepList: StepList = [
     {
       name: 'step_01',
-      remark: ``,
+      remark: `
+        获取部署配置信息列表
+      `,
       callback: async (ctx: IPublishContext) => {
         const { __dirname } = this.context;
 
@@ -103,9 +114,12 @@ export class PublishCli extends FrontCli<IPublishContext> {
         };
       },
     },
+
     {
       name: 'step_02',
-      remark: ``,
+      remark: `
+        用户选择其中一个
+      `,
       callback: async (ctx: IPublishContext) => {
         const {} = this.context;
 
@@ -119,14 +133,7 @@ export class PublishCli extends FrontCli<IPublishContext> {
           this.context.publishConfigList,
         );
 
-        // const srcPath = await TarExtra.compress("/Users/alphal/github/create-temp-cli/test");
-        // const srcPath = await TarExtra.compress("/Users/alphal/github/create-temp-cli/test", "/Users/alphal/github/create-temp-cli/__output__");
-        // console.log('=>(index.ts:105) srcPath', srcPath);
-
-        // const destPath = await TarExtra.decompress('/Users/alpha/github/front-cli/test.tar.gz');
-        // const destPath = await TarExtra.decompress("/Users/alphal/github/create-temp-cli/test.tar.gz");
-        // const destPath = await TarExtra.decompress("/Users/alphal/github/create-temp-cli/test.tar.gz", "/Users/alphal/github/create-temp-cli/__output__");
-        // console.log('=>(index.ts:107) destPath', destPath);
+        Logger.info(this.context.currentPublishConfig);
 
         return {
           code: ResCode.next,
@@ -134,8 +141,121 @@ export class PublishCli extends FrontCli<IPublishContext> {
         };
       },
     },
+
     {
       name: 'step_03',
+      remark: ``,
+      callback: async (ctx: IPublishContext) => {
+        const {} = this.context;
+
+        const {
+          currentPublishConfig: {
+            local: { outputName },
+            server: {
+              connect,
+              jumpServer,
+              publishDir,
+              appName,
+              restartCmd,
+              isBackup,
+              backup: { dirName: backupDirName, format: backupFormat, max: backupMax },
+            },
+          },
+          __dirname,
+        } = this.context;
+
+        const outputTarName = PathExtra.fixTarExt(outputName);
+        const outputBaseName = PathExtra.__basename(outputName);
+
+        /** 压缩本地产物 */
+        ShellExtra.tar(path.join(__dirname, outputTarName));
+
+        /** 创建 ssh 连接远程服务器 */
+        const ssh = new SSH({ connect, jumpServer });
+
+        ssh
+          .connect()
+          .then(async (client) => {
+            const { name, dir } = path.parse(publishDir);
+
+            /** 本地构建产物的路径 */
+            const localOutputPath = path.join(__dirname, outputTarName);
+            /** 发布到远程的路径 */
+            const remoteOutputPath = path.join(publishDir, outputBaseName);
+            /** 发布到远程的 .tar.gz 路径 */
+            const remoteOutputTarPath = path.join(publishDir, outputTarName);
+            /** 备份文件的路径夹路径 */
+            const backupDir = path.join(publishDir, backupDirName);
+
+            /** 是否存在备份文件夹 */
+            const hasBackupDir = await client.isDir(backupDir);
+            /** 没有备份文件, 创建备份文件夹 */
+            if (!hasBackupDir) {
+              await client.mkdir(backupDir);
+            }
+
+            /** 删除旧的构建产物 */
+            await client.rm(remoteOutputPath);
+
+            /** 上传新的构建 */
+            await client.upload(localOutputPath, remoteOutputTarPath);
+
+            /** 解压构建产物 */
+            await client.untar(remoteOutputTarPath);
+
+            /** 重命名( 若真实名称和打包名称不同时 ) */
+            if (outputBaseName !== appName) {
+              const oldNamePath = path.join(publishDir, outputBaseName);
+              const newNamePath = path.join(publishDir, appName);
+              if (await client.isDir(newNamePath)) {
+                await client.rm(newNamePath);
+              }
+              await client.mv(oldNamePath, newNamePath);
+            }
+
+            /** 备份 */
+            if (isBackup) {
+              const backupFIleName = createBackupName(outputBaseName, backupFormat);
+              const backupFileDir = path.join(publishDir, backupDirName);
+              const backupFilePath = path.join(publishDir, backupDirName, backupFIleName);
+
+              /** 备份当前产物 */
+              await client.cp(remoteOutputTarPath, backupFilePath);
+
+              /** 获取备份列表 */
+              const backupList = await client.ls(backupDir);
+
+              /** 获取多余的备份 */
+              const expiredFiles = filterExpiredFiles(backupFileDir, backupList, backupMax);
+
+              Logger.info(expiredFiles);
+
+              /** 移除多余备份 */
+              if (expiredFiles.length) {
+                await client.rm(...expiredFiles);
+              }
+
+              /** 删除本次构建的产物 */
+              await client.rm(remoteOutputTarPath);
+            }
+
+            /** 重启服务 */
+            await client.exec(restartCmd);
+
+            client.end();
+          })
+          .catch((err) => {})
+          .finally(() => {});
+
+        return {
+          code: ResCode.end,
+          data: {},
+        };
+      },
+    },
+
+    {
+      name: 'step_04',
       remark: ``,
       callback: async (ctx: IPublishContext) => {
         const {} = this.context;

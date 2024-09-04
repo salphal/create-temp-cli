@@ -19,6 +19,8 @@ export interface IServer {
 export interface IJumpServer extends IServer {}
 
 export interface IBackup {
+  /** 备份文件名 */
+  dirName: string;
   /** 时间格式 */
   format: string;
   /** 备份最大数量 */
@@ -30,12 +32,16 @@ export interface ServerConfig {
   connect: IServer;
   /** 跳板机配置 */
   jumpServer?: IJumpServer;
+  /** 是否备份 */
+  isBackup: boolean;
   /** 备份信服 */
   backup: IBackup;
-  /** 服务器构建产物所在的据对路径 */
-  staticAbsolutePath: string;
+  /** 发布路径 */
+  publishDir: string;
+  /** 服务名称 */
+  appName: string;
   /** 重启服务器的命令 */
-  restartCommand: string;
+  restartCmd: string;
 }
 
 export interface PublishConfig {
