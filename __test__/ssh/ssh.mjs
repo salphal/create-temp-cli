@@ -224,7 +224,7 @@ class SSH {
   }
 
   async pwd() {
-    const command = ``;
+    const command = `pwd`;
     return await this.exec(command);
   }
 
