@@ -9,6 +9,7 @@ import {
   SHORTCAMELCASE,
   PromptChoices,
   Logger,
+  FsExtra,
 } from '@utils';
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -221,9 +222,7 @@ export async function writeTempListToTarget(
 
     if (['README.md'].includes(realFileName)) continue;
 
-    fs.writeFile(outputFullPath, content as string, 'utf-8', (err) => {
-      if (err) Logger.error(`${err}`);
-    });
+    await FsExtra.write(outputFullPath, content as string);
   }
 
   return true;
