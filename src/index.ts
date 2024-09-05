@@ -100,7 +100,6 @@ program
   .alias('pb')
   .option('-t, --type <type>', 'Rollback', 'publish')
   .action((opts: any, cmd: any) => {
-    console.log('=>(index.ts:103) opts.type', opts.type);
     if (typeof opts.type === 'string' && ['publish', 'rollback'].includes(opts.type)) {
       publishCli.start({ type: opts.type });
     } else {
