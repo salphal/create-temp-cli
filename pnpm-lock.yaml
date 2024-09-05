@@ -26,6 +26,9 @@ importers:
       shelljs:
         specifier: ^0.8.5
         version: 0.8.5
+      slash:
+        specifier: ^5.1.0
+        version: 5.1.0
       ssh2:
         specifier: ^1.15.0
         version: 1.15.0
@@ -2009,6 +2012,10 @@ packages:
   slash@4.0.0:
     resolution: {integrity: sha512-3dOsAHXXUkQTpOYcoAxLIorMTp4gIQr5IW3iVb7A7lFIp0VHhnynm9izx6TssdrIcVIESAlVjtnO2K8bg+Coew==}
     engines: {node: '>=12'}
+
+  slash@5.1.0:
+    resolution: {integrity: sha512-ZA6oR3T/pEyuqwMgAKT0/hAv8oAXckzbkmR0UkUosQ+Mc4RxGoJkRmwHgHufaenlyAgE1Mxgpdcrf75y6XcnDg==}
+    engines: {node: '>=14.16'}
 
   slice-ansi@4.0.0:
     resolution: {integrity: sha512-qMCMfhY040cVHT43K9BFygqYbUPFZKHOg7K73mtTWJRb8pyP3fzf4Ixd5SzdEJQ6MRUg/WBnOLxghZtKKurENQ==}
@@ -4092,6 +4099,8 @@ snapshots:
   sisteransi@1.0.5: {}
 
   slash@4.0.0: {}
+
+  slash@5.1.0: {}
 
   slice-ansi@4.0.0:
     dependencies:
