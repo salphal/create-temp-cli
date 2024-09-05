@@ -197,7 +197,6 @@ export class PublishCli extends FrontCli<IPublishContext> {
         const localOutputPath = path.join(__dirname, outputTarName);
         /** 发布到远程的路径 */
         const remoteOutputPath = path.join(publishDir, outputBaseName);
-
         /** 发布到远程的 .tar.gz 路径 */
         const remoteOutputTarPath = path.join(publishDir, outputTarName);
 
@@ -236,10 +235,10 @@ export class PublishCli extends FrontCli<IPublishContext> {
           /** 备份文件的目录路径 */
           const backupFileDir = path.join(publishDir, backupDirName);
           /** 备份文件的完整路径 */
-          const backupFilePath = path.join(publishDir, backupDirName, backupFIleName);
+          const backupFullPath = path.join(publishDir, backupDirName, backupFIleName);
 
           /** 备份当前产物 */
-          await client.cp(remoteOutputTarPath, backupFilePath);
+          await client.cp(remoteOutputTarPath, backupFullPath);
 
           /** 获取备份列表 */
           const backupList = await client.ls(backupDir);
@@ -290,14 +289,10 @@ export class PublishCli extends FrontCli<IPublishContext> {
     const ssh = new SSH({ connect, jumpServer });
 
     ssh.connect().then(async (client) => {
-      /** 打包的产物名 */
-      const outputTarName = PathExtra.fixTarExt(outputName);
       /** 基础的产物名 */
       const outputBaseName = PathExtra.__basename(outputName);
       /** 发布到远程的路径 */
       const remoteOutputPath = path.join(publishDir, outputBaseName);
-      /** 发布到远程的 .tar.gz 路径 */
-      const remoteOutputTarPath = path.join(publishDir, outputTarName);
       /** 备份文件的路径夹路径 */
       const backupDir = path.join(publishDir, backupDirName);
 

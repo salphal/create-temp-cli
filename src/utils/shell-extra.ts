@@ -36,8 +36,8 @@ export class ShellExtra {
     return this._exec(stat);
   }
 
-  static rm(path: string) {
-    const stat = shell.rm('-rf', path);
+  static rm(...paths: string[]) {
+    const stat = shell.rm('-rf', ...paths);
     return this._exec(stat);
   }
 
