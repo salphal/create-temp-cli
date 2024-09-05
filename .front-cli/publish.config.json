@@ -1,6 +1,6 @@
 [
   {
-    "envName": "dev",
+    "envName": "test-dev",
     "local": {
       "outputName": "dist.tar.gz"
     },
@@ -24,7 +24,7 @@
     }
   },
   {
-    "envName": "backend",
+    "envName": "test-backend",
     "local": {
       "outputName": "/target/data-warehouse-construction-0.0.1-SNAPSHOT.jar"
     },
@@ -55,31 +55,7 @@
     }
   },
   {
-    "envName": "prod",
-    "local": {
-      "outputName": "dist.tar.gz"
-    },
-    "server": {
-      "connect": {
-        "host": "172.16.201.169",
-        "username": "root",
-        "port": 22,
-        "password": "Founder123",
-        "privateKey": "/path/to/my/key"
-      },
-      "isBackup": true,
-      "backup": {
-        "dirName": "time-machine",
-        "format": "YYYY-MM-DD-hh-mm-ss",
-        "max": 5
-      },
-      "publishDir": "/root/nginx/html",
-      "appName": "dist",
-      "restartCmd": "nginx -s reload"
-    }
-  },
-  {
-    "envName": "home",
+    "envName": "test-home",
     "local": {
       "outputName": "dist.tar.gz"
     },
