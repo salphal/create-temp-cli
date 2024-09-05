@@ -24,6 +24,37 @@
     }
   },
   {
+    "envName": "backend",
+    "local": {
+      "outputName": "/target/data-warehouse-construction-0.0.1-SNAPSHOT.jar"
+    },
+    "server": {
+      "connect": {
+        "host": "192.168.90.100",
+        "username": "root",
+        "port": 22,
+        "password": "Founder123",
+        "privateKey": "/path/to/my/key"
+      },
+      "jumpServer": {
+        "host": "192.168.30.193",
+        "username": "root",
+        "port": 22,
+        "password": "Founder123",
+        "privateKey": "/path/to/my/key"
+      },
+      "isBackup": true,
+      "backup": {
+        "dirName": "time-machine",
+        "format": "YYYY-MM-DD-hh-mm-ss",
+        "max": 5
+      },
+      "publishDir": "/opt/demo",
+      "appName": "data-warehouse-construction-0.0.1-SNAPSHOT.jar",
+      "restartCmd": "sh /opt/demo/exec.sh restart"
+    }
+  },
+  {
     "envName": "prod",
     "local": {
       "outputName": "dist.tar.gz"
