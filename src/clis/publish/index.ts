@@ -195,7 +195,7 @@ export class PublishCli extends FrontCli<IPublishContext> {
     conn
       .then(async (client) => {
         /** 本地构建产物的路径 */
-        const localOutputPath = PathExtra.forceSlash(path.join(__dirname, dir, outputTarName));
+        const localOutputPath = path.join(__dirname, dir, outputTarName);
         /** 发布到远程的路径 */
         const remoteOutputPath = PathExtra.forceSlash(path.join(publishDir, outputBaseName));
         /** 发布到远程的 .tar.gz 路径 */
