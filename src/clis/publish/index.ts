@@ -1,4 +1,3 @@
-import slash from 'slash';
 import {
   FrontCli,
   FsExtra,
@@ -196,14 +195,14 @@ export class PublishCli extends FrontCli<IPublishContext> {
     conn
       .then(async (client) => {
         /** 本地构建产物的路径 */
-        const localOutputPath = slash(path.join(__dirname, dir, outputTarName));
+        const localOutputPath = PathExtra.forceSlash(path.join(__dirname, dir, outputTarName));
         /** 发布到远程的路径 */
-        const remoteOutputPath = slash(path.join(publishDir, outputBaseName));
+        const remoteOutputPath = PathExtra.forceSlash(path.join(publishDir, outputBaseName));
         /** 发布到远程的 .tar.gz 路径 */
-        const remoteOutputTarPath = slash(path.join(publishDir, outputTarName));
+        const remoteOutputTarPath = PathExtra.forceSlash(path.join(publishDir, outputTarName));
 
         /** 备份文件的路径夹路径 */
-        const backupDir = slash(path.join(publishDir, backupDirName));
+        const backupDir = PathExtra.forceSlash(path.join(publishDir, backupDirName));
         /** 是否存在备份文件夹 */
         const hasBackupDir = await client.isDir(backupDir);
         /** 没有备份文件, 创建备份文件夹 */
@@ -222,8 +221,8 @@ export class PublishCli extends FrontCli<IPublishContext> {
 
         /** 重命名( 若真实名称和打包名称不同时 ) */
         if (outputBaseName !== appName) {
-          const oldNamePath = slash(path.join(publishDir, outputBaseName));
-          const newNamePath = slash(path.join(publishDir, appName));
+          const oldNamePath = PathExtra.forceSlash(path.join(publishDir, outputBaseName));
+          const newNamePath = PathExtra.forceSlash(path.join(publishDir, appName));
           if (await client.isDir(newNamePath)) {
             await client.rm(newNamePath);
           }
@@ -235,9 +234,11 @@ export class PublishCli extends FrontCli<IPublishContext> {
           /** 新建备份文件的名称 */
           const backupFIleName = createBackupName(outputBaseName, backupFormat);
           /** 备份文件的目录路径 */
-          const backupFileDir = slash(path.join(publishDir, backupDirName));
+          const backupFileDir = PathExtra.forceSlash(path.join(publishDir, backupDirName));
           /** 备份文件的完整路径 */
-          const backupFullPath = slash(path.join(publishDir, backupDirName, backupFIleName));
+          const backupFullPath = PathExtra.forceSlash(
+            path.join(publishDir, backupDirName, backupFIleName),
+          );
 
           /** 备份当前产物 */
           await client.cp(remoteOutputTarPath, backupFullPath);
@@ -296,9 +297,9 @@ export class PublishCli extends FrontCli<IPublishContext> {
       /** 基础的产物名 */
       const outputBaseName = PathExtra.__basename(outputName);
       /** 发布到远程的路径 */
-      const remoteOutputPath = slash(path.join(publishDir, outputBaseName));
+      const remoteOutputPath = PathExtra.forceSlash(path.join(publishDir, outputBaseName));
       /** 备份文件的路径夹路径 */
-      const backupDir = slash(path.join(publishDir, backupDirName));
+      const backupDir = PathExtra.forceSlash(path.join(publishDir, backupDirName));
 
       /** 备份 */
       if (isBackup) {
@@ -313,8 +314,8 @@ export class PublishCli extends FrontCli<IPublishContext> {
         );
 
         if (checkedBackup) {
-          const checkedBackupTarPath = slash(path.join(backupDir, checkedBackup));
-          const checkedBackupPath = slash(path.join(backupDir, outputBaseName));
+          const checkedBackupTarPath = PathExtra.forceSlash(path.join(backupDir, checkedBackup));
+          const checkedBackupPath = PathExtra.forceSlash(path.join(backupDir, outputBaseName));
 
           /** 删除现有的构建产物 */
           await client.rm(remoteOutputPath);
@@ -323,7 +324,7 @@ export class PublishCli extends FrontCli<IPublishContext> {
           await client.untar(checkedBackupTarPath);
 
           /** 部署产物的完整路径 */
-          const publishAppPath = slash(path.join(publishDir, appName));
+          const publishAppPath = PathExtra.forceSlash(path.join(publishDir, appName));
 
           /** 删除 选中的备份和现有的产物 */
           await client.rm(publishAppPath, checkedBackupTarPath);
