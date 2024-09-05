@@ -120,6 +120,7 @@ export class StepScheduler {
             this._isEnd = true;
           }
         } else if (code === ResCode.end) {
+          process.exit(0);
           console.log('[ Log ]: All steps completed. ');
         } else {
           console.log(

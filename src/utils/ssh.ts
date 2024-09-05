@@ -349,7 +349,12 @@ export class SSH {
 // ssh
 //   .connect()
 //   .then((client) => {
-//      client.end();
+//     client
+//       .exec("nginx -s reload")
+//       .catch(() => {})
+//       .finally(() => {
+//         client.end();
+//       });
 //   })
 //   .catch((err) => {})
 //   .finally(() => {});
