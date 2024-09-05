@@ -193,11 +193,12 @@ export class PublishCli extends FrontCli<IPublishContext> {
         const localOutputPath = path.join(__dirname, outputTarName);
         /** 发布到远程的路径 */
         const remoteOutputPath = path.join(publishDir, outputBaseName);
+
         /** 发布到远程的 .tar.gz 路径 */
         const remoteOutputTarPath = path.join(publishDir, outputTarName);
+
         /** 备份文件的路径夹路径 */
         const backupDir = path.join(publishDir, backupDirName);
-
         /** 是否存在备份文件夹 */
         const hasBackupDir = await client.isDir(backupDir);
         /** 没有备份文件, 创建备份文件夹 */
@@ -254,9 +255,12 @@ export class PublishCli extends FrontCli<IPublishContext> {
         }
 
         /** 重启服务 */
-        await client.exec(restartCmd);
-
-        client.end();
+        client
+          .exec(restartCmd)
+          .catch(() => {})
+          .finally(() => {
+            client.end();
+          });
       })
       .catch((err) => {})
       .finally(() => {});
@@ -276,7 +280,6 @@ export class PublishCli extends FrontCli<IPublishContext> {
           backup: { dirName: backupDirName, format: backupFormat, max: backupMax },
         },
       },
-      __dirname,
     } = this.context;
 
     /** 创建 ssh 连接远程服务器 */
@@ -296,16 +299,8 @@ export class PublishCli extends FrontCli<IPublishContext> {
 
       /** 备份 */
       if (isBackup) {
-        /** 新建备份文件的名称 */
-        const backupFIleName = createBackupName(outputBaseName, backupFormat);
-        /** 备份文件的目录路径 */
-        const backupFileDir = path.join(publishDir, backupDirName);
-        /** 备份文件的完整路径 */
-        const backupFilePath = path.join(publishDir, backupDirName, backupFIleName);
-
         /** 获取备份列表 */
         const backupList = await client.ls(backupDir);
-        console.log('=>(index.ts:304) backupList', backupList);
 
         const backupChoices = backupList.map((fileName) => ({ title: fileName, value: fileName }));
 
@@ -324,12 +319,19 @@ export class PublishCli extends FrontCli<IPublishContext> {
           /** 解压构建产物 */
           await client.untar(checkedBackupTarPath);
 
-          // await client.mv(checkedBackupPath, );
+          const publishAppPath = path.join(publishDir, appName);
 
-          console.log('=>(index.ts:312) checkedBackup', checkedBackup);
+          await client.rm(publishAppPath, checkedBackupTarPath);
+
+          await client.mv(checkedBackupPath, publishAppPath);
 
           /** 重启服务 */
-          await client.exec(restartCmd);
+          client
+            .exec(restartCmd)
+            .catch(() => {})
+            .finally(() => {
+              client.end();
+            });
         }
       }
     });
