@@ -13,7 +13,6 @@ export class TarCmd {
 
     let command = `tar -czvf ${dest}`;
     const filter = ` -C ${path.dirname(srcFullPath)} ${path.basename(srcFullPath)}`;
-    // const filter = ` -C $(dirname ${srcFullPath}) $(basename ${srcFullPath})`;
 
     if (!dest) {
       const destName = PathExtra.fixTarExt(name);
