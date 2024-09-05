@@ -1,6 +1,7 @@
 import { blue, green, red, yellow } from 'kolorist';
 import { Table } from './table';
 import { Banner } from './banner';
+import { Loading } from '@utils';
 
 export class Logger {
   static prefix = '[ Log ]: ';
@@ -36,5 +37,13 @@ export class Logger {
 
   static banner(message: string) {
     Banner.print(message);
+  }
+
+  static startLoading(message: string) {
+    Loading.start(message);
+  }
+
+  static endLoading() {
+    Loading.end();
   }
 }

@@ -2,10 +2,10 @@ export * from './core/doubly-linked';
 export * from './core/front-cli';
 export * from './core/scheduler';
 
-export * from './print/banner';
-export * from './print/loading';
-export * from './print/logger';
-export * from './print/table';
+export * from './logger/banner';
+export * from './logger/loading';
+export * from './logger/index';
+export * from './logger/table';
 
 export * from './download/download';
 export * from './download/clone';
