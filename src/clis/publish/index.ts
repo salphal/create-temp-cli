@@ -177,13 +177,15 @@ export class PublishCli extends FrontCli<IPublishContext> {
       __dirname,
     } = this.context;
 
+    const { name, dir, ext } = path.parse(outputName);
+
     /** 打包的产物名 */
-    const outputTarName = PathExtra.fixTarExt(outputName);
+    const outputTarName = PathExtra.fixTarExt(name + ext);
     /** 基础的产物名 */
-    const outputBaseName = PathExtra.__basename(outputName);
+    const outputBaseName = PathExtra.__basename(name + ext);
 
     /** 压缩本地产物 */
-    ShellExtra.tar(path.join(__dirname, outputTarName));
+    ShellExtra.tar(path.join(__dirname, dir, outputTarName));
 
     /** 创建 ssh 连接远程服务器 */
     const ssh = new SSH({ connect, jumpServer });
@@ -192,10 +194,8 @@ export class PublishCli extends FrontCli<IPublishContext> {
 
     conn
       .then(async (client) => {
-        const { name, dir } = path.parse(publishDir);
-
         /** 本地构建产物的路径 */
-        const localOutputPath = path.join(__dirname, outputTarName);
+        const localOutputPath = path.join(__dirname, dir, outputTarName);
         /** 发布到远程的路径 */
         const remoteOutputPath = path.join(publishDir, outputBaseName);
         /** 发布到远程的 .tar.gz 路径 */
