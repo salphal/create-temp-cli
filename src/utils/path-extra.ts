@@ -8,9 +8,11 @@ export class PathExtra {
   }
 
   static __basename(p: string): string {
-    const { name } = path.parse(p);
-    if (name.indexOf('.') !== -1) {
+    const { name, ext } = path.parse(p);
+    if (/.*(\.tar)$/.test(name)) {
       return name.slice(0, name.indexOf('.'));
+    } else if (ext === '.jar') {
+      return name + ext;
     }
     return name;
   }
