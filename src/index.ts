@@ -13,7 +13,7 @@ import { Envs } from '@type/env';
 import { CliEnvs } from '@clis/template/template';
 import { TemplateCli } from '@clis/template';
 import { PublishCli } from '@clis/publish';
-import { Logger } from '@utils';
+import { Logger, Prompt } from '@utils';
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -84,9 +84,12 @@ program
  */
 program
   .command('download')
-  .argument('<name>', 'File Name')
   .alias('dw')
-  .action((name, opts: any, cmd: any) => {
+  .action(async (opts: any, cmd: any) => {
+    const name = await Prompt.autocomplete(
+      'Please select a file to download',
+      ['template', 'env', 'publish'].map((v) => ({ title: v, value: v })),
+    );
     templateCli.cloneFile(name);
   });
 

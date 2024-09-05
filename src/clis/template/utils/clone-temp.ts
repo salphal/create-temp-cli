@@ -12,7 +12,7 @@ export function cloneTemplates(name: string, ctx: any) {
    * env: 只下载 .temp.env
    * all: 下载所有
    */
-  if (!['template', 'env', 'all'].includes(name)) {
+  if (!['template', 'env', 'publish', 'all'].includes(name)) {
     Logger.table(
       [
         ['name', 'description'],
@@ -50,6 +50,13 @@ export function cloneTemplates(name: string, ctx: any) {
           const envDst = path.resolve(__dirname, '.front-cli.temp.env');
           await FsExtra.cp(envSrc, envDst);
           Logger.success('Successfully downloaded .front-cli.temp.env file');
+        }
+
+        if (name === 'publish') {
+          const envSrc = path.resolve(__dirname, `.tmp/${CONFIG_BASE_NAME}/publish.config.json`);
+          const envDst = path.resolve(__dirname, `${CONFIG_BASE_NAME}/publish.config.json`);
+          await FsExtra.cp(envSrc, envDst);
+          Logger.success(`Successfully downloaded ${CONFIG_BASE_NAME}/publish.config.json file`);
         }
 
         const tmpPath = path.resolve(__dirname, '.tmp');
