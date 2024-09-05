@@ -319,10 +319,13 @@ export class PublishCli extends FrontCli<IPublishContext> {
           /** 解压构建产物 */
           await client.untar(checkedBackupTarPath);
 
+          /** 部署产物的完整路径 */
           const publishAppPath = path.join(publishDir, appName);
 
+          /** 删除 选中的备份和现有的产物 */
           await client.rm(publishAppPath, checkedBackupTarPath);
 
+          /** 将选中的备份移动到部署的目录并重命名 */
           await client.mv(checkedBackupPath, publishAppPath);
 
           /** 重启服务 */
