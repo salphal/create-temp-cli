@@ -9,6 +9,9 @@ interface FileInfo {
 
 export function createBackupName(appName = 'dist', format: string = 'YYYY-MM-DD-hh-mm-ss'): string {
   const datetime = dayjs().format(format);
+  if (/.*(\.jar)/.test(appName)) {
+    appName = appName.slice(0, appName.lastIndexOf('.'));
+  }
   return `${appName}_${datetime}.tar.gz`;
 }
 
