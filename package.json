@@ -1,10 +1,10 @@
 {
-  "name": "@alphal/front-cli",
+  "name": "@alphal/dev-cli",
   "version": "1.0.0",
   "description": "",
   "type": "module",
   "bin": {
-    "front-cli": "index.js"
+    "dev-cli": "index.js"
   },
   "files": [
     "index.js",
@@ -12,8 +12,8 @@
     "dist"
   ],
   "scripts": {
-    "dev": "NODE_ENV=development unbuild --stub",
-    "build": "NODE_ENV=production unbuild --minify",
+    "dev": "cross-env NODE_ENV=development unbuild --stub",
+    "build": "cross-env NODE_ENV=production unbuild --minify",
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "npm run build",
     "prettier": "prettier . --write --check --fix"
@@ -37,6 +37,7 @@
     "@types/ssh2": "^1.15.1",
     "child_process": "^1.0.2",
     "commander": "^12.1.0",
+    "cross-env": "^7.0.3",
     "cross-spawn": "^7.0.3",
     "dayjs": "^1.11.13",
     "dotenv": "^16.4.5",
