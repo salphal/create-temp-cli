@@ -134,7 +134,11 @@ export class PublishCli extends FrontCli<IPublishContext> {
 
     {
       name: 'step_03',
-      remark: ``,
+      remark: `
+        根据类型执行不容的操作
+          - publish 发布
+          - rollback 回退
+      `,
       callback: async (ctx: IPublishContext) => {
         const {} = this.context;
 
