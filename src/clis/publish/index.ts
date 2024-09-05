@@ -188,8 +188,9 @@ export class PublishCli extends FrontCli<IPublishContext> {
     /** 创建 ssh 连接远程服务器 */
     const ssh = new SSH({ connect, jumpServer });
 
-    ssh
-      .connect()
+    const conn = jumpServer ? ssh.forwardOutConnect() : ssh.connect();
+
+    conn
       .then(async (client) => {
         const { name, dir } = path.parse(publishDir);
 
@@ -288,7 +289,9 @@ export class PublishCli extends FrontCli<IPublishContext> {
     /** 创建 ssh 连接远程服务器 */
     const ssh = new SSH({ connect, jumpServer });
 
-    ssh.connect().then(async (client) => {
+    const conn = jumpServer ? ssh.forwardOutConnect() : ssh.connect();
+
+    conn.then(async (client) => {
       /** 基础的产物名 */
       const outputBaseName = PathExtra.__basename(outputName);
       /** 发布到远程的路径 */
