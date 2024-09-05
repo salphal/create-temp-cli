@@ -295,9 +295,9 @@ export class PublishCli extends FrontCli<IPublishContext> {
       /** 基础的产物名 */
       const outputBaseName = PathExtra.__basename(outputName);
       /** 发布到远程的路径 */
-      const remoteOutputPath = path.join(publishDir, outputBaseName);
+      const remoteOutputPath = path.posix.join(publishDir, outputBaseName);
       /** 备份文件的路径夹路径 */
-      const backupDir = path.join(publishDir, backupDirName);
+      const backupDir = path.posix.join(publishDir, backupDirName);
 
       /** 备份 */
       if (isBackup) {
@@ -312,8 +312,8 @@ export class PublishCli extends FrontCli<IPublishContext> {
         );
 
         if (checkedBackup) {
-          const checkedBackupTarPath = path.join(backupDir, checkedBackup);
-          const checkedBackupPath = path.join(backupDir, outputBaseName);
+          const checkedBackupTarPath = path.posix.join(backupDir, checkedBackup);
+          const checkedBackupPath = path.posix.join(backupDir, outputBaseName);
 
           /** 删除现有的构建产物 */
           await client.rm(remoteOutputPath);
@@ -322,7 +322,7 @@ export class PublishCli extends FrontCli<IPublishContext> {
           await client.untar(checkedBackupTarPath);
 
           /** 部署产物的完整路径 */
-          const publishAppPath = path.join(publishDir, appName);
+          const publishAppPath = path.posix.join(publishDir, appName);
 
           /** 删除 选中的备份和现有的产物 */
           await client.rm(publishAppPath, checkedBackupTarPath);
