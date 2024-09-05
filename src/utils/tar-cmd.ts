@@ -12,7 +12,8 @@ export class TarCmd {
     const srcFullPath = path.join(dir, baseName);
 
     let command = `tar -czvf ${dest}`;
-    const filter = ` -C $(dirname ${srcFullPath}) $(basename ${srcFullPath})`;
+    const filter = ` -C ${path.dirname(srcFullPath)} ${path.basename(srcFullPath)}`;
+    // const filter = ` -C $(dirname ${srcFullPath}) $(basename ${srcFullPath})`;
 
     if (!dest) {
       const destName = PathExtra.fixTarExt(name);
@@ -34,7 +35,7 @@ export class TarCmd {
 
     if (!dest) {
       const destName = PathExtra.fixTarExt(name);
-      command = `tar -xzvf ${PathExtra.forceSlash(path.join(dir, destName))} -C $(dirname ${src})`;
+      command = `tar -xzvf ${PathExtra.forceSlash(path.join(dir, destName))} -C ${path.dirname(src)}`;
     }
     return command;
   }
