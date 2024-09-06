@@ -13,9 +13,8 @@
   ],
   "scripts": {
     "dev": "cross-env NODE_ENV=development unbuild --stub",
-    "build": "cross-env NODE_ENV=production unbuild --minify",
-    "dev:win": "set NODE_ENV=development unbuild --stub",
-    "build:win": "set NODE_ENV=production unbuild --minify",
+    "build:mac": "cross-env NODE_ENV=production unbuild --minify",
+    "build:win": "unbuild --minify",
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "npm run build",
     "prettier": "prettier . --write --check --fix"
