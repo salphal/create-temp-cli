@@ -19,7 +19,6 @@ import {
 } from './utils/template';
 import { Envs } from '@type/env';
 import { CliEnvs, TempInfoList, TempNameList } from './template';
-import { cloneTemplates } from './utils/clone-temp';
 import { setupEnvs } from './utils/setup-envs';
 import { CLI_CONFIG_FILE_NAME, OUTPUT_FILE_NAME, TEMPLATE_FILE_NAME } from '@constants/common';
 
@@ -321,9 +320,5 @@ export class TemplateCli extends FrontCli<TemplateContext> {
 
   create() {
     this.start();
-  }
-
-  cloneFile(name: string) {
-    cloneTemplates(name, this.context);
   }
 }
