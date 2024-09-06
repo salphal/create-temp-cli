@@ -13,7 +13,11 @@ import { Envs } from '@type/env';
 import { CliEnvs } from '@clis/template/template';
 import { TemplateCli } from '@clis/template';
 import { PublishCli } from '@clis/publish';
+import { DownloadCli } from '@clis/download';
 import { Logger, Prompt } from '@utils';
+import { downloadNameChoices, downloadTypes } from '@clis/download/constant';
+import { publishTypeChoices, publishTypes } from '@clis/publish/constant';
+import { CLI_NAME } from '@constants/cli';
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -33,7 +37,7 @@ const envVariables = (function injection(): Envs {
   const __filename = fileURLToPath(import.meta.url);
   configDotenv({ path: path.resolve(__dirname, '.temp.env') });
   const envs: CliEnvs = Object.fromEntries(
-    Object.entries(process.env).filter(([k, v]) => /^TEMP_CLI.*/.test(k)),
+    Object.entries(process.env).filter(([k, v]) => /^DEV_CLI.*/.test(k)),
   );
   return { argv, __dirname, __filename, envs };
 })();
@@ -50,13 +54,17 @@ const publishCli = new PublishCli({
   ctx: envVariables,
 });
 
+const downloadCli = new DownloadCli({
+  ctx: envVariables,
+});
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 /**
  * 根据本地模版创建
  */
 program
-  .name('front-cli')
+  .name(CLI_NAME)
   .usage('[ create | download | publish ]')
   .description(
     `
@@ -87,10 +95,10 @@ program
   .alias('dw')
   .action(async (opts: any, cmd: any) => {
     const name = await Prompt.autocomplete(
-      'Please select a file to download',
-      ['template', 'env', 'publish'].map((v) => ({ title: v, value: v })),
+      'Please select a file to download.',
+      downloadNameChoices,
     );
-    templateCli.cloneFile(name);
+    downloadCli.start({ name });
   });
 
 //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -//
@@ -101,22 +109,16 @@ program
 program
   .command('publish')
   .alias('pb')
-  .option('-t, --type <type>', 'Rollback', 'publish')
-  .action((opts: any, cmd: any) => {
-    if (typeof opts.type === 'string' && ['publish', 'rollback'].includes(opts.type)) {
+  .option('-t, --type <type>', 'operation type: publish | rollback')
+  .action(async (opts: any, cmd: any) => {
+    if (Object.keys(publishTypes).includes(opts.type)) {
       publishCli.start({ type: opts.type });
     } else {
-      Logger.table(
-        [
-          ['parameter', 'description'],
-          ['publish( default )', 'Publish dist to server'],
-          ['rollback', 'Roll back the specified version'],
-        ],
-        [{ width: 20 }, { width: 50 }],
-        {
-          title: 'front-cli publish -t [ publish | rollback ]',
-        },
+      const type = await Prompt.autocomplete(
+        'Please select a type to connect.',
+        publishTypeChoices,
       );
+      publishCli.start({ type });
     }
   });
 
