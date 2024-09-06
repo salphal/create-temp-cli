@@ -251,12 +251,12 @@ export class PublishCli extends FrontCli<IPublishContext> {
           /** 获取备份列表 */
           const backupList = await client.ls(backupDir);
 
-          backupList.length && Logger.info(backupList);
+          backupList.length && Logger.infoObj('backupList', backupList);
 
           /** 获取多余的备份 */
           const expiredFiles = filterExpiredFiles(backupFileDir, backupList, backupMax);
 
-          expiredFiles.length && Logger.info(expiredFiles);
+          expiredFiles.length && Logger.infoObj('expiredFiles', expiredFiles);
 
           /** 移除多余备份 */
           if (expiredFiles.length) {
