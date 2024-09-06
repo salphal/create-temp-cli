@@ -103,6 +103,13 @@ export class PublishCli extends FrontCli<IPublishContext> {
 
         this.context.envNameConfigChoices = crateNameConfigChoices(publishConfigList);
 
+        if (!this.context.envNameConfigChoices.length) {
+          Logger.error(
+            `Please configure the release configuration first( ${path.resolve(__dirname, '.dev-cli/publish.config.json')} )`,
+          );
+          process.exit(0);
+        }
+
         return {
           code: ResCode.next,
           data: {},

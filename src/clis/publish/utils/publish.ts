@@ -21,5 +21,5 @@ export function crateNameConfigChoices(publishConfigList: PublishConfigList) {
         value: envName,
       };
     })
-    .filter((v) => /^__.*__$/.test(v.title));
+    .filter((v) => !/^__.*__$/.test(v.value));
 }
