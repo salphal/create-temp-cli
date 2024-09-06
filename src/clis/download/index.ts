@@ -43,12 +43,9 @@ export class DownloadCli extends FrontCli<IDownloadContext> {
           await FsExtra.rm(tmpDirPath);
         }
 
-        const config: any = await FsExtra.readJson(path.resolve(__dirname, 'package.json'));
-        const remote = config.repository.url || repositoryGitUrl;
-
         Logger.startLoading(`cloning ${name}`);
         await clone({
-          remote,
+          remote: repositoryGitUrl,
           branch: 'main',
           outputPath: '.tmp',
         })
