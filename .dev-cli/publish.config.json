@@ -1,15 +1,15 @@
 [
   {
-    "envName": "test-dev",
+    "envName": "__front_demo__",
     "local": {
-      "outputName": "dist.tar.gz"
+      "outputName": "dist"
     },
     "server": {
       "connect": {
-        "host": "192.168.30.193",
+        "host": "192.168.1.1",
         "username": "root",
         "port": 22,
-        "password": "Founder123",
+        "password": "password",
         "privateKey": "/path/to/my/key"
       },
       "isBackup": true,
@@ -18,68 +18,13 @@
         "format": "YYYY-MM-DD-hh-mm-ss",
         "max": 5
       },
-      "publishDir": "/opt",
-      "appName": "build",
-      "restartCmd": "nginx -s reload"
+      "publishDir": "/etc/nginx/html/app",
+      "appName": "app",
+      "restartCommand": "nginx -s reload"
     }
   },
   {
-    "envName": "test-backend",
-    "local": {
-      "outputName": "/target/data-warehouse-construction-0.0.1-SNAPSHOT.jar"
-    },
-    "server": {
-      "connect": {
-        "host": "192.168.90.100",
-        "username": "root",
-        "port": 22,
-        "password": "Founder123",
-        "privateKey": "/path/to/my/key"
-      },
-      "jumpServer": {
-        "host": "192.168.30.193",
-        "username": "root",
-        "port": 22,
-        "password": "Founder123",
-        "privateKey": "/path/to/my/key"
-      },
-      "isBackup": true,
-      "backup": {
-        "dirName": "time-machine",
-        "format": "YYYY-MM-DD-hh-mm-ss",
-        "max": 5
-      },
-      "publishDir": "/opt/demo",
-      "appName": "data-warehouse-construction-0.0.1-SNAPSHOT.jar",
-      "restartCmd": "sh /opt/demo/exec.sh restart"
-    }
-  },
-  {
-    "envName": "test-home",
-    "local": {
-      "outputName": "dist.tar.gz"
-    },
-    "server": {
-      "connect": {
-        "host": "192.168.1.158",
-        "username": "root",
-        "port": 22,
-        "password": "Liang1992@12",
-        "privateKey": "/path/to/my/key"
-      },
-      "isBackup": true,
-      "backup": {
-        "dirName": "time-machine",
-        "format": "YYYY-MM-DD-hh-mm-ss",
-        "max": 5
-      },
-      "publishDir": "/opt",
-      "appName": "build",
-      "restartCmd": "nginx -s reload"
-    }
-  },
-  {
-    "envName": "__temp__",
+    "envName": "__front_jump_demo__",
     "local": {
       "outputName": "dist"
     },
@@ -107,6 +52,68 @@
       "publishDir": "/etc/nginx/html/app",
       "appName": "app",
       "restartCommand": "nginx -s reload"
+    }
+  },
+  {
+    "envName": "__backend_demo__",
+    "local": {
+      "outputName": "/target/demo-0.0.1-SNAPSHOT.jar"
+    },
+    "server": {
+      "connect": {
+        "host": "192.168.1.1",
+        "username": "root",
+        "port": 22,
+        "password": "password",
+        "privateKey": "/path/to/my/key"
+      },
+      "jumpServer": {
+        "host": "192.168.1.2",
+        "username": "root",
+        "port": 22,
+        "password": "password",
+        "privateKey": "/path/to/my/key"
+      },
+      "isBackup": true,
+      "backup": {
+        "dirName": "time-machine",
+        "format": "YYYY-MM-DD-hh-mm-ss",
+        "max": 5
+      },
+      "publishDir": "/opt/demo",
+      "appName": "demo-app-0.0.1-SNAPSHOT.jar",
+      "restartCommand": "sh /opt/exec.sh restart"
+    }
+  },
+  {
+    "envName": "__backend_jump_demo__",
+    "local": {
+      "outputName": "/target/demo-0.0.1-SNAPSHOT.jar"
+    },
+    "server": {
+      "connect": {
+        "host": "192.168.1.1",
+        "username": "root",
+        "port": 22,
+        "password": "password",
+        "privateKey": "/path/to/my/key"
+      },
+      "jumpServer": {
+        "host": "192.168.1.2",
+        "username": "root",
+        "port": 22,
+        "password": "password",
+        "privateKey": "/path/to/my/key"
+      },
+      "isBackup": true,
+      "backup": {
+        "dirName": "time-machine",
+        "format": "YYYY-MM-DD-hh-mm-ss",
+        "max": 5
+      },
+      "publishDir": "/opt/demo",
+      "appName": "demo-app-0.0.1-SNAPSHOT.jar",
+      "restartCommand": "sh /opt/exec.sh restart"
     }
   }
 ]
