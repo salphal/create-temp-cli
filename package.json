@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "dev": "cross-env NODE_ENV=development unbuild --stub",
-    "build:mac": "cross-env NODE_ENV=production unbuild --minify",
+    "build": "cross-env NODE_ENV=production unbuild --minify",
     "build:win": "unbuild --minify",
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "npm run build",
