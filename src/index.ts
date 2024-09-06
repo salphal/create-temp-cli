@@ -14,8 +14,8 @@ import { CliEnvs } from '@clis/template/template';
 import { TemplateCli } from '@clis/template';
 import { PublishCli } from '@clis/publish';
 import { DownloadCli } from '@clis/download';
-import { Logger, Prompt } from '@utils';
-import { downloadNameChoices, downloadTypes } from '@clis/download/constant';
+import { Prompt } from '@utils';
+import { downloadNameChoices } from '@clis/download/constant';
 import { publishTypeChoices, publishTypes } from '@clis/publish/constant';
 import { CLI_NAME } from '@constants/cli';
 
@@ -71,7 +71,9 @@ program
   - Create components based on templates.
   - Release products based on configuration.`,
   )
-  .version('1.0.0', '-v, --version');
+  .version('1.0.0', '-v, --version')
+  .addHelpText('before', () => '--------------------------------------------------')
+  .addHelpText('after', () => '--------------------------------------------------');
 
 //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -//
 
