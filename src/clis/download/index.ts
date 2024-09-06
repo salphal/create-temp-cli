@@ -45,40 +45,48 @@ export class DownloadCli extends FrontCli<IDownloadContext> {
         const config: any = await FsExtra.readJson(path.resolve(__dirname, 'package.json'));
         const remote = config.repository.url || repositoryGitUrl;
 
+        Logger.startLoading(`cloning ${name}`);
         await clone({
           remote,
           branch: 'main',
           outputPath: '.tmp',
-        }).then(async (res) => {
-          if (name === downloadTypes.template || name === downloadTypes.all) {
-            const tempSrc = path.resolve(__dirname, `.tmp/${TEMPLATE_FILE_NAME}`);
-            const destName = `${CLI_CONFIG_FILE_NAME}/${TEMPLATE_FILE_NAME}`;
-            const tempDst = path.resolve(__dirname, destName);
-            await FsExtra.cp(tempSrc, tempDst);
-            Logger.success(`Successfully downloaded ${destName} directory`);
-          }
+        })
+          .then(async (res) => {
+            if (name === downloadTypes.template || name === downloadTypes.all) {
+              const tempSrc = path.resolve(__dirname, `.tmp/${TEMPLATE_FILE_NAME}`);
+              const destName = `${CLI_CONFIG_FILE_NAME}/${TEMPLATE_FILE_NAME}`;
+              const tempDst = path.resolve(__dirname, destName);
+              await FsExtra.cp(tempSrc, tempDst);
+              Logger.success(`Successfully downloaded ${destName} directory`);
+            }
 
-          if (name === downloadTypes.envConfig || name === downloadTypes.all) {
-            const envSrc = path.resolve(__dirname, `.tmp/${TEMP_FILE_NAME}`);
-            const destName = `${CLI_CONFIG_FILE_NAME}/${TEMP_FILE_NAME}`;
-            const envDst = path.resolve(__dirname, `${CLI_CONFIG_FILE_NAME}${TEMP_FILE_NAME}`);
-            await FsExtra.cp(envSrc, envDst);
-            Logger.success(`Successfully downloaded ${destName} file`);
-          }
+            if (name === downloadTypes.envConfig || name === downloadTypes.all) {
+              const envSrc = path.resolve(__dirname, `.tmp/${TEMP_FILE_NAME}`);
+              const destName = `${CLI_CONFIG_FILE_NAME}/${TEMP_FILE_NAME}`;
+              const envDst = path.resolve(__dirname, `${CLI_CONFIG_FILE_NAME}${TEMP_FILE_NAME}`);
+              await FsExtra.cp(envSrc, envDst);
+              Logger.success(`Successfully downloaded ${destName} file`);
+            }
 
-          if (name === downloadTypes.publishConfig || name === downloadTypes.all) {
-            const destName = `${CLI_CONFIG_FILE_NAME}/${PUBLISH_CONFIG_FILE_NAME}`;
-            const envSrc = path.resolve(__dirname, `.tmp/${destName}`);
-            const envDst = path.resolve(__dirname, destName);
-            await FsExtra.cp(envSrc, envDst);
-            Logger.success(`Successfully downloaded ${destName} file`);
-          }
+            if (name === downloadTypes.publishConfig || name === downloadTypes.all) {
+              const destName = `${CLI_CONFIG_FILE_NAME}/${PUBLISH_CONFIG_FILE_NAME}`;
+              const envSrc = path.resolve(__dirname, `.tmp/${destName}`);
+              const envDst = path.resolve(__dirname, destName);
+              await FsExtra.cp(envSrc, envDst);
+              Logger.success(`Successfully downloaded ${destName} file`);
+            }
 
-          const tmpPath = path.resolve(__dirname, '.tmp');
-          await FsExtra.rm(tmpPath);
+            const tmpPath = path.resolve(__dirname, '.tmp');
+            await FsExtra.rm(tmpPath);
 
-          Logger.success(`Success load ${name}`);
-        });
+            Logger.success(`Success load ${name}`);
+          })
+          .then((err) => {
+            Logger.error(err);
+          })
+          .finally(() => {
+            Logger.endLoading();
+          });
 
         return {
           code: ResCode.end,
