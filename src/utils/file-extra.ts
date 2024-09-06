@@ -13,7 +13,7 @@ export class FsExtra {
    *
    * cp -r [src] [dest]
    */
-  static async cp(src: string, dest: string) {
+  static async cp(src: string, dest: string): Promise<0 | 1> {
     return new Promise((resolve, reject) => {
       fs.copy(src, dest, {}, (err) => {
         if (err) {
@@ -34,7 +34,11 @@ export class FsExtra {
    *
    * mv [src] [dest]
    */
-  static async mv(src: string, dest: string, options: fs.MoveOptions = { overwrite: true }) {
+  static async mv(
+    src: string,
+    dest: string,
+    options: fs.MoveOptions = { overwrite: true },
+  ): Promise<0 | 1> {
     return new Promise((resolve, reject) => {
       fs.move(src, dest, { ...options }, (err) => {
         if (err) {
@@ -55,7 +59,7 @@ export class FsExtra {
    *
    * rm -rf [path]
    */
-  static async rm(path: string) {
+  static async rm(path: string): Promise<0 | 1> {
     return new Promise((resolve, reject) => {
       fs.remove(path, (err) => {
         if (err) {
@@ -78,7 +82,7 @@ export class FsExtra {
    *
    * touch [path]
    */
-  static async touch(path: string) {
+  static async touch(path: string): Promise<0 | 1> {
     return new Promise((resolve, reject) => {
       fs.ensureFile(path, function (err) {
         if (err) {
@@ -98,7 +102,7 @@ export class FsExtra {
    * @param path {string} - 文件路径
    * @param options {any} - 读取文件时的配置
    */
-  static async read(path: string, options: any = { encoding: 'utf-8' }) {
+  static async read(path: string, options: any = { encoding: 'utf-8' }): Promise<null | Buffer> {
     return new Promise((resolve, reject) => {
       fs.readFile(path, { ...options }, (err, data) => {
         if (err) {
@@ -123,7 +127,7 @@ export class FsExtra {
     path: string,
     data: string | NodeJS.ArrayBufferView,
     options: any = { encoding: 'utf8' },
-  ) {
+  ): Promise<0 | 1> {
     return new Promise((resolve, reject) => {
       fs.outputFile(path, data, { ...options }, (err) => {
         if (err) {
@@ -146,7 +150,7 @@ export class FsExtra {
    *
    * mkdir -p /path/to
    */
-  static async makeDir(dirPath: string) {
+  static async makeDir(dirPath: string): Promise<0 | 1> {
     return new Promise((resolve, reject) => {
       fs.ensureDir(dirPath, (err) => {
         if (err) {
@@ -169,7 +173,7 @@ export class FsExtra {
    *
    * @param dirPath {string} - 目录路径
    */
-  static async emptyDir(dirPath: string) {
+  static async emptyDir(dirPath: string): Promise<0 | 1> {
     return new Promise((resolve, reject) => {
       fs.emptyDir(dirPath, (err) => {
         if (err) {
@@ -190,7 +194,10 @@ export class FsExtra {
    * @param dirPath {string} - 目录路径
    * @param compare
    */
-  static async isEmptyDir(dirPath: string, compare?: (files: string[]) => boolean) {
+  static async isEmptyDir(
+    dirPath: string,
+    compare?: (files: string[]) => boolean,
+  ): Promise<boolean> {
     return new Promise((resolve, reject) => {
       const files = fs.readdirSync(dirPath);
       if (typeof compare === 'function') {
@@ -233,7 +240,7 @@ export class FsExtra {
    *
    * @param filePath
    */
-  static async isJson(filePath: string) {
+  static async isJson(filePath: string): Promise<boolean> {
     return new Promise(async (resolve, reject) => {
       const isFile = await FsExtra.isFile(filePath);
       const extname = path.extname(filePath);
@@ -250,7 +257,7 @@ export class FsExtra {
    *
    * @param path {string} - json文件路径
    */
-  static async readJson(path: string) {
+  static async readJson(path: string): Promise<null | JSON> {
     return new Promise((resolve, reject) => {
       fs.readJSON(path, {}, (err, data) => {
         if (err) {
@@ -274,7 +281,7 @@ export class FsExtra {
     path: string,
     obj: { [key: string]: any },
     options: any = { encoding: 'utf8' },
-  ) {
+  ): Promise<0 | 1> {
     return new Promise((resolve, reject) => {
       fs.outputJSON(path, obj, { ...options }, (err) => {
         if (err) {
@@ -293,12 +300,12 @@ export class FsExtra {
    *
    * @param path {string} - 路径
    */
-  static async pathExists(path: string) {
+  static async pathExists(path: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
       fs.pathExists(path, (err, exists) => {
         if (err) {
           console.error('[ PATHEXISTS ERR ]', err);
-          reject(0);
+          reject(false);
         } else {
           console.log(`${path} ${exists ? 'already' : 'does not'} exists.`);
           resolve(exists);
@@ -312,7 +319,7 @@ export class FsExtra {
    *
    * @param path {string} - 目录路径
    */
-  static async dirExists(path: string) {
+  static async dirExists(path: string): Promise<boolean> {
     return new Promise(async (resolve, reject) => {
       const pathExists = await FsExtra.pathExists(path);
       if (pathExists) {
@@ -329,7 +336,7 @@ export class FsExtra {
    *
    * @param path {string} - 文件路径
    */
-  static async fileExists(path: string) {
+  static async fileExists(path: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
       return new Promise(async (resolve, reject) => {
         const pathExists = await FsExtra.pathExists(path);
