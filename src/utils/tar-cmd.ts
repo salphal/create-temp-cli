@@ -4,6 +4,8 @@ import { PathExtra } from '@utils/path-extra';
 export class TarCmd {
   /**
    * tar -czvf /path/to/dist.tar.gz -C $(dirname /path/to/dist) $(basename /path/to/dist)
+   *
+   ** windows 不支持 $(dirname) | ${basename)
    */
   static getTarCmd(src: string, dest: string | null = null): string {
     const { dir, name } = path.parse(src);
@@ -25,7 +27,9 @@ export class TarCmd {
   }
 
   /**
-   * tar -xzvf /path/to/dist.tar.gz -C /path/to
+   * tar -xzvf /path/to/dist.tar.gz -C $(dirname /path/to)
+   *
+   ** windows 不支持 $(dirname) | ${basename)
    */
   static getUnTarCmd(src: string, dest: string | null = null): string {
     const { dir, name } = path.parse(src);
