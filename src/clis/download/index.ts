@@ -109,7 +109,6 @@ export class DownloadCli extends FrontCli<IDownloadContext> {
             Logger.success(`Success load ${name}`);
           })
           .catch((err) => {
-            Logger.endLoading();
             Logger.error(err);
           })
           .finally(() => {
