@@ -16,7 +16,11 @@ import path from 'path';
 import { CLI_CONFIG_FILE_NAME } from '@constants/common';
 import { PublishConfig, PublishConfigList } from './publish';
 import { crateNameConfigChoices, getPublishConfigByEnvName } from '@clis/publish/utils/publish';
-import { createBackupName, filterExpiredFiles } from '@clis/publish/utils/backup';
+import {
+  createBackupName,
+  filterExpiredFiles,
+  getSortBackupChoices,
+} from '@clis/publish/utils/backup';
 import { publishTypes } from '@clis/publish/constant';
 
 interface IPublishContext extends Envs {
@@ -247,6 +251,8 @@ export class PublishCli extends FrontCli<IPublishContext> {
           /** 获取备份列表 */
           const backupList = await client.ls(backupDir);
 
+          backupList.length && Logger.info(backupList);
+
           /** 获取多余的备份 */
           const expiredFiles = filterExpiredFiles(backupFileDir, backupList, backupMax);
 
@@ -307,7 +313,8 @@ export class PublishCli extends FrontCli<IPublishContext> {
         /** 获取备份列表 */
         const backupList = await client.ls(backupDir);
 
-        const backupChoices = backupList.map((fileName) => ({ title: fileName, value: fileName }));
+        /** 创建备份选择选项( 从最新的开始排序 ) */
+        const backupChoices = getSortBackupChoices(backupList);
 
         const checkedBackup = await Prompt.autocomplete(
           'Please select the version of rollback.',
