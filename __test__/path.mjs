@@ -1,4 +1,3 @@
-
 const str = 'D:\\opt\\demo\\data-warehouse-construction-0.0.1-SNAPSHOT.jar';
 
 function forceSlash(path) {
@@ -6,5 +5,3 @@ function forceSlash(path) {
 }
 
 console.log(forceSlash(str)); // 输出：D:/opt/demo/data-warehouse-construction-0.0.1-SNAPSHOT.jar
-
-

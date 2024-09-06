@@ -57,8 +57,8 @@ program
   .command('demo') // 匹配命令的模版
   .description('demo description') // 描述
   .alias('dm') // 定义 command 别名
-  .argument('<first>', 'first parameter', validateFirstParam) // 根据入参顺序定义参数
-  .argument('<second>', 'second parameter') // 根据入参顺序定义参数
+  .argument('<first>', 'first parameter', validateFirstParam) // 必填顺序参数
+  .argument('[second]', 'second parameter') // 可选顺序参数
   .action((first, second, opts, cmd) => {
     // 若匹配成功, 则执行该回调
     console.log('=>(index.ts:68) first', first); // 只有顺序入参数可以这样取值
