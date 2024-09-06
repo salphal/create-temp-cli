@@ -55,7 +55,6 @@ export class DownloadCli extends FrontCli<IDownloadContext> {
               const destName = `${CLI_CONFIG_FILE_NAME}/${TEMPLATE_FILE_NAME}`;
               const tempDst = path.resolve(__dirname, destName);
               await FsExtra.cp(tempSrc, tempDst);
-
               Logger.success(`Successfully downloaded ${destName} directory`);
             }
 
