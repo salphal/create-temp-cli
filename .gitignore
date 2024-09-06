@@ -132,4 +132,4 @@ dist
 __output__
 
 .idea
-.front-cli/__template__
+.dev-cli/__template__
