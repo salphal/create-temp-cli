@@ -69,6 +69,7 @@ export class StepScheduler {
   execute() {
     return new Promise(async (resolve, reject) => {
       if (!this._executeBefore()) return;
+
       if (this._isStart) {
         console.log('[ Log ]: Already reached the first node.');
         resolve(this.context);
@@ -76,12 +77,17 @@ export class StepScheduler {
         console.log('[ Log ]: The end node has been reached.');
         resolve(this.context);
       }
+
       const linkedNode = this.currentNode as LinkedNode;
+
       const {
         data: { name, callback },
       } = linkedNode;
-      if (typeof callback !== 'function') return;
+
+      if (typeof callback !== 'function') return null;
+
       let res = null;
+
       try {
         if (this._isAsyncFunc(callback)) {
           res = await callback(this.context);
@@ -93,8 +99,10 @@ export class StepScheduler {
         console.log('[ Log ]: Execute node error, ', err);
         reject(err);
       }
+
       if (res && typeof res.code === 'number') {
         const { code, data = {} } = res;
+
         if (code === ResCode.back) {
           if (this.currentNode!.prev) {
             this._isStart = false;
@@ -119,15 +127,18 @@ export class StepScheduler {
           } else {
             this._isEnd = true;
           }
+          this.context = { ...this.context, ...data };
+          resolve(this.context);
         } else if (code === ResCode.end) {
+          console.log('[ Log ]: All steps completed.');
           process.exit(0);
-          console.log('[ Log ]: All steps completed. ');
         } else {
           console.log(
             `[ Log ]: Please return legal result: { code, data, msg }, current return:`,
             res,
           );
           reject(null);
+          process.exit(0);
         }
       }
     });
