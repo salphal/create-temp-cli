@@ -1,7 +1,7 @@
 {
   "name": "@alphal/dev-cli",
   "version": "1.0.0",
-  "description": "",
+  "description": "Development aids",
   "type": "module",
   "bin": {
     "dev-cli": "index.js"
@@ -21,7 +21,15 @@
   "engines": {
     "node": "^18.0.0 || >=20.0.0"
   },
-  "keywords": [],
+  "keywords": [
+    "publish",
+    "snippets",
+    "template"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/salphal/dev-cli.git"
+  },
   "author": "",
   "license": "ISC",
   "devDependencies": {

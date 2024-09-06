@@ -13,10 +13,11 @@ import {
 } from '@utils';
 import { Envs } from '@type/env';
 import path from 'path';
-import { CONFIG_BASE_NAME } from '@constants/common';
+import { CLI_CONFIG_FILE_NAME } from '@constants/common';
 import { PublishConfig, PublishConfigList } from './publish';
 import { crateNameConfigChoices, getPublishConfigByEnvName } from '@clis/publish/utils/publish';
 import { createBackupName, filterExpiredFiles } from '@clis/publish/utils/backup';
+import { publishTypes } from '@clis/publish/constant';
 
 interface IPublishContext extends Envs {
   /** 部署信息配置列表 */
@@ -26,7 +27,7 @@ interface IPublishContext extends Envs {
   /** 部署配置选项 */
   envNameConfigChoices: PromptChoices;
 
-  type?: 'publish' | 'rollback' | any;
+  type?: keyof typeof publishTypes;
 }
 
 interface IPublishOptions {
@@ -79,7 +80,7 @@ export class PublishCli extends FrontCli<IPublishContext> {
         const { __dirname } = this.context;
 
         /** 读取发布的配置文件 .json */
-        const jsonPath = path.resolve(__dirname, `${CONFIG_BASE_NAME}/publish.config.json`);
+        const jsonPath = path.resolve(__dirname, `${CLI_CONFIG_FILE_NAME}/publish.config.json`);
 
         const isFile = await FsExtra.isFile(jsonPath);
 
@@ -143,9 +144,9 @@ export class PublishCli extends FrontCli<IPublishContext> {
         const {} = this.context;
 
         if ('type' in this.context && typeof this.context.type === 'string') {
-          if (this.context.type === 'publish') {
+          if (this.context.type === publishTypes.publish) {
             await this.publish();
-          } else if (this.context.type === 'rollback') {
+          } else if (this.context.type === publishTypes.rollback) {
             await this.rollback();
           }
         }

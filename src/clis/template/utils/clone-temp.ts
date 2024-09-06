@@ -1,7 +1,7 @@
 import fs from 'fs-extra';
 import path from 'path';
 import { clone, FsExtra, Logger, Loading } from '@utils';
-import { CONFIG_BASE_NAME } from '@constants/common';
+import { CLI_CONFIG_FILE_NAME } from '@constants/common';
 
 /**
  * 下载预设模版和环境变量配置文件
@@ -40,9 +40,9 @@ export function cloneTemplates(name: string, ctx: any) {
 
         if (name === 'template') {
           const tempSrc = path.resolve(__dirname, '.tmp/__template__');
-          const tempDst = path.resolve(__dirname, `${CONFIG_BASE_NAME}/__template__`);
+          const tempDst = path.resolve(__dirname, `${CLI_CONFIG_FILE_NAME}/__template__`);
           await FsExtra.cp(tempSrc, tempDst);
-          Logger.success(`Successfully downloaded ${CONFIG_BASE_NAME}/__template__ directory`);
+          Logger.success(`Successfully downloaded ${CLI_CONFIG_FILE_NAME}/__template__ directory`);
         }
 
         if (name === 'env') {
@@ -53,10 +53,10 @@ export function cloneTemplates(name: string, ctx: any) {
         }
 
         if (name === 'publish') {
-          const envSrc = path.resolve(__dirname, `.tmp/${CONFIG_BASE_NAME}/publish.config.json`);
-          const envDst = path.resolve(__dirname, `${CONFIG_BASE_NAME}/publish.config.json`);
+          const envSrc = path.resolve(__dirname, `.tmp/${CLI_CONFIG_FILE_NAME}/publish.config.json`);
+          const envDst = path.resolve(__dirname, `${CLI_CONFIG_FILE_NAME}/publish.config.json`);
           await FsExtra.cp(envSrc, envDst);
-          Logger.success(`Successfully downloaded ${CONFIG_BASE_NAME}/publish.config.json file`);
+          Logger.success(`Successfully downloaded ${CLI_CONFIG_FILE_NAME}/publish.config.json file`);
         }
 
         const tmpPath = path.resolve(__dirname, '.tmp');
