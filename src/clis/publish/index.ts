@@ -89,6 +89,7 @@ export class PublishCli extends FrontCli<IPublishContext> {
         const isFile = await FsExtra.isFile(jsonPath);
 
         if (!isFile) {
+          Logger.error(`${CLI_CONFIG_FILE_NAME}/publish.config.json does not exist.`);
           return;
         }
 
