@@ -42,7 +42,7 @@ export function cloneTemplates(name: string, ctx: any) {
           const tempSrc = path.resolve(__dirname, '.tmp/__template__');
           const tempDst = path.resolve(__dirname, `${CONFIG_BASE_NAME}/__template__`);
           await FsExtra.cp(tempSrc, tempDst);
-          Logger.success('Successfully downloaded ${baseName}__template__ directory');
+          Logger.success(`Successfully downloaded ${CONFIG_BASE_NAME}/__template__ directory`);
         }
 
         if (name === 'env') {
