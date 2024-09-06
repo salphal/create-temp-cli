@@ -92,7 +92,7 @@ export class PublishCli extends FrontCli<IPublishContext> {
           return;
         }
 
-        const publishConfigList = (await FsExtra.readJson(jsonPath)) as PublishConfigList;
+        const publishConfigList = ((await FsExtra.readJson(jsonPath)) || {}) as PublishConfigList;
 
         if (!Array.isArray(publishConfigList) || !publishConfigList.length) {
           Logger.error('');
