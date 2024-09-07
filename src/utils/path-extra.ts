@@ -4,6 +4,7 @@ export class PathExtra {
   static forceSlash(path: string) {
     return path.replace(/\\/g, '/');
   }
+
   static fixTarExt(name: string): string {
     const ext = '.tar.gz';
     name = this.__basename(name);
