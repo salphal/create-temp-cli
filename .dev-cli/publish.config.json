@@ -20,7 +20,7 @@
       },
       "publishDir": "/etc/nginx/html/app",
       "appName": "app",
-      "restartCommand": "nginx -s reload"
+      "restartCmd": "nginx -s reload"
     }
   },
   {
@@ -51,7 +51,7 @@
       },
       "publishDir": "/etc/nginx/html/app",
       "appName": "app",
-      "restartCommand": "nginx -s reload"
+      "restartCmd": "nginx -s reload"
     }
   },
   {
@@ -82,7 +82,7 @@
       },
       "publishDir": "/opt/demo",
       "appName": "demo-app-0.0.1-SNAPSHOT.jar",
-      "restartCommand": "sh /opt/exec.sh restart"
+      "restartCmd": "sh /opt/exec.sh restart"
     }
   },
   {
@@ -113,7 +113,7 @@
       },
       "publishDir": "/opt/demo",
       "appName": "demo-app-0.0.1-SNAPSHOT.jar",
-      "restartCommand": "sh /opt/exec.sh restart"
+      "restartCmd": "sh /opt/exec.sh restart"
     }
   }
 ]
