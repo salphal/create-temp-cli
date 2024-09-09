@@ -275,13 +275,7 @@ export class PublishCli extends FrontCli<IPublishContext> {
           await client.rm(remoteOutputTarPath);
         }
 
-        /** 重启服务 */
-        client
-          .exec(restartCmd)
-          .catch(() => {})
-          .finally(() => {
-            client.end();
-          });
+        this.execRestartCmd(client, restartCmd);
       })
       .catch((err) => {})
       .finally(() => {});
@@ -348,16 +342,25 @@ export class PublishCli extends FrontCli<IPublishContext> {
           /** 将选中的备份移动到部署的目录并重命名 */
           await client.mv(checkedBackupPath, publishAppPath);
 
-          /** 重启服务 */
-          client
-            .exec(restartCmd)
-            .catch(() => {})
-            .finally(() => {
-              client.end();
-            });
+          this.execRestartCmd(client, restartCmd);
         }
       }
     });
+  }
+
+  execRestartCmd(client: SSH, restartCmd: any) {
+    if (typeof restartCmd === 'string' && restartCmd.length) {
+      /** 重启服务 */
+      client
+        .exec(restartCmd)
+        .catch(() => {})
+        .finally(() => {
+          client.end();
+        });
+    } else {
+      Logger.error(`restartCmd is ${restartCmd}`);
+      client.end();
+    }
   }
 
   constructor(options: IPublishOptions) {
