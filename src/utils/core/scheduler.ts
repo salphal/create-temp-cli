@@ -54,13 +54,13 @@ export class StepScheduler {
     if (this.LinkedList.head) {
       this.currentNode = this.LinkedList.head;
     } else {
-      console.log(`[ Log ]: Current doublyLinked.header is ${this.LinkedList.head}`);
+      console.log(`[ scheduler log ]: Current doublyLinked.header is ${this.LinkedList.head}`);
     }
   }
 
   private _executeBefore() {
     if (!this.currentNode) {
-      console.log(`[ Log ]: Current Node is ${this.currentNode}`);
+      console.log(`[ scheduler log ]: Current Node is ${this.currentNode}`);
       return false;
     }
     return true;
@@ -71,10 +71,10 @@ export class StepScheduler {
       if (!this._executeBefore()) return;
 
       if (this._isStart) {
-        console.log('[ Log ]: Already reached the first node.');
+        console.log('[ scheduler log ]: Already reached the first node.');
         resolve(this.context);
       } else if (this._isEnd) {
-        console.log('[ Log ]: The end node has been reached.');
+        console.log('[ scheduler log ]: The end node has been reached.');
         resolve(this.context);
       }
 
@@ -89,14 +89,21 @@ export class StepScheduler {
       let res = null;
 
       try {
+        console.log('\n');
+        console.log(`${name} start -------------------------------------------------------------`);
+        console.log('\n');
+
         if (this._isAsyncFunc(callback)) {
           res = await callback(this.context);
         } else {
           res = callback(this.context);
         }
-        console.log(`[ Log ]: invoked callback: ${name}`);
+
+        console.log('\n');
+        console.log(`${name} end   -------------------------------------------------------------`);
+        console.log('\n');
       } catch (err) {
-        console.log('[ Log ]: Execute node error, ', err);
+        console.log('[ scheduler log ]: Execute node error, ', err);
         reject(err);
       }
 
@@ -130,11 +137,11 @@ export class StepScheduler {
           this.context = { ...this.context, ...data };
           resolve(this.context);
         } else if (code === ResCode.end) {
-          console.log('[ Log ]: All steps completed.');
+          console.log('[ scheduler log ]: All steps completed.');
           process.exit(0);
         } else {
           console.log(
-            `[ Log ]: Please return legal result: { code, data, msg }, current return:`,
+            `[ scheduler log ]: Please return legal result: { code, data, msg }, current return:`,
             res,
           );
           reject(null);

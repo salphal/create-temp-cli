@@ -2,6 +2,7 @@ import { Client, ClientChannel } from 'ssh2';
 import path from 'path';
 import { PathExtra } from '@utils/path-extra';
 import { TarCmd } from '@utils/tar-cmd';
+import { Logger } from '@utils/logger';
 
 interface BaseConfig {
   host: string;
@@ -44,23 +45,29 @@ export class SSH {
    */
   async connect(stream?: ClientChannel): Promise<SSH> {
     const _this = this;
-    console.log('[ connect server config ]', _this.serverConfig);
+
+    console.log('\n');
+    // console.log('[ ssh connect server config ]', _this.serverConfig);
+    Logger.infoObj('ssh connect server config', _this.serverConfig);
 
     return new Promise(function (resolve, reject) {
       _this._client
         .on('ready', () => {
-          console.log('[ connect ready ]');
+          // console.log('[ ssh connect ready ]');
+          Logger.warnObj('ssh connect ready');
+          console.log('\n');
 
           // _this.exec('ll');
           // _this.exec('ip addr show | grep 192.168');
           resolve(_this);
         })
         .on('error', (err) => {
-          console.log('[ connect error ]', err);
+          console.log('[ ssh connect error ]', err);
           reject(err);
         })
         .on('close', () => {
-          console.log('[ connect closed ]');
+          // console.log('[ ssh connect closed ]');
+          Logger.warnObj('ssh connect closed');
         })
         .connect(
           stream
@@ -86,16 +93,16 @@ export class SSH {
     const _this = this;
 
     if (!_this.jumpServerConfig) {
-      console.log('[ forward connect err ]: jumpServerConfig is not exists');
+      console.log('[ ssh forward connect err ]: jumpServerConfig is not exists');
       return Promise.reject(false);
     }
 
-    console.log('[ forward connect server config ]', _this.jumpServerConfig);
+    console.log('[ ssh forward connect server config ]', _this.jumpServerConfig);
 
     return new Promise((resolve, reject) => {
       _this._jumpClient
         .on('ready', () => {
-          console.log('[ forward connect ready ]');
+          console.log('[ ssh forward connect ready ]');
 
           _this._jumpClient.forwardOut(
             _this.jumpServerConfig!.host,
@@ -104,7 +111,7 @@ export class SSH {
             _this.serverConfig.port,
             async (err, stream) => {
               if (err) {
-                console.error('[ forward connect err ]', err);
+                console.error('[ ssh forward connect err ]', err);
                 reject(err);
                 return;
               }
@@ -115,11 +122,11 @@ export class SSH {
           );
         })
         .on('error', (err) => {
-          console.log('[ forwardout connect error ]');
+          console.log('[ ssh forwardout connect error ]');
           reject(err);
         })
         .on('close', () => {
-          console.log('[ forwardout connect closed ]');
+          console.log('[ ssh forwardout connect closed ]');
         })
         .connect({
           host: _this.jumpServerConfig!.host,
@@ -136,18 +143,20 @@ export class SSH {
    * @param cmd {string} - 执行的 shell 命令
    * @param isEnd {boolean} - 是否是最后一条, 如果是则关闭连接
    */
-  async exec(cmd: string, isEnd = false) {
+  async exec(cmd: string, isEnd = false): Promise<string> {
     const _this = this;
-    console.log(`[ exec command ]: ${cmd}`);
+    // console.log(`[ ssh cmd ]: ${cmd}`);
+    Logger.successObj('ssh cmd', cmd);
 
     return new Promise((resolve, reject) => {
       _this._client.exec(cmd, (err, stream) => {
         if (err) {
-          console.log('[ exec err ]', err);
+          // console.log('[ ssh exec err ]', err);
+          Logger.errorObj('ssh exec err', err);
           reject(err);
         }
 
-        let stdout = '';
+        let stdout: string = '';
         let stderr = '';
 
         stream
@@ -162,10 +171,19 @@ export class SSH {
            */
           .on('close', (code: number, signal: string | undefined) => {
             if (code === 0) {
+              if (stdout.trim().length === 0) {
+                console.log('[ exec result ]', 'success');
+              } else if (stdout.length > 300) {
+                console.log('[ exec result ]', '\n' + stdout.slice(0, 300) + '...');
+              } else {
+                console.log('[ exec result ]', '\n' + stdout);
+              }
+              console.log('\n');
               resolve(stdout);
             } else {
-              console.log('[ exec close ]', code, signal);
-              reject(new Error(`Command failed with exit code ${code}: ${stderr}`));
+              // console.log('[ ssh exec close ]', code, signal);
+              Logger.warnObj('ssh exec close', code, signal);
+              reject(new Error(`SSH Command failed with exit code ${code}: ${stderr}`));
             }
             isEnd && _this.end();
           })
@@ -174,7 +192,6 @@ export class SSH {
            */
           .on('data', (data: ArrayBuffer) => {
             stdout += data.toString();
-            console.log('[ exec result ]', stdout);
             resolve(stdout);
           })
           /**
@@ -182,7 +199,8 @@ export class SSH {
            */
           .stderr.on('data', (data) => {
             stderr += data.toString();
-            console.log('[ exec stderr ]', stderr);
+            // console.log('[ ssh exec err ]', stderr);
+            Logger.errorObj('ssh exec err', stderr);
             reject(stderr);
           });
       });
@@ -203,16 +221,17 @@ export class SSH {
     return new Promise((resolve, reject) => {
       _this._client.sftp((err, sftp) => {
         if (err) {
-          console.error('[ upload err ]:', err);
+          console.error('[ ssh upload err ]:', err);
           reject(err);
         }
 
         sftp.fastPut(localPath, remotePath, (err) => {
           if (err) {
-            console.error('[ upload fast put err ]:', err);
+            console.error('[ ssh upload fast put err ]:', err);
             reject(err);
           }
-          console.log(`[ upload ]: success upload ${localPath} to ${remotePath}`);
+          Logger.successObj('ssh upload', `success upload ${localPath} to ${remotePath}`);
+          console.log('\n');
           resolve();
         });
       });
@@ -233,16 +252,16 @@ export class SSH {
     return new Promise((resolve, reject) => {
       _this._client.sftp((err, sftp) => {
         if (err) {
-          console.error('[ download error ]:', err);
+          console.error('[ ssh download error ]:', err);
           reject(err);
         }
 
         sftp.fastGet(remotePath, localPath, (err) => {
           if (err) {
-            console.error('[ download fast get error ]:', err);
+            console.error('[ ssh download fast get error ]:', err);
             reject(err);
           }
-          console.log(`[ download ]: success download ${remotePath} to ${localPath}`);
+          console.log(`[ ssh download ]: success download ${remotePath} to ${localPath}`);
           resolve();
         });
       });
@@ -259,7 +278,7 @@ export class SSH {
     return await this.exec(command);
   }
 
-  async ls(path = '', hasAll = false) {
+  async ls(path = '', hasAll = false): Promise<string[]> {
     const all = hasAll ? '-a' : '';
     const command = path ? `ls "${path}" ${all}` : `ls ${all}`;
     try {
@@ -313,9 +332,8 @@ export class SSH {
   }
 
   async isDir(path: string) {
-    const command = `[ -d "${path}" ] && echo "true" || echo "false"`;
-    const result = (await this.exec(command)) as string;
-    return result.trim() === 'true';
+    const cmd = `[ -d "${path}" ] && echo "true" || echo "false"`;
+    return (await this.exec(cmd)) === 'true';
   }
 
   /**
