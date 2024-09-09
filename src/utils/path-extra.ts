@@ -1,14 +1,16 @@
-import path from 'path';
+import path, { ParsedPath } from 'path';
 
 export class PathExtra {
-  static forceSlash(path: string) {
-    return path.replace(/\\/g, '/');
+  static resolve(...paths: string[]): string {
+    return path.resolve(...paths);
   }
 
-  static fixTarExt(name: string): string {
-    const ext = '.tar.gz';
-    name = this.__basename(name);
-    return name + ext;
+  static join(...paths: string[]): string {
+    return path.join(...paths);
+  }
+
+  static parse(p: string): ParsedPath {
+    return path.parse(p);
   }
 
   static __basename(p: string): string {
@@ -23,5 +25,15 @@ export class PathExtra {
 
   static __dirname(p: string): string {
     return path.dirname(p);
+  }
+
+  static forceSlash(path: string) {
+    return path.replace(/\\/g, '/');
+  }
+
+  static fixTarExt(name: string): string {
+    const ext = '.tar.gz';
+    name = this.__basename(name);
+    return name + ext;
   }
 }
