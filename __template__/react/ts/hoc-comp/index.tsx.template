@@ -1,0 +1,25 @@
+import React, {useState, useEffect, useRef} from "react";
+
+
+const width${CompName} = (WrappedComponent: any, newProps: any = {}) => {
+
+
+  const EnhancedComponent: React.FC<any> = (props) => {
+
+    const {} = props
+
+    useEffect(() => {}, []);
+
+    const allProps: any = {
+        ...props,
+        ...newProps
+    };
+
+    return <WrappedComponent {...allProps} />;
+  };
+
+
+  return EnhancedComponent;
+};
+
+export default width${CompName};

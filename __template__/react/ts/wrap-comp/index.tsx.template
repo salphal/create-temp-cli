@@ -1,0 +1,28 @@
+import React, { useEffect } from "react";
+import {Outlet} from "react-router-dom";
+
+
+export interface ${CompName}Props {
+  [key: string]: any;
+}
+
+export interface ${CompName}Methods {
+  [key: string]: any;
+}
+
+const ${CompName}Wrapper: React.FC<${CompName}Props> = (props: ${CompName}Props & ${CompName}Methods) => {
+
+  const {} = props
+
+  useEffect(() => {}, []);
+
+  return (
+    <~@A@~React.Fragment~@A@~>
+
+      <Outlet/>
+
+    </~@A@~React.Fragment~@A@~>
+  );
+};
+
+export default React.memo(${CompName}Wrapper);
