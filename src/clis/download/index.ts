@@ -60,7 +60,7 @@ export class DownloadCli extends FrontCli<IDownloadContext> {
 
             if (name === downloadTypes.publishConfig || name === downloadTypes.all) {
               const destName = `${CLI_CONFIG_FILE_NAME}/${PUBLISH_CONFIG_FILE_NAME}`;
-              const envSrc = path.resolve(__dirname, `.tmp/${destName}`);
+              const envSrc = path.resolve(__dirname, `.tmp/${PUBLISH_CONFIG_FILE_NAME}`);
               const envDst = path.resolve(__dirname, destName);
               await FsExtra.cp(envSrc, envDst);
               Logger.success(`Successfully downloaded ${destName} file`);
@@ -90,7 +90,7 @@ export class DownloadCli extends FrontCli<IDownloadContext> {
 
                 let ignoreConfig = '\n';
 
-                const templateDirPath = `${CLI_CONFIG_FILE_NAME}/${TEMPLATE_FILE_NAME}`;
+                const templateDirPath = CLI_CONFIG_FILE_NAME;
                 const outputDirPath = OUTPUT_FILE_NAME;
 
                 if (content.indexOf(templateDirPath) === -1) {
