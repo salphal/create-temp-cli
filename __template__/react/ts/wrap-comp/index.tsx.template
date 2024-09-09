@@ -17,11 +17,11 @@ const ${CompName}Wrapper: React.FC<${CompName}Props> = (props: ${CompName}Props 
   useEffect(() => {}, []);
 
   return (
-    <~@A@~React.Fragment~@A@~>
+    <React.Fragment>
 
       <Outlet/>
 
-    </~@A@~React.Fragment~@A@~>
+    </React.Fragment>
   );
 };
 
