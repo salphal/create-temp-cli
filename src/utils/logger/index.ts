@@ -4,31 +4,38 @@ import { Banner } from './banner';
 import { Loading } from '@utils';
 
 export class Logger {
-  static prefix: string = '[ Log ]: ';
+  static prefix: string = '[ log ]: ';
 
-  static log(message: any, type: (str: string | number) => string, prefix?: string) {
+  static log(
+    message: any,
+    type: (str: string | number) => string,
+    prefix?: string,
+    ...objs: any[]
+  ) {
     const pf = prefix || this.prefix;
-    typeof message === 'object' ? console.log(type(pf), message) : console.log(type(pf + message));
+    typeof message === 'object'
+      ? console.log(type(pf), message, ...objs)
+      : console.log(type(pf + message), ...objs);
   }
 
-  static info(message: any, prefix?: string) {
-    this.log(message, blue, prefix);
+  static info(message: any, prefix?: string, ...objs: any[]) {
+    this.log(message, blue, prefix, ...objs);
   }
 
-  static success(message: any, prefix?: string) {
-    this.log(message, green, prefix);
+  static success(message: any, prefix?: string, ...objs: any[]) {
+    this.log(message, green, prefix, ...objs);
   }
 
-  static warn(message: any, prefix?: string) {
-    this.log(message, yellow, prefix);
+  static warn(message: any, prefix?: string, ...objs: any[]) {
+    this.log(message, yellow, prefix, ...objs);
   }
 
-  static error(message: any, prefix?: string) {
-    this.log(message, red, prefix);
+  static error(message: any, prefix?: string, ...objs: any[]) {
+    this.log(message, red, prefix, ...objs);
   }
 
   static obj(message: string, type: (str: string | number) => string, ...objs: any[]) {
-    console.log(type(this.prefix + message), ...objs);
+    console.log(type(`[ ${message} ]`), ...objs);
   }
 
   static infoObj(message: string, ...objs: any[]) {
