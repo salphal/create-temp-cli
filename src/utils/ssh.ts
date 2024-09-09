@@ -192,7 +192,6 @@ export class SSH {
            */
           .on('data', (data: ArrayBuffer) => {
             stdout += data.toString();
-            resolve(stdout);
           })
           /**
            * 处理来自标准错误输出的错误信息
