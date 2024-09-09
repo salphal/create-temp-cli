@@ -136,7 +136,8 @@ export class PublishCli extends FrontCli<IPublishContext> {
           this.context.publishConfigList,
         );
 
-        Logger.info(this.context.currentPublishConfig);
+        console.log('\n');
+        Logger.infoObj('current config', this.context.currentPublishConfig);
 
         return {
           code: ResCode.next,
@@ -196,9 +197,14 @@ export class PublishCli extends FrontCli<IPublishContext> {
     const outputTarName = PathExtra.fixTarExt(name + ext);
     /** 基础的产物名 */
     const outputBaseName = PathExtra.__basename(name + ext);
+    /** 本地旧产物路径 */
+    const localOutputPath = path.join(__dirname, dir, outputTarName);
+
+    /** 如果旧产物存在, 则删除 */
+    ShellExtra.rm(localOutputPath);
 
     /** 压缩本地产物 */
-    ShellExtra.tar(path.join(__dirname, dir, outputTarName));
+    ShellExtra.tar(localOutputPath);
 
     /** 创建 ssh 连接远程服务器 */
     const ssh = new SSH({ connect, jumpServer });
@@ -216,8 +222,10 @@ export class PublishCli extends FrontCli<IPublishContext> {
 
         /** 备份文件的路径夹路径 */
         const backupDir = PathExtra.forceSlash(path.join(publishDir, backupDirName));
+
         /** 是否存在备份文件夹 */
         const hasBackupDir = await client.isDir(backupDir);
+
         /** 没有备份文件, 创建备份文件夹 */
         if (!hasBackupDir) {
           await client.mkdir(backupDir);
@@ -236,9 +244,7 @@ export class PublishCli extends FrontCli<IPublishContext> {
         if (outputBaseName !== appName) {
           const oldNamePath = PathExtra.forceSlash(path.join(publishDir, outputBaseName));
           const newNamePath = PathExtra.forceSlash(path.join(publishDir, appName));
-          if (await client.isDir(newNamePath)) {
-            await client.rm(newNamePath);
-          }
+          await client.rm(newNamePath);
           await client.mv(oldNamePath, newNamePath);
         }
 
@@ -259,12 +265,17 @@ export class PublishCli extends FrontCli<IPublishContext> {
           /** 获取备份列表 */
           const backupList = await client.ls(backupDir);
 
-          backupList.length && Logger.infoObj('backupList', backupList);
+          if (backupList.length) {
+            console.log('\n');
+            Logger.infoObj('backup list', backupList);
+            console.log('\n');
+          }
 
           /** 获取多余的备份 */
           const expiredFiles = filterExpiredFiles(backupFileDir, backupList, backupMax);
 
-          expiredFiles.length && Logger.infoObj('expiredFiles', expiredFiles);
+          expiredFiles.length && Logger.infoObj('expired files', expiredFiles);
+          console.log('\n');
 
           /** 移除多余备份 */
           if (expiredFiles.length) {
