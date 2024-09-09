@@ -38,7 +38,7 @@ export class TarCmd {
 
     if (!dest) {
       const destName = PathExtra.fixTarExt(name);
-      command = `tar -xzvf ${PathExtra.forceSlash(path.join(dir, destName))} -C ${path.dirname(src)}`;
+      command = `tar --touch -xzvf ${PathExtra.forceSlash(path.join(dir, destName))} -C ${path.dirname(src)}`;
     }
     return command;
   }
