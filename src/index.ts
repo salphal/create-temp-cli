@@ -8,12 +8,14 @@ import { configDotenv } from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-import { __test__ } from '@/test';
-import { Envs } from '@type/env';
-import { CliEnvs } from '@clis/template/template';
 import { TemplateCli } from '@clis/template';
 import { PublishCli } from '@clis/publish';
 import { DownloadCli } from '@clis/download';
+import { InitCli } from '@clis/init';
+
+import { __test__ } from '@/test';
+import { Envs } from '@type/env';
+import { CliEnvs } from '@clis/template/template';
 import { Prompt, ShellExtra } from '@utils';
 import { downloadNameChoices } from '@clis/download/constant';
 import { publishTypeChoices, publishTypes } from '@clis/publish/constant';
@@ -62,6 +64,10 @@ const downloadCli = new DownloadCli({
   ctx: envVariables,
 });
 
+const initCli = new InitCli({
+  ctx: envVariables,
+});
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 /**
@@ -105,6 +111,18 @@ program
       downloadNameChoices,
     );
     downloadCli.start({ name });
+  });
+
+//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -//
+
+/**
+ * 根据模版初始化指定配置
+ */
+program
+  .command('init')
+  .alias('ii')
+  .action(async (opts: any, cmd: any) => {
+    initCli.start();
   });
 
 //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -//
