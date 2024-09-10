@@ -1,4 +1,4 @@
-import { TempInfo, TempInfoList } from '../template';
+import { Replacements, TempInfo, TempInfoList } from '../template';
 import fs from 'fs-extra';
 import path from 'path';
 import {
@@ -50,14 +50,20 @@ export function createPromptChoices(list: string[]): PromptChoices {
  * 替换 模版文件名 为 真实文件名
  *
  * @param tempFileName {string} - 文件名
- * @param realFileName {string} - 文件路径
+ * @param replacements {Replacements} - 文件中替换的变量
  * @return {string}
  */
-export function tempFileNameToRealFileName(tempFileName: string, realFileName: string) {
+export function tempFileNameToRealFileName(tempFileName: string, replacements: Replacements) {
+  const { fileName } = replacements;
+
   const filename = tempFileName
-    .replace(/(^[a-zA-Z]+)\./, (match) =>
-      ['template.'].includes(match) ? `${realFileName}.` : match,
-    )
+    .replace(/template(?=\.)/, (match) => {
+      if (['template', 'Template'].includes(match)) {
+        return fileName;
+      } else {
+        return match;
+      }
+    })
     .replace(/(\.template$)/, '');
   Logger.info(`Rename file "${tempFileName}" to "${filename}"`);
   return filename;
@@ -107,11 +113,11 @@ export function getReplacements(variables: { fileName: string }) {
  * 替换模版文件中的变量
  *
  * @param filePath {string} - 文件路径
- * @param replaceVariableMap {{[key: string]: any }} - 替换模版的变量集合
+ * @param replaceVariableMap {Replacements} - 替换模版的变量集合
  */
 export async function replaceVariablesInFileByReplacements(
   filePath: string,
-  replaceVariableMap: { [key: string]: any },
+  replaceVariableMap: Replacements,
 ) {
   return new Promise((resolve, reject) => {
     fs.readFile(filePath, 'utf8', (err, data) => {
@@ -206,7 +212,7 @@ export async function writeTempListToTarget(
   config: {
     fileName: string;
     outputDirPath: string;
-    replacements: any;
+    replacements: Replacements;
   },
 ) {
   if (!Array.isArray(curTempInfoList) || !curTempInfoList.length) return false;
@@ -217,7 +223,7 @@ export async function writeTempListToTarget(
   for (let i = 0; i < curTempInfoList.length; i++) {
     const { fileName: tempName, fullPath } = curTempInfoList[i];
     const content = await replaceVariablesInFileByReplacements(fullPath, replacements);
-    const realFileName = tempFileNameToRealFileName(tempName, fileName);
+    const realFileName = tempFileNameToRealFileName(tempName, replacements);
     const outputFullPath = path.join(outputDirPath, fileName, realFileName);
 
     if (['README.md'].includes(realFileName)) continue;

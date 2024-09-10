@@ -204,7 +204,7 @@ export class TemplateCli extends FrontCli<TemplateContext> {
 
         /** 模版中变量的映射集合 */
         this.context.replacements = getReplacements({ fileName });
-        Logger.info(this.context.replacements);
+        Logger.infoObj('replacements', this.context.replacements);
 
         return {
           code: ResCode.next,

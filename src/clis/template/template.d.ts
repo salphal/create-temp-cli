@@ -18,6 +18,15 @@ export type TempInfoList = Array<TempInfo>;
 
 export type TempNameList = Array<string>;
 
+export interface Replacements {
+  CompName: string;
+  compName: string;
+  COMP_NAME: string;
+  SHORT_COMP_NAME: string;
+  className: string;
+  fileName: string;
+}
+
 export interface TempContext {
   [key: string]: any;
 
@@ -47,12 +56,5 @@ export interface TempContext {
   tempNameChoices: PromptChoices;
 
   /** 用于模版中的变量 */
-  replacements: {
-    CompName: string;
-    compName: string;
-    COMP_NAME: string;
-    SHORT_COMP_NAME: string;
-    className: string;
-    fileName: string;
-  };
+  replacements: Replacements;
 }
