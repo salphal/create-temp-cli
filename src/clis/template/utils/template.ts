@@ -58,7 +58,7 @@ export function tempFileNameToRealFileName(tempFileName: string, replacements: R
 
   const filename = tempFileName
     .replace(/template(?=\.)/, (match) => {
-      if (['template', 'Template'].includes(match)) {
+      if (match.toLowerCase() === 'template') {
         return fileName;
       } else {
         return match;
