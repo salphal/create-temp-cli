@@ -96,7 +96,7 @@ export class PublishCli extends FrontCli<IPublishContext> {
         const publishConfigList = ((await FsExtra.readJson(jsonPath)) || {}) as PublishConfigList;
 
         if (!Array.isArray(publishConfigList) || !publishConfigList.length) {
-          Logger.error('');
+          Logger.error('Publish config list is not exist');
           return;
         }
 
@@ -136,7 +136,6 @@ export class PublishCli extends FrontCli<IPublishContext> {
           this.context.publishConfigList,
         );
 
-        console.log('\n');
         Logger.infoObj('current config', this.context.currentPublishConfig);
 
         return {
@@ -220,8 +219,11 @@ export class PublishCli extends FrontCli<IPublishContext> {
         /** 发布到远程的 .tar.gz 路径 */
         const remoteOutputTarPath = PathExtra.forceSlash(path.join(publishDir, outputTarName));
 
+        const appBackupName = `${appName}-${backupDirName}`;
+        const appBackupDirPath = path.join(publishDir, appBackupName);
+
         /** 备份文件的路径夹路径 */
-        const backupDir = PathExtra.forceSlash(path.join(publishDir, backupDirName));
+        const backupDir = PathExtra.forceSlash(appBackupDirPath);
 
         /** 是否存在备份文件夹 */
         const hasBackupDir = await client.isDir(backupDir);
@@ -253,10 +255,10 @@ export class PublishCli extends FrontCli<IPublishContext> {
           /** 新建备份文件的名称 */
           const backupFIleName = createBackupName(outputBaseName, backupFormat);
           /** 备份文件的目录路径 */
-          const backupFileDir = PathExtra.forceSlash(path.join(publishDir, backupDirName));
+          const backupFileDir = PathExtra.forceSlash(appBackupDirPath);
           /** 备份文件的完整路径 */
           const backupFullPath = PathExtra.forceSlash(
-            path.join(publishDir, backupDirName, backupFIleName),
+            path.join(publishDir, appBackupName, backupFIleName),
           );
 
           /** 备份当前产物 */
@@ -266,16 +268,13 @@ export class PublishCli extends FrontCli<IPublishContext> {
           const backupList = await client.ls(backupDir);
 
           if (backupList.length) {
-            console.log('\n');
             Logger.infoObj('backup list', backupList);
-            console.log('\n');
           }
 
           /** 获取多余的备份 */
           const expiredFiles = filterExpiredFiles(backupFileDir, backupList, backupMax);
 
           expiredFiles.length && Logger.infoObj('expired files', expiredFiles);
-          console.log('\n');
 
           /** 移除多余备份 */
           if (expiredFiles.length) {
@@ -319,7 +318,7 @@ export class PublishCli extends FrontCli<IPublishContext> {
       /** 发布到远程的路径 */
       const remoteOutputPath = PathExtra.forceSlash(path.join(publishDir, outputBaseName));
       /** 备份文件的路径夹路径 */
-      const backupDir = PathExtra.forceSlash(path.join(publishDir, backupDirName));
+      const backupDir = PathExtra.forceSlash(path.join(publishDir, `${appName}-${backupDirName}`));
 
       /** 备份 */
       if (isBackup) {
