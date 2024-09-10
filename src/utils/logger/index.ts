@@ -13,9 +13,11 @@ export class Logger {
     ...objs: any[]
   ) {
     const pf = prefix || this.prefix;
+    console.log('\n');
     typeof message === 'object'
       ? console.log(type(pf), message, ...objs)
       : console.log(type(pf + message), ...objs);
+    console.log('\n');
   }
 
   static info(message: any, prefix?: string, ...objs: any[]) {
@@ -35,7 +37,9 @@ export class Logger {
   }
 
   static obj(message: string, type: (str: string | number) => string, ...objs: any[]) {
+    console.log('\n');
     console.log(type(`[ ${message} ]`), ...objs);
+    console.log('\n');
   }
 
   static infoObj(message: string, ...objs: any[]) {
