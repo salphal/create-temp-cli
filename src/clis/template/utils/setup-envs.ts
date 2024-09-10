@@ -19,8 +19,8 @@ export function setupEnvs(envs: CliEnvs, ctx: TempContext) {
  * @param ctx {TempContext} - 创建模版时的上下文数据
  */
 export function setupTempDirs(envs: CliEnvs, ctx: TempContext) {
-  if (!envs.TEMP_CLI_TEMPLATE_DIRECTORY) return;
-  const tempDirPathList = envs.TEMP_CLI_TEMPLATE_DIRECTORY.split(',').filter((v) => !!v);
+  if (!envs.DEV_CLI_TEMPLATE_DIRECTORY) return;
+  const tempDirPathList = envs.DEV_CLI_TEMPLATE_DIRECTORY.split(',').filter((v) => !!v);
   ctx.tempDirPathList = Array.from(new Set([...tempDirPathList, ...ctx.tempDirPathList]));
 }
 
@@ -30,8 +30,8 @@ export function setupTempDirs(envs: CliEnvs, ctx: TempContext) {
  * @param ctx {TempContext} - 创建模版时的上下文数据
  */
 export function setupOutputDirectory(envs: CliEnvs, ctx: TempContext) {
-  if (!envs.TEMP_CLI_OUTPUT_DIRECTORY) return;
-  ctx.outputDirPath = path.join(ctx.__dirname, envs.TEMP_CLI_OUTPUT_DIRECTORY);
+  if (!envs.DEV_CLI_OUTPUT_DIRECTORY) return;
+  ctx.outputDirPath = path.join(ctx.__dirname, envs.DEV_CLI_OUTPUT_DIRECTORY);
 }
 
 /**
@@ -40,8 +40,8 @@ export function setupOutputDirectory(envs: CliEnvs, ctx: TempContext) {
  * @param ctx {TempContext} - 创建模版时的上下文数据
  */
 export function setCustomOutputDirectoryList(envs: CliEnvs, ctx: TempContext) {
-  if (!envs.TEMP_CLI_OUTPUT_DIRECTORY_CHOICES) return;
-  const outputDirectoryList = envs.TEMP_CLI_OUTPUT_DIRECTORY_CHOICES.split(',').filter((v) => !!v);
+  if (!envs.DEV_CLI_OUTPUT_DIRECTORY_CHOICES) return;
+  const outputDirectoryList = envs.DEV_CLI_OUTPUT_DIRECTORY_CHOICES.split(',').filter((v) => !!v);
   const outputPathChoices: PromptChoices = outputDirectoryList.map((v) => ({ title: v, value: v }));
   ctx.outputPathChoices = [...ctx.outputPathChoices, ...outputPathChoices];
 }
