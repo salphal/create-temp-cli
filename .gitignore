@@ -133,3 +133,5 @@ dist
 
 .dev-cli
 __output__
+
+.dev-cli/__template__
