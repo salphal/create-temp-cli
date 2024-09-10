@@ -107,7 +107,7 @@ export class TemplateCli extends FrontCli<TemplateContext> {
 
   stepList: StepList = [
     {
-      name: 'step1',
+      name: 'step_01',
       remark: `
       - 载入环境变量
       - 扫描模版目录下的所有模版文件
@@ -156,7 +156,7 @@ export class TemplateCli extends FrontCli<TemplateContext> {
     },
 
     {
-      name: 'step2',
+      name: 'step_02',
       remark: `
       用户交互获取数据
         1. 选择模版
@@ -214,7 +214,7 @@ export class TemplateCli extends FrontCli<TemplateContext> {
     },
 
     {
-      name: 'step3',
+      name: 'step_03',
       remark: `
 			根据用户选择的信息更新配置
 				- 更新当前选中的模版
@@ -255,7 +255,7 @@ export class TemplateCli extends FrontCli<TemplateContext> {
     },
 
     {
-      name: 'step4',
+      name: 'step_04',
       remark: `
 			根据配置信息
 				1. 创建输出目录( 若已有则清空该目录, 若没有则创建 )

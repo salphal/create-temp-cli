@@ -14,10 +14,12 @@ import { CliEnvs } from '@clis/template/template';
 import { TemplateCli } from '@clis/template';
 import { PublishCli } from '@clis/publish';
 import { DownloadCli } from '@clis/download';
-import { Prompt } from '@utils';
+import { Prompt, ShellExtra } from '@utils';
 import { downloadNameChoices } from '@clis/download/constant';
 import { publishTypeChoices, publishTypes } from '@clis/publish/constant';
 import { CLI_NAME } from '@constants/cli';
+import fs from 'fs-extra';
+import { CLI_CONFIG_FILE_NAME, TEMP_FILE_NAME } from '@constants/common';
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -35,7 +37,10 @@ const envVariables = (function injection(): Envs {
   });
   const __dirname: string = process.cwd();
   const __filename = fileURLToPath(import.meta.url);
-  configDotenv({ path: path.resolve(__dirname, '.temp.env') });
+  const tempEnvFilePath = path.join(__dirname, `${CLI_CONFIG_FILE_NAME}/${TEMP_FILE_NAME}`);
+  if (ShellExtra.isFile(tempEnvFilePath)) {
+    configDotenv({ path: tempEnvFilePath });
+  }
   const envs: CliEnvs = Object.fromEntries(
     Object.entries(process.env).filter(([k, v]) => /^DEV_CLI.*/.test(k)),
   );
