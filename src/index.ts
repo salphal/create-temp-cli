@@ -18,7 +18,6 @@ import { Prompt, ShellExtra } from '@utils';
 import { downloadNameChoices } from '@clis/download/constant';
 import { publishTypeChoices, publishTypes } from '@clis/publish/constant';
 import { CLI_NAME } from '@constants/cli';
-import fs from 'fs-extra';
 import { CLI_CONFIG_FILE_NAME, TEMP_FILE_NAME } from '@constants/common';
 
 //-------------------------------------------------------------------------------------------------------------------//
