@@ -90,7 +90,7 @@ export class DownloadCli extends FrontCli<IDownloadContext> {
 
                 let ignoreConfig = '\n';
 
-                const templateDirPath = CLI_CONFIG_FILE_NAME;
+                const templateDirPath = `${CLI_CONFIG_FILE_NAME}/${TEMPLATE_FILE_NAME}`;
                 const outputDirPath = OUTPUT_FILE_NAME;
 
                 if (content.indexOf(templateDirPath) === -1) {
