@@ -1,4 +1,5 @@
 import { PromptChoices } from '../utils/prompt';
+import { ParsedPath } from 'path';
 
 export interface CliEnvs {
   [key: string]: string | undefined;
@@ -8,11 +9,14 @@ export interface CliEnvs {
   DEV_CLI_OUTPUT_DIRECTORY_CHOICES?: string | undefined;
 }
 
-export interface TempInfo {
+export type TempInfo = ParsedPath & {
   tempName: string;
   fileName: string;
   fullPath: string;
-}
+  label: string;
+  title: string;
+  value: string;
+};
 
 export type TempInfoList = Array<TempInfo>;
 
@@ -40,8 +44,6 @@ export interface TempContext {
 
   /** 模版目录列表 */
   tempDirPathList: string[];
-  /** 获取所有去重的模版名列表 */
-  tempNameList: string[];
 
   /** 用户交互的结果 */
   questionResult: {

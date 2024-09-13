@@ -33,8 +33,6 @@ interface TemplateContext extends Envs<CliEnvs> {
 
   /** 模版目录列表 */
   tempDirPathList: string[];
-  /** 获取所有去重的模版名列表 */
-  tempNameList: TempNameList;
 
   /** 用户交互的结果 */
   questionResult: {
@@ -71,7 +69,6 @@ export class TemplateCli extends FrontCli<TemplateContext> {
 
     allTempInfoList: [],
     tempDirPathList: [],
-    tempNameList: [],
 
     questionResult: {
       tempName: '',
@@ -131,12 +128,8 @@ export class TemplateCli extends FrontCli<TemplateContext> {
         const allTempInfoList = await getAllTempInfoByTempDirPathList(tempDirPathList);
         this.context.allTempInfoList = allTempInfoList;
 
-        /** 获取所有 去重的模版名列表 */
-        const tempNameList = getAllTempNameList(allTempInfoList, tempDirPathList);
-        this.context.tempNameList = tempNameList;
-
         /** 根据扫描模目录下的文件, 设置模版选项列表 */
-        this.context.tempNameChoices = createPromptChoices(tempNameList);
+        this.context.tempNameChoices = allTempInfoList;
 
         if (!allTempInfoList.length) {
           /** 模版目录下没有任何模版 */
@@ -230,7 +223,7 @@ export class TemplateCli extends FrontCli<TemplateContext> {
         /**
          * 获取当前模板信息的文件列表
          */
-        const curTempInfoList = getCurTempInfoListByTempName(tempName, allTempInfoList);
+        const curTempInfoList = await getCurTempInfoListByTempName(tempName, allTempInfoList);
 
         /**
          * 判断当前模版是否有效
@@ -290,6 +283,7 @@ export class TemplateCli extends FrontCli<TemplateContext> {
          * 3. 输出到指定目录的文件中
          */
         const isWritten = await writeTempListToTarget(ctx.curTempInfoList, {
+          tempName,
           fileName,
           outputDirPath,
           replacements: this.context.replacements,

@@ -1,6 +1,6 @@
 import { Replacements, TempInfo, TempInfoList } from '../template';
 import fs from 'fs-extra';
-import path from 'path';
+import path, { ParsedPath } from 'path';
 import {
   camelcase,
   CAMELCASE,
@@ -16,22 +16,14 @@ import {
 
 /* 工具函数 */
 
-/**
- * 根据完整路径获取模版名称
- * @param fullPath - 模版完整路径
- */
-function getTempNameByFullPath(fullPath: string): string {
-  const match = fullPath.match(/__template__\/.*/);
+function getTempNameByDirFullPath(fullPath: string) {
+  const match = fullPath.match(/\/(__.*__).*(__.*__)$/);
   if (Array.isArray(match) && match.length) {
-    const tempName = match[0].replace('__template__/', '');
-    const tempNameList = tempName.split('/');
-    if (tempNameList[tempNameList.length - 1].match(/(\.template)|(\.md)/)) {
-      tempNameList.pop();
-    }
-    return tempNameList.join('/');
-  } else {
-    return fullPath;
+    const p = match[0].replace(/^(\/__.*__\/)/, '');
+    const { dir, name } = path.parse(p);
+    return dir ? `${dir}/${name}` : name;
   }
+  return '';
 }
 
 /**
@@ -54,12 +46,14 @@ export function createPromptChoices(list: string[]): PromptChoices {
  * @return {string}
  */
 export function tempFileNameToRealFileName(tempFileName: string, replacements: Replacements) {
-  const { fileName } = replacements;
-
+  const { fileName, CompName } = replacements;
   const filename = tempFileName
-    .replace(/template(?=\.)/, (match) => {
-      if (match.toLowerCase() === 'template') {
+    .replace(/[tT]emplate(?=\.)/, (match) => {
+      if (match === 'template') {
         return fileName;
+      } else if (match === 'Template') {
+        return fileName;
+        // return CompName;
       } else {
         return match;
       }
@@ -69,15 +63,41 @@ export function tempFileNameToRealFileName(tempFileName: string, replacements: R
   return filename;
 }
 
+export function FileInfoListToTempInfoList(fileInfoList: ParsedPath[]): TempInfoList {
+  return fileInfoList.map((parsedPath) => {
+    const { dir, base, ext, name } = parsedPath;
+    const fullPath = path.format(parsedPath);
+    const tempName = getTempNameByDirFullPath(fullPath);
+    const label = tempName.replace(/__.*__$/, (match: string) => {
+      return match.replace(/__/g, '');
+    });
+    return {
+      tempName: getTempNameByDirFullPath(fullPath),
+      fileName: base,
+      fullPath,
+      label,
+      title: label,
+      value: fullPath,
+      ...parsedPath,
+    };
+  });
+}
+
 /**
  * 根据模版名称, 获取当前模版信息
  *
  * @param tempName - 模版名称
  * @param tempInfoList - 模版信息列表
  */
-export function getCurTempInfoListByTempName(tempName: string, tempInfoList: TempInfoList) {
+export async function getCurTempInfoListByTempName(
+  tempName: string,
+  tempInfoList: TempInfoList,
+): Promise<TempInfoList> {
   if (!Array.isArray(tempInfoList) || !tempInfoList.length) return [];
-  return tempInfoList.filter((tempInfo) => tempInfo.tempName === tempName);
+  const [currentTempInfo] = tempInfoList.filter((tempInfo) => tempInfo.tempName === tempName);
+  return currentTempInfo
+    ? FileInfoListToTempInfoList(await FsExtra.getFilesInfo(currentTempInfo.fullPath))
+    : [];
 }
 
 /**
@@ -118,7 +138,7 @@ export function getReplacements(variables: { fileName: string }) {
 export async function replaceVariablesInFileByReplacements(
   filePath: string,
   replaceVariableMap: Replacements,
-) {
+): Promise<string> {
   return new Promise((resolve, reject) => {
     fs.readFile(filePath, 'utf8', (err, data) => {
       if (err) reject(err);
@@ -142,24 +162,33 @@ export async function getAllTempInfoList(templateDirectoryPath: string): Promise
         reject(err);
         return;
       }
-      const allFiles = [];
+      const allTemps = [];
       (async function processFiles() {
         for (const fileName of fileNames) {
           const fullPath = path.join(templateDirectoryPath, fileName);
           const stat = await fs.promises.stat(fullPath);
           if (stat.isDirectory()) {
-            const nestedFiles = await getAllTempInfoList(fullPath);
-            Array.isArray(nestedFiles) && allFiles.push(...nestedFiles);
-          } else {
-            allFiles.push({
-              tempName: getTempNameByFullPath(fullPath),
-              fileName,
-              fullPath,
-              ...path.parse(fullPath),
-            });
+            if (/__.*__/.test(fileName)) {
+              const tempName = getTempNameByDirFullPath(fullPath);
+              const label = tempName.replace(/__.*__$/, (match: string) => {
+                return match.replace(/__/g, '');
+              });
+              allTemps.push({
+                label,
+                title: label,
+                value: tempName,
+                tempName,
+                fileName,
+                fullPath,
+                ...path.parse(fullPath),
+              });
+            } else {
+              const nestedTemps = await getAllTempInfoList(fullPath);
+              Array.isArray(nestedTemps) && allTemps.push(...nestedTemps);
+            }
           }
         }
-        resolve(allFiles);
+        resolve(allTemps.filter((v) => !!v));
       })();
     });
   });
@@ -210,6 +239,7 @@ export function getAllTempNameList(
 export async function writeTempListToTarget(
   curTempInfoList: TempInfoList,
   config: {
+    tempName: string;
     fileName: string;
     outputDirPath: string;
     replacements: Replacements;
@@ -217,19 +247,34 @@ export async function writeTempListToTarget(
 ) {
   if (!Array.isArray(curTempInfoList) || !curTempInfoList.length) return false;
 
-  const { fileName, outputDirPath, replacements } = config;
-  if (!fileName || !outputDirPath || !replacements) return false;
+  const { fileName, outputDirPath, replacements, tempName } = config;
+  if (!fileName || !outputDirPath || !replacements || !tempName) return false;
+
+  const outputPathList = [];
+
+  await FsExtra.rm(path.join(outputDirPath, fileName));
 
   for (let i = 0; i < curTempInfoList.length; i++) {
-    const { fileName: tempName, fullPath } = curTempInfoList[i];
+    const { fileName: tempFileName, fullPath, dir } = curTempInfoList[i];
+
     const content = await replaceVariablesInFileByReplacements(fullPath, replacements);
-    const realFileName = tempFileNameToRealFileName(tempName, replacements);
-    const outputFullPath = path.join(outputDirPath, fileName, realFileName);
+
+    const tempDirPath = dir.replace(RegExp(`.*${tempName}`), '');
+    const outputDirFullPath = path.join(outputDirPath, fileName, tempDirPath);
+
+    await FsExtra.makeDir(outputDirFullPath);
+
+    const realFileName = tempFileNameToRealFileName(tempFileName, replacements);
+
+    const outputFullPath = path.join(outputDirFullPath, realFileName);
 
     if (['README.md'].includes(realFileName)) continue;
 
+    outputPathList.push(outputFullPath);
     await FsExtra.write(outputFullPath, content as string);
   }
+
+  Logger.infoObj('output path list', outputPathList);
 
   return true;
 }
