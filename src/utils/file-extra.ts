@@ -1,6 +1,5 @@
 import fs from 'fs-extra';
-import path from 'path';
-import { error } from 'shelljs';
+import path, { ParsedPath } from 'path';
 
 /**
  * 同步方法需要 try catch 捕获错误
@@ -209,12 +208,15 @@ export class FsExtra {
   }
 
   /**
-   * 读取目录中的所有文件路径
+   * 读取目录中的所有文件路径( 非递归, 仅获取指定路径下的文件列表 )
    *
    * @param dirPath {string} - 目录路径
    * @param callback {(fileNames: string[]) => any | Promise<any>} - 自定义处理文件路径的回调
    */
-  static async readDir(dirPath: string, callback: (fileNames: string[]) => any | Promise<any>) {
+  static async readDir(
+    dirPath: string,
+    callback: (fileNames: string[]) => any | Promise<any>,
+  ): Promise<string[]> {
     return new Promise(async (resolve, reject) => {
       const isDir = await FsExtra.isDir(dirPath);
       if (!isDir) {
@@ -229,6 +231,8 @@ export class FsExtra {
           if (typeof callback === 'function') {
             const res = await callback(fileNames);
             resolve(res);
+          } else {
+            resolve(fileNames);
           }
         }
       });
@@ -397,7 +401,7 @@ export class FsExtra {
       if (stat && typeof stat.isDirectory === 'function') {
         resolve(stat.isDirectory());
       }
-      reject(false);
+      // reject(false);
     });
   }
 
@@ -414,7 +418,7 @@ export class FsExtra {
     dirPath: string,
     resultType: 'list' | 'tree' = 'list',
     save?: (fullPath: string) => { [key: string]: any },
-  ) {
+  ): Promise<ParsedPath[]> {
     return new Promise(async (resolve, reject) => {
       return await FsExtra.readDir(dirPath, (fileNames) => {
         const fileList: any[] = [];
