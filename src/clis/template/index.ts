@@ -10,16 +10,13 @@ import {
   Prompt,
 } from '@utils';
 import {
-  createPromptChoices,
   getAllTempInfoByTempDirPathList,
-  getAllTempNameList,
   getCurTempInfoListByTempName,
   getReplacements,
   writeTempListToTarget,
 } from './utils/template';
 import { Envs } from '@type/env';
-import { CliEnvs, TempInfoList, TempNameList } from './template';
-import { setupEnvs } from './utils/setup-envs';
+import { CliEnvs, TempInfoList } from './template';
 import { CLI_CONFIG_FILE_NAME, OUTPUT_FILE_NAME, TEMPLATE_FILE_NAME } from '@constants/common';
 
 interface TemplateContext extends Envs<CliEnvs> {
@@ -122,7 +119,7 @@ export class TemplateCli extends FrontCli<TemplateContext> {
         this.context.tempDirPathList.push(tempDirPath);
 
         /** 载入环境变量中的配置 */
-        setupEnvs(envs, this.context);
+        // setupEnvs(envs, this.context);
 
         /** 获取所有 模版目录下的 所有模版 */
         const allTempInfoList = await getAllTempInfoByTempDirPathList(tempDirPathList);
@@ -166,8 +163,6 @@ export class TemplateCli extends FrontCli<TemplateContext> {
           'Please pick a template',
           this.context.tempNameChoices,
         );
-
-        // const compName = await Prompt.input("Please enter component name. ( default: Template )", {default: "Template"});
 
         const fileName = await Prompt.input(
           'Please enter component file name. ( default: template )',
