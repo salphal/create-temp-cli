@@ -9,6 +9,10 @@ export interface PromptChoice {
 
 export type PromptChoices = Array<PromptChoice>;
 
+function suggest(input: string, choices: PromptChoice[]) {
+  return choices.filter((i) => i.title.toLowerCase().indexOf(input.toLowerCase()) !== -1);
+}
+
 /**
  * prompts      v
  * https://github.com/terkelg/prompts
@@ -49,7 +53,14 @@ export class Prompt {
    * 单选, 根据输入筛选
    */
   static async autocomplete(message: string, choices: PromptChoices, config: any = {}) {
-    const res = await prompts({ type: 'autocomplete', name: 'value', message, choices, ...config });
+    const res = await prompts({
+      type: 'autocomplete',
+      name: 'value',
+      message,
+      choices,
+      suggest,
+      ...config,
+    });
     return res.value || config.default;
   }
 
