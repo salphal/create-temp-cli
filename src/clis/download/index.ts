@@ -7,7 +7,6 @@ import {
   OUTPUT_FILE_NAME,
   PUBLISH_CONFIG_FILE_NAME,
   repositoryGitUrl,
-  TEMP_FILE_NAME,
   TEMPLATE_FILE_NAME,
 } from '@constants/common';
 
@@ -62,14 +61,6 @@ export class DownloadCli extends FrontCli<IDownloadContext> {
               const destName = `${CLI_CONFIG_FILE_NAME}/${PUBLISH_CONFIG_FILE_NAME}`;
               const envSrc = path.resolve(__dirname, `.tmp/${PUBLISH_CONFIG_FILE_NAME}`);
               const envDst = path.resolve(__dirname, destName);
-              await FsExtra.cp(envSrc, envDst);
-              Logger.success(`Successfully downloaded ${destName} file`);
-            }
-
-            if (name === downloadTypes.envConfig || name === downloadTypes.all) {
-              const envSrc = path.resolve(__dirname, `.tmp/${TEMP_FILE_NAME}`);
-              const destName = `${CLI_CONFIG_FILE_NAME}/${TEMP_FILE_NAME}`;
-              const envDst = path.resolve(__dirname, `${CLI_CONFIG_FILE_NAME}/${TEMP_FILE_NAME}`);
               await FsExtra.cp(envSrc, envDst);
               Logger.success(`Successfully downloaded ${destName} file`);
             }
