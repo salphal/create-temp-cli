@@ -1,16 +1,17 @@
 import { Client, ClientChannel } from 'ssh2';
-import path from 'path';
-import { PathExtra } from '@utils/path-extra';
 import { TarCmd } from '@utils/tar-cmd';
 import { Logger } from '@utils/logger';
+import fs from 'fs-extra';
 
 interface BaseConfig {
   host: string;
   port: number;
   username: string;
   password: string;
-  privateKey?: string;
+  privateKey?: Buffer;
 }
+
+type IdentityInfo = { password: string } | { privateKey: Buffer };
 
 export interface ServerConfig extends BaseConfig {}
 
@@ -46,7 +47,6 @@ export class SSH {
   async connect(stream?: ClientChannel): Promise<SSH> {
     const _this = this;
 
-    console.log('\n');
     // console.log('[ ssh connect server config ]', _this.serverConfig);
     Logger.infoObj('ssh connect server config', _this.serverConfig);
 
@@ -55,7 +55,6 @@ export class SSH {
         .on('ready', () => {
           // console.log('[ ssh connect ready ]');
           Logger.warnObj('ssh connect ready');
-          console.log('\n');
 
           // _this.exec('ll');
           // _this.exec('ip addr show | grep 192.168');
@@ -74,13 +73,15 @@ export class SSH {
             ? {
                 sock: stream, // Use the forwarded stream to connect to the inner server
                 username: _this.serverConfig.username,
-                password: _this.serverConfig.password,
+                // password: _this.serverConfig.password,
+                ..._this.parseIdentityInfo(_this!.serverConfig),
               }
             : {
                 host: _this.serverConfig.host,
                 port: _this.serverConfig.port,
                 username: _this.serverConfig.username,
-                password: _this.serverConfig.password,
+                // password: _this.serverConfig.password,
+                ..._this.parseIdentityInfo(_this!.serverConfig),
               },
         );
     });
@@ -132,9 +133,25 @@ export class SSH {
           host: _this.jumpServerConfig!.host,
           port: _this.jumpServerConfig!.port,
           username: _this.jumpServerConfig!.username,
-          password: _this.jumpServerConfig!.password,
+          // password: _this.jumpServerConfig!.password,
+          ..._this.parseIdentityInfo(_this!.jumpServerConfig as BaseConfig),
         });
     });
+  }
+
+  parseIdentityInfo(config: BaseConfig): IdentityInfo {
+    let identity: IdentityInfo = {
+      password: config.password,
+    };
+
+    if (config.privateKey) {
+      const privateKey = fs.readFileSync(config.privateKey);
+      if (privateKey) {
+        identity = { privateKey };
+      }
+    }
+
+    return identity;
   }
 
   /**
@@ -178,7 +195,6 @@ export class SSH {
               } else {
                 console.log('[ exec result ]', '\n' + stdout);
               }
-              console.log('\n');
               resolve(stdout);
             } else {
               // console.log('[ ssh exec close ]', code, signal);
@@ -230,7 +246,6 @@ export class SSH {
             reject(err);
           }
           Logger.successObj('ssh upload', `success upload ${localPath} to ${remotePath}`);
-          console.log('\n');
           resolve();
         });
       });
