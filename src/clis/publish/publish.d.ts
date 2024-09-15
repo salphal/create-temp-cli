@@ -22,7 +22,7 @@ export interface IBackup {
   /** 备份文件名 */
   dirName: string;
   /** 时间格式 */
-  format: string;
+  // format: string;
   /** 备份最大数量 */
   max: number;
 }
@@ -34,7 +34,7 @@ export interface ServerConfig {
   jumpServer?: IJumpServer;
   /** 是否备份 */
   isBackup: boolean;
-  /** 备份信服 */
+  /** 备份配置 */
   backup: IBackup;
   /** 发布路径 */
   publishDir: string;

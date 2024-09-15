@@ -21,7 +21,7 @@ import {
   filterExpiredFiles,
   getSortBackupChoices,
 } from '@clis/publish/utils/backup';
-import { publishTypes } from '@clis/publish/constant';
+import { backupDateFormat, publishTypes } from '@clis/publish/constant';
 
 interface IPublishContext extends Envs {
   /** 部署信息配置列表 */
@@ -58,7 +58,6 @@ export class PublishCli extends FrontCli<IPublishContext> {
         isBackup: true,
         backup: {
           dirName: 'time-machine',
-          format: 'YYYY-MM-DD-hh-mm-ss',
           max: 5,
         },
         publishDir: '/etc/nginx/html/demo',
@@ -184,7 +183,7 @@ export class PublishCli extends FrontCli<IPublishContext> {
           appName,
           restartCmd,
           isBackup,
-          backup: { dirName: backupDirName, format: backupFormat, max: backupMax },
+          backup: { dirName: backupDirName, max: backupMax },
         },
       },
       __dirname,
@@ -253,7 +252,7 @@ export class PublishCli extends FrontCli<IPublishContext> {
         /** 备份 */
         if (isBackup) {
           /** 新建备份文件的名称 */
-          const backupFIleName = createBackupName(outputBaseName, backupFormat);
+          const backupFIleName = createBackupName(outputBaseName, backupDateFormat);
           /** 备份文件的目录路径 */
           const backupFileDir = PathExtra.forceSlash(appBackupDirPath);
           /** 备份文件的完整路径 */
@@ -302,7 +301,7 @@ export class PublishCli extends FrontCli<IPublishContext> {
           appName,
           restartCmd,
           isBackup,
-          backup: { dirName: backupDirName, format: backupFormat, max: backupMax },
+          backup: { dirName: backupDirName, max: backupMax },
         },
       },
     } = this.context;
