@@ -6,8 +6,6 @@ export const TEMPLATE_FILE_NAME = '__template__';
 
 export const OUTPUT_FILE_NAME = '__output__';
 
-export const TEMP_FILE_NAME = '.temp.env';
-
 export const PUBLISH_CONFIG_FILE_NAME = 'publish.config.json';
 
 export const repositoryGitUrl = 'https://github.com/salphal/dev-cli.git';
