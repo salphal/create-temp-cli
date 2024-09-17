@@ -17,7 +17,12 @@ import {
 } from './utils/template';
 import { Envs } from '@type/env';
 import { CliEnvs, TempInfoList } from './template';
-import { CLI_CONFIG_FILE_NAME, OUTPUT_FILE_NAME, TEMPLATE_FILE_NAME } from '@constants/common';
+import {
+  CLI_CONFIG_FILE_NAME,
+  OUTPUT_FILE_NAME,
+  TEMPLATE_CONFIG_FILE_NAME,
+  TEMPLATE_FILE_NAME,
+} from '@constants/common';
 
 interface TemplateContext extends Envs<CliEnvs> {
   /** 默认模版目录路径 */
@@ -103,13 +108,21 @@ export class TemplateCli extends FrontCli<TemplateContext> {
     {
       name: 'step_01',
       remark: `
-      - 载入环境变量
+      - 载入自定义模版配置
       - 扫描模版目录下的所有模版文件
         - 并生成模版信息列表
         - 根据模版信息文件生成模版选项选项列表
     `,
       callback: async (ctx: any) => {
         const { tempDirPathList, envs, __dirname } = this.context;
+
+        const templateConfigFunc = require(
+          path.join(__dirname, CLI_CONFIG_FILE_NAME, TEMPLATE_CONFIG_FILE_NAME),
+        );
+
+        if (typeof templateConfigFunc === 'function') {
+          const templateConfig = templateConfigFunc({ __dirname });
+        }
 
         const tempDirPath = path.join(__dirname, `${CLI_CONFIG_FILE_NAME}/${TEMPLATE_FILE_NAME}`);
         const outputDirPath = path.join(__dirname, OUTPUT_FILE_NAME);
@@ -169,18 +182,11 @@ export class TemplateCli extends FrontCli<TemplateContext> {
           { default: 'template' },
         );
 
-        let outputPath = await Prompt.input(
-          'Please enter output directory path. ( default: __output__ ), If enter x then select custom output directory map',
+        const outputPath = await Prompt.autocomplete(
+          'Please pick a template',
+          this.context.outputPathChoices,
           { default: '.' },
         );
-
-        if (outputPath.trim().toLowerCase() === 'x') {
-          outputPath = await Prompt.autocomplete(
-            'Please pick a template',
-            this.context.outputPathChoices,
-            { default: '.' },
-          );
-        }
 
         /** 保存用户交互的结果 */
         this.context.questionResult = {
