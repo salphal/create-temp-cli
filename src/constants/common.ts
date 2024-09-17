@@ -8,4 +8,6 @@ export const OUTPUT_FILE_NAME = '__output__';
 
 export const PUBLISH_CONFIG_FILE_NAME = 'publish.config.json';
 
+export const TEMPLATE_CONFIG_FILE_NAME = 'template.config.cjs';
+
 export const repositoryGitUrl = 'https://github.com/salphal/dev-cli.git';
