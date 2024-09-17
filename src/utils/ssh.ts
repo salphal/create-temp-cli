@@ -8,27 +8,27 @@ interface BaseConfig {
   port: number;
   username: string;
   password: string;
-  privateKey?: Buffer;
+  privateKey?: Buffer | string | null;
 }
 
 type IdentityInfo = { password: string } | { privateKey: Buffer };
 
-export interface ServerConfig extends BaseConfig {}
+export interface SSHConnect extends BaseConfig {}
 
-export interface JumpServerConfig extends BaseConfig {}
+export interface SSHJumpConnect extends BaseConfig {}
 
 export interface SSHConfig {
-  connect: ServerConfig;
-  jumpServer?: JumpServerConfig;
+  connect: SSHConnect;
+  jumpServer?: SSHJumpConnect;
 }
 
 export class SSH {
   config: SSHConfig;
 
   /** 服务器配置 */
-  serverConfig: ServerConfig;
+  serverConfig: SSHConnect;
   /** 跳板机配置 */
-  jumpServerConfig: JumpServerConfig | undefined;
+  jumpServerConfig: SSHJumpConnect | undefined;
 
   /** 服务器客户端 */
   _client = new Client();
