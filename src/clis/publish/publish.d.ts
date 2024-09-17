@@ -1,3 +1,5 @@
+import { SSHConnect, SSHJumpConnect } from '@utils';
+
 export interface LocalConfig {
   /** 构建产物的名称 */
   outputName: string;
@@ -29,9 +31,9 @@ export interface IBackup {
 
 export interface ServerConfig {
   /** 连接服务器的配置信息 */
-  connect: IServer;
+  connect: SSHConnect;
   /** 跳板机配置 */
-  jumpServer?: IJumpServer;
+  jumpServer?: SSHJumpConnect;
   /** 是否备份 */
   isBackup: boolean;
   /** 备份配置 */
