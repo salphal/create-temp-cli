@@ -20,7 +20,7 @@ import { Prompt, ShellExtra } from '@utils';
 import { downloadNameChoices } from '@clis/download/constant';
 import { publishTypeChoices, publishTypes } from '@clis/publish/constant';
 import { CLI_NAME } from '@constants/cli';
-import { CLI_CONFIG_FILE_NAME, TEMP_FILE_NAME } from '@constants/common';
+import { CLI_CONFIG_FILE_NAME } from '@constants/common';
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -38,7 +38,7 @@ const envVariables = (function injection(): Envs {
   });
   const __dirname: string = process.cwd();
   const __filename = fileURLToPath(import.meta.url);
-  const tempEnvFilePath = path.join(__dirname, `${CLI_CONFIG_FILE_NAME}/${TEMP_FILE_NAME}`);
+  const tempEnvFilePath = path.join(__dirname, `${CLI_CONFIG_FILE_NAME}/.env`);
   if (ShellExtra.isFile(tempEnvFilePath)) {
     configDotenv({ path: tempEnvFilePath });
   }
