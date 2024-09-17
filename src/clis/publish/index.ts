@@ -53,7 +53,7 @@ export class PublishCli extends FrontCli<IPublishContext> {
           username: 'root',
           port: 22,
           password: 'password',
-          privateKey: '/path/to/my/key',
+          privateKey: null,
         },
         isBackup: true,
         backup: {
