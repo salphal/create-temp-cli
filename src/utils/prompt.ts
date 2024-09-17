@@ -127,3 +127,15 @@ export class Prompt {
     return res.value || config.default;
   }
 }
+
+/**
+ * 创建 Select 的筛选项
+ * @param list {Array<string>} - 模版名称列表
+ */
+export function createSelectChoices(list: string[]): PromptChoices {
+  if (!Array.isArray(list) || !list.length) return [];
+  return list.map((name: string) => ({
+    title: name,
+    value: name,
+  }));
+}
