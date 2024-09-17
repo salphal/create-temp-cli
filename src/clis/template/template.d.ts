@@ -3,10 +3,6 @@ import { ParsedPath } from 'path';
 
 export interface CliEnvs {
   [key: string]: string | undefined;
-
-  DEV_CLI_TEMPLATE_DIRECTORY?: string | undefined;
-  DEV_CLI_OUTPUT_DIRECTORY?: string | undefined;
-  DEV_CLI_OUTPUT_DIRECTORY_CHOICES?: string | undefined;
 }
 
 export type TempInfo = ParsedPath & {
@@ -23,12 +19,12 @@ export type TempInfoList = Array<TempInfo>;
 export type TempNameList = Array<string>;
 
 export interface Replacements {
-  CompName: string;
+  fileName: string;
   compName: string;
+  CompName: string;
   COMP_NAME: string;
   SHORT_COMP_NAME: string;
   className: string;
-  fileName: string;
 }
 
 export interface TempContext {
