@@ -67,37 +67,6 @@ export class DownloadCli extends FrontCli<IDownloadContext> {
 
             const tmpPath = path.resolve(__dirname, '.tmp');
             await FsExtra.rm(tmpPath);
-
-            const ignoreFilePath = path.join(__dirname, '.gitignore');
-
-            /**
-             * 如果有 .gitignore, 则自动追加 排除 dev-cli 中的部分文件
-             */
-            if (await FsExtra.isFile(ignoreFilePath)) {
-              const ignoreContent = await FsExtra.read(ignoreFilePath);
-
-              if (ignoreContent) {
-                const content = ignoreContent.toString();
-
-                let ignoreConfig = '\n';
-
-                const templateDirPath = `${CLI_CONFIG_FILE_NAME}/${TEMPLATE_FILE_NAME}`;
-                const outputDirPath = OUTPUT_FILE_NAME;
-
-                if (content.indexOf(templateDirPath) === -1) {
-                  ignoreConfig += templateDirPath + '\n';
-                }
-                if (content.indexOf(outputDirPath) === -1) {
-                  ignoreConfig += outputDirPath;
-                }
-
-                if (ignoreConfig.trim()) {
-                  await FsExtra.write(ignoreFilePath, ignoreContent + ignoreConfig);
-                }
-              }
-            }
-
-            Logger.success(`Success load ${name}`);
           })
           .catch((err) => {
             Logger.error(err);
@@ -107,19 +76,52 @@ export class DownloadCli extends FrontCli<IDownloadContext> {
           });
 
         return {
-          code: ResCode.end,
+          code: ResCode.next,
           data: {},
         };
       },
     },
     {
       name: 'step_02',
-      remark: ``,
+      remark: `
+        如果有 .gitignore 文件, 则向其中追加忽略文件
+      `,
       callback: async (ctx: IDownloadContext) => {
-        const {} = this.context;
+        const { __dirname, name } = this.context;
+        const ignoreFilePath = path.join(__dirname, '.gitignore');
+
+        /**
+         * 如果有 .gitignore, 则自动追加 排除 dev-cli 中的部分文件
+         */
+        if (await FsExtra.isFile(ignoreFilePath)) {
+          const ignoreContent = await FsExtra.read(ignoreFilePath);
+
+          if (ignoreContent) {
+            const content = ignoreContent.toString();
+
+            let ignoreConfig = '\n';
+
+            const templateDirPath = `${CLI_CONFIG_FILE_NAME}/${TEMPLATE_FILE_NAME}`;
+            const outputDirPath = OUTPUT_FILE_NAME;
+
+            if (content.indexOf(templateDirPath) === -1) {
+              ignoreConfig += templateDirPath + '\n';
+            }
+            if (content.indexOf(outputDirPath) === -1) {
+              ignoreConfig += outputDirPath;
+            }
+
+            if (ignoreConfig.trim()) {
+              await FsExtra.write(ignoreFilePath, ignoreContent + ignoreConfig);
+            }
+          }
+        }
+
+        Logger.success(`Success load ${name}`);
+
         console.log('=> step_02', ctx);
         return {
-          code: ResCode.next,
+          code: ResCode.end,
           data: {},
         };
       },
