@@ -27,18 +27,6 @@ function getTempNameByDirFullPath(fullPath: string) {
 }
 
 /**
- * 创建 prompts 的筛选项
- * @param list - 模版名称列表
- */
-export function createPromptChoices(list: string[]): PromptChoices {
-  if (!Array.isArray(list) || !list.length) return [];
-  return list.map((name: string) => ({
-    title: name,
-    value: name,
-  }));
-}
-
-/**
  * 替换 模版文件名 为 真实文件名
  *
  * @param tempFileName {string} - 文件名
@@ -52,8 +40,7 @@ export function tempFileNameToRealFileName(tempFileName: string, replacements: R
       if (match === 'template') {
         return fileName;
       } else if (match === 'Template') {
-        return fileName;
-        // return CompName;
+        return CompName;
       } else {
         return match;
       }
