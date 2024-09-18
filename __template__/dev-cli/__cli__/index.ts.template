@@ -22,8 +22,9 @@ export class ${CompName}Cli extends FrontCli<I${CompName}Context> {
     {
       name: "step_01",
       remark: ``,
+      data: () => ({}),
       callback: async (ctx: I${CompName}Context) => {
-        const {} = this.context;
+        const {} = ctx;
         console.log('=> step_01', ctx);
         return {
           code: ResCode.next,
@@ -31,11 +32,13 @@ export class ${CompName}Cli extends FrontCli<I${CompName}Context> {
         }
       }
     },
+
     {
       name: "step_02",
       remark: ``,
+      data: () => ({}),
       callback: async (ctx: I${CompName}Context) => {
-        const {} = this.context;
+        const {} = ctx;
         console.log('=> step_02', ctx);
         return {
           code: ResCode.next,
@@ -43,11 +46,13 @@ export class ${CompName}Cli extends FrontCli<I${CompName}Context> {
         }
       }
     },
+
     {
       name: "step_03",
       remark: ``,
+      data: () => ({}),
       callback: async (ctx: I${CompName}Context) => {
-        const {} = this.context;
+        const {} = ctx;
         console.log('=> step_03', ctx);
         return {
           code: ResCode.end,
