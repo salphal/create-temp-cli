@@ -3,7 +3,7 @@ import { Envs } from '@type/env';
 import { Logger } from '../logger/index';
 import { CLI_CONFIG_FILE_NAME, TEMPLATE_CONFIG_FILE_NAME } from '@constants/common';
 import path from 'path';
-import { Prompt, PromptList } from '@utils';
+import { FsExtra, Prompt, PromptList } from '@utils';
 import prompts from 'prompts';
 
 export interface CustomCliConfig {
@@ -73,60 +73,82 @@ export abstract class FrontCli<T = any> {
         let beforePromptsResult: { [key: string]: any } = {};
         let outputPathMap: { [key: string]: string } = {};
 
-        /** 载入自定义配置模块 */
-        const customConfigModule = await import(
-          path.join(__dirname, `${CLI_CONFIG_FILE_NAME}/${TEMPLATE_CONFIG_FILE_NAME}`)
-        );
+        let customConfigModule: any = { default: null };
 
-        /** 如果导入配置函数正常, 则获取配置 */
-        if (typeof customConfigModule.default === 'function') {
-          customConfigMap = customConfigModule.default(this.context) as {
-            [key: string]: CustomCliConfig;
-          };
-        }
+        try {
+          const modulePath = path.join(
+            __dirname,
+            `${CLI_CONFIG_FILE_NAME}/${TEMPLATE_CONFIG_FILE_NAME}`,
+          );
 
-        /** 让用户选择自定义的配置对象 */
-        if (Object.keys(customConfigMap).length) {
-          const configChoices = Object.keys(customConfigMap).map((key) => ({
-            title: key,
-            value: key,
-          }));
+          if (!(await FsExtra.isFile(modulePath))) {
+            return {
+              code: ResCode.next,
+              data: { ...ctx },
+            };
+          }
 
-          const configKey = await Prompt.autocomplete('Please select custom config', configChoices);
-          if (configKey) customConfig = customConfigMap[configKey];
-        }
+          /** 载入自定义配置模块 */
+          customConfigModule = await import(modulePath);
 
-        /** 根据配置的 outputPrefix 列表选择, 输出路径的前缀 */
-        if (typeof customConfig.outputPrefixList === 'function') {
-          const prefixList = customConfig.outputPrefixList(this.context);
-          if (Array.isArray(prefixList) && prefixList.length) {
-            const prefixChoices = prefixList.map((key) => ({
+          /** 如果导入配置函数正常, 则获取配置 */
+          if (typeof customConfigModule.default === 'function') {
+            customConfigMap = customConfigModule.default(this.context) as {
+              [key: string]: CustomCliConfig;
+            };
+          }
+
+          /** 让用户选择自定义的配置对象 */
+          if (Object.keys(customConfigMap).length) {
+            const configChoices = Object.keys(customConfigMap).map((key) => ({
               title: key,
               value: key,
             }));
-            outputPrefix = await Prompt.autocomplete('Please select custom prefix', prefixChoices);
-          }
-        }
 
-        /** 若设置了自定义问题则执行 */
-        if (Array.isArray(customConfig.beforePrompts) && customConfig.beforeContext.length) {
-          beforePromptsResult = prompts(customConfig.beforePrompts);
-        }
-
-        /** 根据用户选饿的 outputPrefix 执行, 并返回输出路径映射集合 */
-        if (typeof customConfig.outputPathMap === 'function') {
-          outputPathMap = customConfig.outputPathMap({
-            ...customConfig.beforeData,
-            prefix: outputPrefix || '',
-            ...this.context,
-          });
-
-          /** 若有输出路径集合, 则询问是否 直接使用输出路径集合 */
-          if (Object.keys(outputPathMap).length) {
-            useOutputPathMap = await Prompt.toggle(
-              'Whether to use outputPathMap as the output path',
+            const configKey = await Prompt.autocomplete(
+              'Please select custom config',
+              configChoices,
             );
+            if (configKey) customConfig = customConfigMap[configKey];
           }
+
+          /** 根据配置的 outputPrefix 列表选择, 输出路径的前缀 */
+          if (typeof customConfig.outputPrefixList === 'function') {
+            const prefixList = customConfig.outputPrefixList(this.context);
+            if (Array.isArray(prefixList) && prefixList.length) {
+              const prefixChoices = prefixList.map((key) => ({
+                title: key,
+                value: key,
+              }));
+              outputPrefix = await Prompt.autocomplete(
+                'Please select custom prefix',
+                prefixChoices,
+              );
+            }
+          }
+
+          /** 若设置了自定义问题则执行 */
+          if (Array.isArray(customConfig.beforePrompts) && customConfig.beforeContext.length) {
+            beforePromptsResult = prompts(customConfig.beforePrompts);
+          }
+
+          /** 根据用户选饿的 outputPrefix 执行, 并返回输出路径映射集合 */
+          if (typeof customConfig.outputPathMap === 'function') {
+            outputPathMap = customConfig.outputPathMap({
+              ...customConfig.beforeData,
+              prefix: outputPrefix || '',
+              ...this.context,
+            });
+
+            /** 若有输出路径集合, 则询问是否 直接使用输出路径集合 */
+            if (Object.keys(outputPathMap).length) {
+              useOutputPathMap = await Prompt.toggle(
+                'Whether to use outputPathMap as the output path',
+              );
+            }
+          }
+        } catch (err) {
+          console.error('[ import module err ]: ', err);
         }
 
         return {
