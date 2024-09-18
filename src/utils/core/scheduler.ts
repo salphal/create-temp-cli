@@ -9,6 +9,7 @@ export const ResCode = {
 
 export interface Step {
   name?: string;
+  data: (...args: any[]) => { [key: string]: any };
   callback?: (
     ctx: any,
   ) =>
@@ -81,8 +82,10 @@ export class StepScheduler {
       const linkedNode = this.currentNode as LinkedNode;
 
       const {
-        data: { name, callback },
+        data: { name, callback, data },
       } = linkedNode;
+
+      const nodeData = typeof data === 'function' ? data(this.context) : {};
 
       if (typeof callback !== 'function') return null;
 
@@ -94,9 +97,9 @@ export class StepScheduler {
         console.log('\n');
 
         if (this._isAsyncFunc(callback)) {
-          res = await callback(this.context);
+          res = await callback({ ...this.context, ...nodeData });
         } else {
-          res = callback(this.context);
+          res = callback({ ...this.context, ...nodeData });
         }
 
         console.log('\n');

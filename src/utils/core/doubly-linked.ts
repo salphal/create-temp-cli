@@ -2,6 +2,7 @@ export interface NodeData {
   [key: string]: any;
 
   name?: string;
+  data?: (...args: any[]) => { [key: string]: any };
   callback?: (ctx: any) => any;
 }
 
@@ -80,7 +81,7 @@ export interface IDoublyLinked {
   getHead(): LinkedNode | null;
 
   /** 获取尾节点 */
-  getTail(): NodeData | null;
+  getTail(): LinkedNode | null;
 }
 
 export class DoublyLinked implements IDoublyLinked {
