@@ -101,6 +101,7 @@ export class TemplateCli extends FrontCli<TemplateContext> {
 
   stepList: StepList = [
     this.customConfigStep(this.context),
+
     {
       name: 'step_01',
       remark: `
@@ -282,6 +283,7 @@ export class TemplateCli extends FrontCli<TemplateContext> {
           fileName,
           outputDirPath,
           replacements: this.context.replacements,
+          customConfigStep: ctx.customConfigStep || {},
         });
 
         if (isWritten) {

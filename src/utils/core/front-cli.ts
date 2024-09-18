@@ -7,19 +7,6 @@ import { FsExtra, Prompt, PromptList } from '@utils';
 import prompts from 'prompts';
 import { isEmptyArray } from '../is-type';
 
-export interface CustomCliConfig {
-  [key: string]: any;
-
-  /** 自定义输出前缀列表 */
-  outputPrefixList: (ctx: any) => Array<string>;
-  /** 自定义输出路径集合 */
-  outputPathMap: (ctx: any) => { [key: string]: string };
-  /** 自定义交互列表 */
-  beforePrompts: PromptList;
-  /** 自定义执行时所需的数据 */
-  beforeData: (ctx: any) => { [key: string]: any };
-}
-
 export interface IFrontCliOptions {
   [key: string]: any;
 
@@ -62,18 +49,15 @@ export abstract class FrontCli<T = any> {
       callback: async (ctx: any) => {
         const { __dirname } = this.context as any;
 
-        let customConfig: CustomCliConfig = {
-          outputPrefixList: () => [],
-          outputPathMap: () => ({}),
-          beforePrompts: [],
-          beforeData: () => ({}),
-        };
+        let customConfig: any = {};
 
         let outputPrefix = '';
         let useOutputPathMap = false;
-        let customConfigMap: { [key: string]: CustomCliConfig } = {};
-        let promptsResult: any = {};
+
+        let customConfigMap: any = {};
         let outputPathMap: any = {};
+
+        let promptsResult: any = {};
         let customConfigStep: any = {};
 
         let customConfigModule: any = { default: null };
@@ -96,9 +80,7 @@ export abstract class FrontCli<T = any> {
 
           /** 如果导入配置函数正常, 则获取配置 */
           if (typeof customConfigModule.default === 'function') {
-            customConfigMap = customConfigModule.default(this.context) as {
-              [key: string]: CustomCliConfig;
-            };
+            customConfigMap = customConfigModule.default(this.context) as any;
           }
 
           /** 让用户选择自定义的配置对象 */

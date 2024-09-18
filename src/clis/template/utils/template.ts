@@ -10,6 +10,7 @@ import {
   PromptChoices,
   Logger,
   FsExtra,
+  isObject,
 } from '@utils';
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -230,11 +231,12 @@ export async function writeTempListToTarget(
     fileName: string;
     outputDirPath: string;
     replacements: Replacements;
+    customConfigStep: any;
   },
 ) {
   if (!Array.isArray(curTempInfoList) || !curTempInfoList.length) return false;
 
-  const { fileName, outputDirPath, replacements, tempName } = config;
+  const { fileName, outputDirPath, replacements, tempName, customConfigStep } = config;
   if (!fileName || !outputDirPath || !replacements || !tempName) return false;
 
   const outputPathList = [];
@@ -253,7 +255,18 @@ export async function writeTempListToTarget(
 
     const realFileName = tempFileNameToRealFileName(tempFileName, replacements);
 
-    const outputFullPath = path.join(outputDirFullPath, realFileName);
+    let outputFullPath = path.join(outputDirFullPath, realFileName);
+
+    if (
+      customConfigStep.useOutputPathMap &&
+      isObject(customConfigStep.outputPathMap) &&
+      Object.keys(customConfigStep.outputPathMap).length
+    ) {
+      const dirName = tempDirPath.slice(1);
+      if (typeof customConfigStep.outputPathMap[dirName] === 'string') {
+        outputFullPath = path.join(customConfigStep.outputPathMap[dirName], realFileName);
+      }
+    }
 
     if (['README.md'].includes(realFileName)) continue;
 
