@@ -17,12 +17,7 @@ import {
 } from './utils/template';
 import { Envs } from '@type/env';
 import { CliEnvs, TempInfoList } from './template';
-import {
-  CLI_CONFIG_FILE_NAME,
-  OUTPUT_FILE_NAME,
-  TEMPLATE_CONFIG_FILE_NAME,
-  TEMPLATE_FILE_NAME,
-} from '@constants/common';
+import { CLI_CONFIG_FILE_NAME, OUTPUT_FILE_NAME, TEMPLATE_FILE_NAME } from '@constants/common';
 
 interface TemplateContext extends Envs<CliEnvs> {
   /** 默认模版目录路径 */
@@ -116,23 +111,12 @@ export class TemplateCli extends FrontCli<TemplateContext> {
       callback: async (ctx: any) => {
         const { tempDirPathList, envs, __dirname } = this.context;
 
-        const templateConfigFunc = require(
-          path.join(__dirname, CLI_CONFIG_FILE_NAME, TEMPLATE_CONFIG_FILE_NAME),
-        );
-
-        if (typeof templateConfigFunc === 'function') {
-          const templateConfig = templateConfigFunc({ __dirname });
-        }
-
         const tempDirPath = path.join(__dirname, `${CLI_CONFIG_FILE_NAME}/${TEMPLATE_FILE_NAME}`);
         const outputDirPath = path.join(__dirname, OUTPUT_FILE_NAME);
 
         this.context.tempDirPath = tempDirPath;
         this.context.outputDirPath = outputDirPath;
         this.context.tempDirPathList.push(tempDirPath);
-
-        /** 载入环境变量中的配置 */
-        // setupEnvs(envs, this.context);
 
         /** 获取所有 模版目录下的 所有模版 */
         const allTempInfoList = await getAllTempInfoByTempDirPathList(tempDirPathList);
@@ -310,6 +294,7 @@ export class TemplateCli extends FrontCli<TemplateContext> {
   constructor(options: TemplateOptions) {
     super(options);
     this.context = { ...this.context, ...options.ctx };
+    this.stepList = [this.beforeStep(this.context), ...this.stepList];
     this.scheduler = new StepScheduler({ stepList: this.stepList });
   }
 
