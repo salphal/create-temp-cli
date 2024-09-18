@@ -146,9 +146,7 @@ export class SSH {
 
     if (config.privateKey) {
       const privateKey = fs.readFileSync(config.privateKey);
-      if (privateKey) {
-        identity = { privateKey };
-      }
+      if (privateKey) identity = { privateKey };
     }
 
     return identity;
