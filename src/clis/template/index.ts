@@ -100,6 +100,7 @@ export class TemplateCli extends FrontCli<TemplateContext> {
   };
 
   stepList: StepList = [
+    this.customConfigStep(this.context),
     {
       name: 'step_01',
       remark: `
@@ -113,6 +114,8 @@ export class TemplateCli extends FrontCli<TemplateContext> {
 
         const tempDirPath = path.join(__dirname, `${CLI_CONFIG_FILE_NAME}/${TEMPLATE_FILE_NAME}`);
         const outputDirPath = path.join(__dirname, OUTPUT_FILE_NAME);
+
+        console.log('=>(index.ts:118) ctx.customConfigStep', ctx.customConfigStep);
 
         this.context.tempDirPath = tempDirPath;
         this.context.outputDirPath = outputDirPath;
@@ -294,7 +297,6 @@ export class TemplateCli extends FrontCli<TemplateContext> {
   constructor(options: TemplateOptions) {
     super(options);
     this.context = { ...this.context, ...options.ctx };
-    this.stepList = [this.beforeStep(this.context), ...this.stepList];
     this.scheduler = new StepScheduler({ stepList: this.stepList });
   }
 
