@@ -51,6 +51,7 @@ export abstract class FrontCli<T = any> {
 
         let customConfig: any = {};
 
+        let selectedKey = null;
         let outputPrefix = '';
         let useOutputPathMap = false;
 
@@ -90,11 +91,8 @@ export abstract class FrontCli<T = any> {
               value: key,
             }));
 
-            const configKey = await Prompt.autocomplete(
-              'Please select custom config',
-              configChoices,
-            );
-            if (configKey) customConfig = customConfigMap[configKey];
+            selectedKey = await Prompt.autocomplete('Please select custom config', configChoices);
+            if (selectedKey) customConfig = customConfigMap[selectedKey];
           }
 
           const stepData = typeof customConfig.data === 'function' ? customConfig.data(ctx) : {};
@@ -138,6 +136,7 @@ export abstract class FrontCli<T = any> {
           customConfigStep = {
             ...stepData,
             ...promptsResult,
+            selectedKey,
             outputPrefix,
             outputPathMap,
             useOutputPathMap,

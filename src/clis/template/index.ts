@@ -8,6 +8,7 @@ import {
   Logger,
   PromptChoices,
   Prompt,
+  isObject,
 } from '@utils';
 import {
   getAllTempInfoByTempDirPathList,
@@ -160,10 +161,24 @@ export class TemplateCli extends FrontCli<TemplateContext> {
       `,
       data: () => ({}),
       callback: async (ctx: any) => {
-        const tempName = await Prompt.autocomplete(
-          'Please pick a template',
-          this.context.tempNameChoices,
-        );
+        let tempNameChoices = this.context.tempNameChoices;
+
+        /** 根据选项筛选当前类型的模版 */
+        if (ctx.customConfigStep && typeof ctx.customConfigStep.selectedKey === 'string') {
+          const selectedKey = ctx.customConfigStep.selectedKey;
+          if (selectedKey.indexOf('front') !== -1) {
+            tempNameChoices = tempNameChoices.filter(
+              (v) => v.title.indexOf('front') !== -1 || v.title.indexOf('dev-cli') !== -1,
+            );
+          } else if (selectedKey.indexOf('backend') !== -1) {
+            tempNameChoices = tempNameChoices.filter(
+              (v) => v.title.indexOf('backend') !== -1 || v.title.indexOf('dev-cli') !== -1,
+            );
+          }
+        }
+
+        /** 选择模版*/
+        const tempName = await Prompt.autocomplete('Please pick a template', tempNameChoices);
 
         const fileName = await Prompt.input(
           'Please enter component file name. ( default: template )',
@@ -174,7 +189,7 @@ export class TemplateCli extends FrontCli<TemplateContext> {
         /** 若使用用户自定义的输出路径则不执行该步骤 */
         if (ctx.customConfigStep && !ctx.customConfigStep.useOutputPathMap) {
           outputPath = await Prompt.autocomplete(
-            'Please pick a template',
+            'Please pick a outputPath',
             this.context.outputPathChoices,
             { default: '.' },
           );
