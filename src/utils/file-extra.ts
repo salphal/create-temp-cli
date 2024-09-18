@@ -373,7 +373,6 @@ export class FsExtra {
           }
         });
       }
-      resolve(isExists);
     });
   }
 
