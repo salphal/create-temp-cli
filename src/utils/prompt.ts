@@ -9,6 +9,10 @@ export interface PromptChoice {
 
 export type PromptChoices = Array<PromptChoice>;
 
+export type PromptItem = prompts.PromptObject;
+
+export type PromptList = Array<PromptItem>;
+
 function suggest(input: string, choices: PromptChoice[]) {
   return choices.filter((i) => i.title.toLowerCase().indexOf(input.toLowerCase()) !== -1);
 }
