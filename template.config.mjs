@@ -12,20 +12,6 @@ import path from 'path';
  * @property {string} Context.SHORT_COMP_NAME - 首写字母全大写
  * @property {string} Context.className - 类名( 等同于文件名 )
  *
- * @return {{
- *   [keu: string]: {
- *      beforeContext: ({[key: string]: any}) => {[key: string]: any};
- *      outputPathMap: ({[key: string]: any}) => {[key: string]: any};
- *      outputPrefixList: ({[key: string]: any}) => Array<string>;
- *      beforePrompts: ({[key: string]: any}) => Array<{
- *        message: string;
- *        choices?: Array<{
- *          title: string;
- *          value: any;
- *        }>;
- *      }>;
- *   };
- * }}
  */
 const createTempConfig = (context) => {
   const {__dirname} = context;
@@ -47,37 +33,38 @@ const createTempConfig = (context) => {
 
   return {
     "front/react": {
-      beforePrompts: ({}) => [],
-      beforeContext: ({}) => ({}),
-      outputPrefixList: ({}) => [],
-      outputPathMap: (ctx) => ({}),
+      data: (ctx) => {
+        return {};
+      },
+      promptList: []
     },
     "front/vue": {
-      beforePrompts: ({}) => [],
-      beforeContext: ({}) => ({}),
-      outputPrefixList: ({}) => [],
-      outputPathMap: (ctx) => ({}),
+      data: (ctx) => {
+        return {};
+      },
+      promptList: []
     },
     "backend/spring": {
-      beforePrompts: ({}) => [],
-      beforeContext: ({}) => ({
-        prefix: "", // 通过选择 outputPrefixList 后得到
-        packageName: springPackageName
-      }),
-      outputPrefixList: ({}) => [
-        // "app1",
-        // "app2",
-        // "app3",
-      ],
-      outputPathMap: (ctx) => ({
-        controller: joinPath(springJavaPath(ctx), 'controller'),
-        service: joinPath(springJavaPath(ctx), 'service'),
-        ['service-impl']: joinPath(springJavaPath(ctx), 'service/impl'),
-        mapper: joinPath(springJavaPath(ctx), 'mapper'),
-        mybatis: joinPath(springSourcesPath(ctx), 'mappers'),
-        dto: joinPath(springJavaPath(ctx), 'dto'),
-        entity: joinPath(springJavaPath(ctx), 'entity'),
-      }),
+      data: () => {
+        return {
+          packageName: springPackageName,
+          outputPathMap: (ctx) => ({
+            controller: joinPath(springJavaPath(ctx), 'controller'),
+            service: joinPath(springJavaPath(ctx), 'service'),
+            ['service-impl']: joinPath(springJavaPath(ctx), 'service/impl'),
+            mapper: joinPath(springJavaPath(ctx), 'mapper'),
+            mybatis: joinPath(springSourcesPath(ctx), 'mappers'),
+            dto: joinPath(springJavaPath(ctx), 'dto'),
+            entity: joinPath(springJavaPath(ctx), 'entity'),
+          }),
+          prefixList: [
+            "app1",
+            "app2",
+            "app3",
+          ]
+        }
+      },
+      promptList: [],
     },
   };
 };
