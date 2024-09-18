@@ -1,12 +1,13 @@
-import { clone, FrontCli, FsExtra, Logger, ResCode, StepList, StepScheduler } from '@utils';
+import { clone, FrontCli, FsExtra, Logger, Prompt, ResCode, StepList, StepScheduler } from '@utils';
 import { Envs } from '@type/env';
-import { downloadTypes } from '@clis/download/constant';
+import { DownloadKeys, downloadTypes } from '@clis/download/constant';
 import path from 'path';
 import {
   CLI_CONFIG_FILE_NAME,
   OUTPUT_FILE_NAME,
   PUBLISH_CONFIG_FILE_NAME,
   repositoryGitUrl,
+  TEMPLATE_CONFIG_FILE_NAME,
   TEMPLATE_FILE_NAME,
 } from '@constants/common';
 
@@ -37,18 +38,51 @@ export class DownloadCli extends FrontCli<IDownloadContext> {
       callback: async (ctx: IDownloadContext) => {
         const { __dirname, name } = this.context;
 
+        let downloadFilesList = [];
+
+        const downloadChoicesMap: { [key in DownloadKeys]: any } = {
+          [downloadTypes.all]: downloadTypes.all,
+          /** __template__ */
+          [downloadTypes.template]: {
+            src: TEMPLATE_FILE_NAME,
+            dest: `${CLI_CONFIG_FILE_NAME}/${TEMPLATE_FILE_NAME}`,
+          },
+          /** template.config.mjs */
+          [downloadTypes.templateConfig]: {
+            src: TEMPLATE_CONFIG_FILE_NAME,
+            dest: `${CLI_CONFIG_FILE_NAME}/${TEMPLATE_CONFIG_FILE_NAME}`,
+          },
+          /** publish.config.json */
+          [downloadTypes.publishConfig]: {
+            src: PUBLISH_CONFIG_FILE_NAME,
+            dest: `${CLI_CONFIG_FILE_NAME}/${PUBLISH_CONFIG_FILE_NAME}`,
+          },
+        };
+
+        const selectedFile: DownloadKeys = await Prompt.autocomplete(
+          'Please select a file to download.',
+          Object.keys(downloadChoicesMap).map((k) => ({ title: k, value: k })),
+        );
+
+        const selectedFileConfig = downloadChoicesMap[selectedFile];
+
+        /** 创建临时目录, 用于存放项目 */
         const tmpDirPath = path.resolve(__dirname, '.tmp');
         if (await FsExtra.pathExists(tmpDirPath)) {
           await FsExtra.rm(tmpDirPath);
         }
 
         Logger.startLoading(`cloning ${name}`);
+
+        const tmpName = '.tmp';
         await clone({
           remote: repositoryGitUrl,
           branch: 'main',
-          outputPath: '.tmp',
+          outputPath: tmpName,
         })
           .then(async (res) => {
+            const srcBasePath = path.resolve(__dirname, tmpName);
+
             if (name === downloadTypes.template || name === downloadTypes.all) {
               const tempSrc = path.resolve(__dirname, `.tmp/${TEMPLATE_FILE_NAME}`);
               const destName = `${CLI_CONFIG_FILE_NAME}/${TEMPLATE_FILE_NAME}`;
