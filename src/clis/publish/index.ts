@@ -112,7 +112,7 @@ export class PublishCli extends FrontCli<IPublishContext> {
 
         return {
           code: ResCode.next,
-          data: {},
+          data: { ...ctx },
         };
       },
     },
@@ -139,7 +139,7 @@ export class PublishCli extends FrontCli<IPublishContext> {
 
         return {
           code: ResCode.next,
-          data: {},
+          data: { ...ctx },
         };
       },
     },
@@ -164,7 +164,7 @@ export class PublishCli extends FrontCli<IPublishContext> {
 
         return {
           code: ResCode.next,
-          data: {},
+          data: { ...ctx },
         };
       },
     },

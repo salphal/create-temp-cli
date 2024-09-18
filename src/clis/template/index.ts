@@ -115,8 +115,6 @@ export class TemplateCli extends FrontCli<TemplateContext> {
         const tempDirPath = path.join(__dirname, `${CLI_CONFIG_FILE_NAME}/${TEMPLATE_FILE_NAME}`);
         const outputDirPath = path.join(__dirname, OUTPUT_FILE_NAME);
 
-        console.log('=>(index.ts:118) ctx.customConfigStep', ctx.customConfigStep);
-
         this.context.tempDirPath = tempDirPath;
         this.context.outputDirPath = outputDirPath;
         this.context.tempDirPathList.push(tempDirPath);
@@ -140,7 +138,7 @@ export class TemplateCli extends FrontCli<TemplateContext> {
 
         return {
           code: ResCode.next,
-          data: {},
+          data: { ...ctx },
         };
       },
     },
@@ -169,11 +167,15 @@ export class TemplateCli extends FrontCli<TemplateContext> {
           { default: 'template' },
         );
 
-        const outputPath = await Prompt.autocomplete(
-          'Please pick a template',
-          this.context.outputPathChoices,
-          { default: '.' },
-        );
+        let outputPath = '.';
+        /** 若使用用户自定义的输出路径则不执行该步骤 */
+        if (ctx.customConfigStep && !ctx.customConfigStep.useOutputPathMap) {
+          outputPath = await Prompt.autocomplete(
+            'Please pick a template',
+            this.context.outputPathChoices,
+            { default: '.' },
+          );
+        }
 
         /** 保存用户交互的结果 */
         this.context.questionResult = {
@@ -189,7 +191,7 @@ export class TemplateCli extends FrontCli<TemplateContext> {
 
         return {
           code: ResCode.next,
-          data: {},
+          data: { ...ctx },
         };
       },
     },
@@ -229,6 +231,7 @@ export class TemplateCli extends FrontCli<TemplateContext> {
         return {
           code: ResCode.next,
           data: {
+            ...ctx,
             curTempInfoList,
           },
         };

@@ -77,7 +77,7 @@ export class DownloadCli extends FrontCli<IDownloadContext> {
 
         return {
           code: ResCode.next,
-          data: {},
+          data: { ...ctx },
         };
       },
     },
@@ -122,7 +122,7 @@ export class DownloadCli extends FrontCli<IDownloadContext> {
         console.log('=> step_02', ctx);
         return {
           code: ResCode.end,
-          data: {},
+          data: { ...ctx },
         };
       },
     },
@@ -134,7 +134,7 @@ export class DownloadCli extends FrontCli<IDownloadContext> {
         console.log('=> step_03', ctx);
         return {
           code: ResCode.end,
-          data: {},
+          data: { ...ctx },
         };
       },
     },

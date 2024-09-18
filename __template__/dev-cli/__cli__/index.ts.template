@@ -27,7 +27,7 @@ export class ${CompName}Cli extends FrontCli<I${CompName}Context> {
         console.log('=> step_01', ctx);
         return {
           code: ResCode.next,
-          data: {}
+          data: { ...ctx }
         }
       }
     },
@@ -39,7 +39,7 @@ export class ${CompName}Cli extends FrontCli<I${CompName}Context> {
         console.log('=> step_02', ctx);
         return {
           code: ResCode.next,
-          data: {}
+          data: { ...ctx }
         }
       }
     },
@@ -51,7 +51,7 @@ export class ${CompName}Cli extends FrontCli<I${CompName}Context> {
         console.log('=> step_03', ctx);
         return {
           code: ResCode.end,
-          data: {}
+          data: { ...ctx }
         }
       }
     }
