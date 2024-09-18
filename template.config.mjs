@@ -1,4 +1,4 @@
-import path from 'node:path';
+import path from 'path';
 
 /**
  * 模版配置
@@ -16,7 +16,7 @@ import path from 'node:path';
  *   [keu: string]: {
  *      beforeContext: ({[key: string]: any}) => {[key: string]: any};
  *      outputPathMap: ({[key: string]: any}) => {[key: string]: any};
- *      outputPrefixList: Array<string>;
+ *      outputPrefixList: ({[key: string]: any}) => Array<string>;
  *      beforePrompts: ({[key: string]: any}) => Array<{
  *        message: string;
  *        choices?: Array<{
@@ -26,7 +26,6 @@ import path from 'node:path';
  *      }>;
  *   };
  * }}
- *
  */
 const createTempConfig = (context) => {
   const {__dirname} = context;
@@ -50,13 +49,13 @@ const createTempConfig = (context) => {
     "front/react": {
       beforePrompts: ({}) => [],
       beforeContext: ({}) => ({}),
-      outputPrefixList: [],
+      outputPrefixList: ({}) => [],
       outputPathMap: (ctx) => ({}),
     },
     "front/vue": {
       beforePrompts: ({}) => [],
       beforeContext: ({}) => ({}),
-      outputPrefixList: [],
+      outputPrefixList: ({}) => [],
       outputPathMap: (ctx) => ({}),
     },
     "backend/spring": {
@@ -65,10 +64,10 @@ const createTempConfig = (context) => {
         prefix: "", // 通过选择 outputPrefixList 后得到
         packageName: springPackageName
       }),
-      outputPrefixList: [
-        "app1",
-        "app2",
-        "app3",
+      outputPrefixList: ({}) => [
+        // "app1",
+        // "app2",
+        // "app3",
       ],
       outputPathMap: (ctx) => ({
         controller: joinPath(springJavaPath(ctx), 'controller'),
