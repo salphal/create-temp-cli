@@ -20,6 +20,7 @@ export class InitCli extends FrontCli<IInitContext> {
     {
       name: 'step_01',
       remark: ``,
+      data: () => ({}),
       callback: async (ctx: IInitContext) => {
         const {} = this.context;
         console.log('=> step_01', ctx);
@@ -32,6 +33,7 @@ export class InitCli extends FrontCli<IInitContext> {
     {
       name: 'step_02',
       remark: ``,
+      data: () => ({}),
       callback: async (ctx: IInitContext) => {
         const {} = this.context;
         console.log('=> step_02', ctx);
@@ -44,6 +46,7 @@ export class InitCli extends FrontCli<IInitContext> {
     {
       name: 'step_03',
       remark: ``,
+      data: () => ({}),
       callback: async (ctx: IInitContext) => {
         const {} = this.context;
         console.log('=> step_03', ctx);

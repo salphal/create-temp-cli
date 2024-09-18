@@ -79,6 +79,7 @@ export class PublishCli extends FrontCli<IPublishContext> {
       remark: `
         获取部署配置信息列表
       `,
+      data: () => ({}),
       callback: async (ctx: IPublishContext) => {
         const { __dirname } = this.context;
 
@@ -122,6 +123,7 @@ export class PublishCli extends FrontCli<IPublishContext> {
       remark: `
         用户选择其中一个
       `,
+      data: () => ({}),
       callback: async (ctx: IPublishContext) => {
         const {} = this.context;
 
@@ -151,6 +153,7 @@ export class PublishCli extends FrontCli<IPublishContext> {
           - publish 发布
           - rollback 回退
       `,
+      data: () => ({}),
       callback: async (ctx: IPublishContext) => {
         const {} = this.context;
 

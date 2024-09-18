@@ -109,6 +109,7 @@ export class TemplateCli extends FrontCli<TemplateContext> {
         - 并生成模版信息列表
         - 根据模版信息文件生成模版选项选项列表
     `,
+      data: () => ({}),
       callback: async (ctx: any) => {
         const { tempDirPathList, envs, __dirname } = this.context;
 
@@ -155,7 +156,8 @@ export class TemplateCli extends FrontCli<TemplateContext> {
             - 根据预设和环境变量配置的选项选择
             - 自定义输入
           - 否: 默认输出路径( __output__ )
-    `,
+      `,
+      data: () => ({}),
       callback: async (ctx: any) => {
         const tempName = await Prompt.autocomplete(
           'Please pick a template',
@@ -202,7 +204,8 @@ export class TemplateCli extends FrontCli<TemplateContext> {
 			根据用户选择的信息更新配置
 				- 更新当前选中的模版
 				- 更新输出路径
-		`,
+			`,
+      data: () => ({}),
       callback: async (ctx: any) => {
         const {
           questionResult: { tempName, outputPath },
@@ -246,6 +249,7 @@ export class TemplateCli extends FrontCli<TemplateContext> {
 				2. 将模版文件写入到输出目录
 					a. 替换文件中的变量
 		`,
+      data: () => ({}),
       callback: async (ctx: any) => {
         const {
           questionResult: { tempName },
