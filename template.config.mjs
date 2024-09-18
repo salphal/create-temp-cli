@@ -1,4 +1,4 @@
-const path = require("path");
+import path from 'node:path';
 
 /**
  * 模版配置
@@ -14,14 +14,21 @@ const path = require("path");
  *
  * @return {{
  *   [keu: string]: {
- *      prefixList: Array<string>;
- *      beforePrompts: ({[key: string]: any}) => Array<any>;
  *      beforeContext: ({[key: string]: any}) => {[key: string]: any};
  *      outputPathMap: ({[key: string]: any}) => {[key: string]: any};
+ *      outputPrefixList: Array<string>;
+ *      beforePrompts: ({[key: string]: any}) => Array<{
+ *        message: string;
+ *        choices?: Array<{
+ *          title: string;
+ *          value: any;
+ *        }>;
+ *      }>;
  *   };
  * }}
+ *
  */
-createTempConfig = (context) => {
+const createTempConfig = (context) => {
   const {__dirname} = context;
   const joinPath = (...p) => path.join(...p);
 
@@ -29,29 +36,40 @@ createTempConfig = (context) => {
   const springArtifact = 'demo';
   const springPackageName = `com.example.${springArtifact}`;
   const springMainPath = 'src/main';
+
+  /**
+   * @param ctx {object}
+   */
   const springJavaPath = ({prefix = ''}) => joinPath(__dirname, prefix, springMainPath, 'java', springGroupPath, springArtifact);
+  /**
+   * @param ctx {object}
+   */
   const springSourcesPath = ({prefix = ''}) => joinPath(__dirname, prefix, springMainPath, 'resources');
 
   return {
     "front/react": {
-      prefixList: [],
       beforePrompts: ({}) => [],
       beforeContext: ({}) => ({}),
+      outputPrefixList: [],
       outputPathMap: (ctx) => ({}),
     },
     "front/vue": {
-      prefixList: [],
       beforePrompts: ({}) => [],
       beforeContext: ({}) => ({}),
+      outputPrefixList: [],
       outputPathMap: (ctx) => ({}),
     },
     "backend/spring": {
-      prefixList: [],
       beforePrompts: ({}) => [],
       beforeContext: ({}) => ({
-        prefix: "", // 通过选择 prefixList 后得到
+        prefix: "", // 通过选择 outputPrefixList 后得到
         packageName: springPackageName
       }),
+      outputPrefixList: [
+        "app1",
+        "app2",
+        "app3",
+      ],
       outputPathMap: (ctx) => ({
         controller: joinPath(springJavaPath(ctx), 'controller'),
         service: joinPath(springJavaPath(ctx), 'service'),
@@ -65,8 +83,4 @@ createTempConfig = (context) => {
   };
 };
 
-const templateConfig = createTempConfig({__dirname});
-console.log("=>(template.config.cjs:85) templateConfig", templateConfig);
-
-module.exports = createTempConfig;
-
+export default createTempConfig;
