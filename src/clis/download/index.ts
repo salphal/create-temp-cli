@@ -36,11 +36,10 @@ export class DownloadCli extends FrontCli<IDownloadContext> {
       name: 'step_01',
       remark: ``,
       callback: async (ctx: IDownloadContext) => {
-        const { __dirname, name } = this.context;
+        const { __dirname } = this.context;
 
-        let downloadFilesList = [];
-
-        const downloadChoicesMap: { [key in DownloadKeys]: any } = {
+        let downloadFilesMap: any = {};
+        let downloadChoicesMap: any = {
           [downloadTypes.all]: downloadTypes.all,
           /** __template__ */
           [downloadTypes.template]: {
@@ -64,7 +63,12 @@ export class DownloadCli extends FrontCli<IDownloadContext> {
           Object.keys(downloadChoicesMap).map((k) => ({ title: k, value: k })),
         );
 
-        const selectedFileConfig = downloadChoicesMap[selectedFile];
+        if (selectedFile === downloadTypes.all) {
+          delete downloadChoicesMap[downloadTypes.all];
+          downloadFilesMap = downloadChoicesMap;
+        } else {
+          downloadFilesMap[selectedFile] = downloadChoicesMap[selectedFile];
+        }
 
         /** 创建临时目录, 用于存放项目 */
         const tmpDirPath = path.resolve(__dirname, '.tmp');
@@ -72,7 +76,9 @@ export class DownloadCli extends FrontCli<IDownloadContext> {
           await FsExtra.rm(tmpDirPath);
         }
 
-        Logger.startLoading(`cloning ${name}`);
+        Logger.startLoading(
+          `cloning ${Object.keys(downloadFilesMap).length > 1 ? Object.keys(downloadFilesMap).join(', ') : Object.keys(downloadFilesMap)}`,
+        );
 
         const tmpName = '.tmp';
         await clone({
@@ -83,24 +89,15 @@ export class DownloadCli extends FrontCli<IDownloadContext> {
           .then(async (res) => {
             const srcBasePath = path.resolve(__dirname, tmpName);
 
-            if (name === downloadTypes.template || name === downloadTypes.all) {
-              const tempSrc = path.resolve(__dirname, `.tmp/${TEMPLATE_FILE_NAME}`);
-              const destName = `${CLI_CONFIG_FILE_NAME}/${TEMPLATE_FILE_NAME}`;
-              const tempDst = path.resolve(__dirname, destName);
-              await FsExtra.cp(tempSrc, tempDst);
-              Logger.success(`Successfully downloaded ${destName} directory`);
+            for (const fileName in downloadFilesMap) {
+              const { src, dest } = downloadFilesMap[fileName];
+              const srcPath = path.join(srcBasePath, src);
+              const destPath = path.join(__dirname, dest);
+              await FsExtra.cp(srcPath, destPath);
+              Logger.success(`Successfully downloaded ${fileName}.`);
             }
 
-            if (name === downloadTypes.publishConfig || name === downloadTypes.all) {
-              const destName = `${CLI_CONFIG_FILE_NAME}/${PUBLISH_CONFIG_FILE_NAME}`;
-              const envSrc = path.resolve(__dirname, `.tmp/${PUBLISH_CONFIG_FILE_NAME}`);
-              const envDst = path.resolve(__dirname, destName);
-              await FsExtra.cp(envSrc, envDst);
-              Logger.success(`Successfully downloaded ${destName} file`);
-            }
-
-            const tmpPath = path.resolve(__dirname, '.tmp');
-            await FsExtra.rm(tmpPath);
+            await FsExtra.rm(tmpDirPath);
           })
           .catch((err) => {
             Logger.error(err);

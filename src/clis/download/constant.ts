@@ -1,7 +1,13 @@
+import {
+  PUBLISH_CONFIG_FILE_NAME,
+  TEMPLATE_CONFIG_FILE_NAME,
+  TEMPLATE_FILE_NAME,
+} from '@constants/common';
+
 export const downloadTypes = {
-  template: 'template',
-  templateConfig: 'templateConfig',
-  publishConfig: 'publishConfig',
+  template: TEMPLATE_FILE_NAME,
+  templateConfig: TEMPLATE_CONFIG_FILE_NAME,
+  publishConfig: PUBLISH_CONFIG_FILE_NAME,
   all: 'all',
 } as const;
 

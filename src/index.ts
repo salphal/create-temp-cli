@@ -106,11 +106,11 @@ program
   .command('download')
   .alias('dw')
   .action(async (opts: any, cmd: any) => {
-    const name = await Prompt.autocomplete(
-      'Please select a file to download.',
-      downloadNameChoices,
-    );
-    downloadCli.start({ name });
+    // const name = await Prompt.autocomplete(
+    //   'Please select a file to download.',
+    //   downloadNameChoices,
+    // );
+    downloadCli.start();
   });
 
 //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -//
