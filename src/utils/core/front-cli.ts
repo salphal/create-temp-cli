@@ -5,6 +5,7 @@ import { CLI_CONFIG_FILE_NAME, TEMPLATE_CONFIG_FILE_NAME } from '@constants/comm
 import path from 'path';
 import { FsExtra, Prompt, PromptList } from '@utils';
 import prompts from 'prompts';
+import { isEmptyArray } from '../is-type';
 
 export interface CustomCliConfig {
   [key: string]: any;
@@ -57,6 +58,7 @@ export abstract class FrontCli<T = any> {
     return {
       name: 'custom_config_step',
       remark: ``,
+      data: () => ({}),
       callback: async (ctx: any) => {
         const { __dirname } = this.context as any;
 
@@ -70,8 +72,9 @@ export abstract class FrontCli<T = any> {
         let outputPrefix = '';
         let useOutputPathMap = false;
         let customConfigMap: { [key: string]: CustomCliConfig } = {};
-        let beforePromptsResult: { [key: string]: any } = {};
-        let outputPathMap: { [key: string]: string } = {};
+        let promptsResult: any = {};
+        let outputPathMap: any = {};
+        let customConfigStep: any = {};
 
         let customConfigModule: any = { default: null };
 
@@ -112,9 +115,11 @@ export abstract class FrontCli<T = any> {
             if (configKey) customConfig = customConfigMap[configKey];
           }
 
+          const stepData = typeof customConfig.data === 'function' ? customConfig.data(ctx) : {};
+
           /** 根据配置的 outputPrefix 列表选择, 输出路径的前缀 */
-          if (typeof customConfig.outputPrefixList === 'function') {
-            const prefixList = customConfig.outputPrefixList(this.context);
+          if (isEmptyArray(stepData.prefixList)) {
+            const prefixList = stepData.prefixList;
             if (Array.isArray(prefixList) && prefixList.length) {
               const prefixChoices = prefixList.map((key) => ({
                 title: key,
@@ -128,16 +133,16 @@ export abstract class FrontCli<T = any> {
           }
 
           /** 若设置了自定义问题则执行 */
-          if (Array.isArray(customConfig.beforePrompts) && customConfig.beforeContext.length) {
-            beforePromptsResult = prompts(customConfig.beforePrompts);
+          if (isEmptyArray(stepData.promptList)) {
+            promptsResult = await prompts(stepData.promptList);
           }
 
           /** 根据用户选饿的 outputPrefix 执行, 并返回输出路径映射集合 */
-          if (typeof customConfig.outputPathMap === 'function') {
-            outputPathMap = customConfig.outputPathMap({
-              ...customConfig.beforeData,
-              prefix: outputPrefix || '',
+          if (typeof stepData.outputPathMap === 'function') {
+            outputPathMap = stepData.outputPathMap({
               ...this.context,
+              ...stepData.beforeData,
+              prefix: outputPrefix || '',
             });
 
             /** 若有输出路径集合, 则询问是否 直接使用输出路径集合 */
@@ -147,6 +152,16 @@ export abstract class FrontCli<T = any> {
               );
             }
           }
+
+          customConfigStep = {
+            ...stepData,
+            ...promptsResult,
+            outputPrefix,
+            outputPathMap,
+            useOutputPathMap,
+          };
+
+          Logger.infoObj('customConfigStep', customConfigStep);
         } catch (err) {
           console.error('[ import module err ]: ', err);
         }
@@ -154,12 +169,7 @@ export abstract class FrontCli<T = any> {
         return {
           code: ResCode.next,
           data: {
-            customConfigStep: {
-              ...beforePromptsResult,
-              outputPrefix,
-              outputPathMap,
-              useOutputPathMap,
-            },
+            customConfigStep,
           },
         };
       },
