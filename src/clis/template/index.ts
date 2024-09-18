@@ -8,7 +8,6 @@ import {
   Logger,
   PromptChoices,
   Prompt,
-  isObject,
 } from '@utils';
 import {
   getAllTempInfoByTempDirPathList,
