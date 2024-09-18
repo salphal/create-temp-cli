@@ -12,6 +12,7 @@ export * from './download/clone';
 
 export * from './camelcase';
 export * from './file-extra';
+export * from './is-type';
 export * from './path-extra';
 export * from './shell-extra';
 export * from './tar-cmd';
