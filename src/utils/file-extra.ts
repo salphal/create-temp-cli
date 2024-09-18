@@ -1,5 +1,6 @@
 import fs from 'fs-extra';
 import path, { ParsedPath } from 'path';
+import { StatsBase } from 'fs';
 
 /**
  * 同步方法需要 try catch 捕获错误
@@ -359,7 +360,7 @@ export class FsExtra {
    *
    * @param path {string} - 路径
    */
-  static async stat(path: string): Promise<fs.Stats> {
+  static async stat(path: string): Promise<fs.Stats | boolean> {
     return new Promise(async (resolve, reject) => {
       const isExists = await FsExtra.pathExists(path);
       if (isExists) {
@@ -372,6 +373,7 @@ export class FsExtra {
           }
         });
       }
+      resolve(isExists);
     });
   }
 
@@ -383,10 +385,10 @@ export class FsExtra {
   static async isFile(path: string): Promise<boolean> {
     return new Promise(async (resolve, reject) => {
       const stat = await FsExtra.stat(path);
-      if (stat && typeof stat.isFile === 'function') {
+      if (typeof stat !== 'boolean' && typeof stat.isFile === 'function') {
         resolve(stat.isFile());
       }
-      reject(false);
+      reject(stat);
     });
   }
 
@@ -398,7 +400,7 @@ export class FsExtra {
   static async isDir(path: string): Promise<boolean> {
     return new Promise(async (resolve, reject) => {
       const stat = await FsExtra.stat(path);
-      if (stat && typeof stat.isDirectory === 'function') {
+      if (typeof stat !== 'boolean' && typeof stat.isDirectory === 'function') {
         resolve(stat.isDirectory());
       }
       // reject(false);
