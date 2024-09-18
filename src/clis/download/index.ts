@@ -35,6 +35,7 @@ export class DownloadCli extends FrontCli<IDownloadContext> {
     {
       name: 'step_01',
       remark: ``,
+      data: () => ({}),
       callback: async (ctx: IDownloadContext) => {
         const { __dirname } = this.context;
 
@@ -112,11 +113,13 @@ export class DownloadCli extends FrontCli<IDownloadContext> {
         };
       },
     },
+
     {
       name: 'step_02',
       remark: `
         如果有 .gitignore 文件, 则向其中追加忽略文件
       `,
+      data: () => ({}),
       callback: async (ctx: IDownloadContext) => {
         const { __dirname, name } = this.context;
         const ignoreFilePath = path.join(__dirname, '.gitignore');
@@ -157,9 +160,11 @@ export class DownloadCli extends FrontCli<IDownloadContext> {
         };
       },
     },
+
     {
       name: 'step_03',
       remark: ``,
+      data: () => ({}),
       callback: async (ctx: IDownloadContext) => {
         const {} = this.context;
         console.log('=> step_03', ctx);
