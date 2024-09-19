@@ -36,17 +36,15 @@ function getTempNameByDirFullPath(fullPath: string) {
  */
 export function tempFileNameToRealFileName(tempFileName: string, replacements: Replacements) {
   const { fileName, CompName } = replacements;
-  const filename = tempFileName
-    .replace(/[tT]emplate(?=\.)/, (match) => {
-      if (match === 'template') {
-        return fileName;
-      } else if (match === 'Template') {
-        return CompName;
-      } else {
-        return match;
-      }
-    })
-    .replace(/(\.template$)/, '');
+  const filename = tempFileName.replace(/(\.template$)/, '').replace(/[tT]emplate/, (match) => {
+    if (match === 'template') {
+      return fileName;
+    } else if (match === 'Template') {
+      return CompName;
+    } else {
+      return match;
+    }
+  });
   Logger.info(`Rename file "${tempFileName}" to "${filename}"`);
   return filename;
 }
@@ -254,6 +252,7 @@ export async function writeTempListToTarget(
     await FsExtra.makeDir(outputDirFullPath);
 
     const realFileName = tempFileNameToRealFileName(tempFileName, replacements);
+    console.log('=>(template.ts:257) realFileName', realFileName);
 
     let outputFullPath = path.join(outputDirFullPath, realFileName);
 
