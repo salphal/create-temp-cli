@@ -166,13 +166,9 @@ export class TemplateCli extends FrontCli<TemplateContext> {
         if (ctx.customConfigStep && typeof ctx.customConfigStep.selectedKey === 'string') {
           const selectedKey = ctx.customConfigStep.selectedKey;
           if (selectedKey.indexOf('front') !== -1) {
-            tempNameChoices = tempNameChoices.filter(
-              (v) => v.title.indexOf('front') !== -1 || v.title.indexOf('dev-cli') !== -1,
-            );
+            tempNameChoices = tempNameChoices.filter((v) => v.title.indexOf('backend') === -1);
           } else if (selectedKey.indexOf('backend') !== -1) {
-            tempNameChoices = tempNameChoices.filter(
-              (v) => v.title.indexOf('backend') !== -1 || v.title.indexOf('dev-cli') !== -1,
-            );
+            tempNameChoices = tempNameChoices.filter((v) => v.title.indexOf('front') === -1);
           }
         }
 
@@ -197,7 +193,6 @@ export class TemplateCli extends FrontCli<TemplateContext> {
         /** 保存用户交互的结果 */
         this.context.questionResult = {
           tempName,
-          // compName,
           fileName,
           outputPath,
         };
