@@ -7,7 +7,6 @@ import {
   camelCase,
   CamelCase,
   SHORTCAMELCASE,
-  PromptChoices,
   Logger,
   FsExtra,
   isObject,
