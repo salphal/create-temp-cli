@@ -134,4 +134,5 @@ __template__
 docs
 pnpm-lock.yaml
 README.md
+template.config.mjs
 
