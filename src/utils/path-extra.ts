@@ -17,16 +17,6 @@ export class PathExtra {
     return path.format(pathConfig);
   }
 
-  static __basename(p: string): string {
-    const { name, ext } = path.parse(p);
-    if (/.*(\.tar)$/.test(name)) {
-      return name.slice(0, name.indexOf('.tar'));
-    } else if (ext === '.jar') {
-      return name + ext;
-    }
-    return name;
-  }
-
   static __extname(p: string): string {
     if (/.*(\.tar\.gz)$/.test(p)) {
       return '.tar.gz';
@@ -46,9 +36,20 @@ export class PathExtra {
     return path.replace(/\\/g, '/');
   }
 
-  static fixTarExt(name: string): string {
+  /**
+   * 获取 正确的文件名 /path/to/file.tar.gz => file
+   */
+  static getBasenameOfTarGz(p: string): string {
+    const fileList = p.split('/');
+    return fileList[fileList.length - 1].replace(/(\.tar\.gz$)|(\.tar)/, '');
+  }
+
+  /**
+   * 纠正 *.tar.gz 文件后缀
+   */
+  static fixTarGzExt(name: string): string {
     const ext = '.tar.gz';
-    name = this.__basename(name);
+    name = this.getBasenameOfTarGz(name);
     return name + ext;
   }
 }

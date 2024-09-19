@@ -195,9 +195,9 @@ export class PublishCli extends FrontCli<IPublishContext> {
     const { name, dir, ext } = path.parse(outputName);
 
     /** 打包的产物名 */
-    const outputTarName = PathExtra.fixTarExt(name + ext);
+    const outputTarName = PathExtra.fixTarGzExt(name + ext);
     /** 基础的产物名 */
-    const outputBaseName = PathExtra.__basename(name + ext);
+    const outputBaseName = PathExtra.getBasenameOfTarGz(name + ext);
     /** 本地旧产物路径 */
     const localOutputPath = path.join(__dirname, dir, outputTarName);
 
@@ -316,7 +316,7 @@ export class PublishCli extends FrontCli<IPublishContext> {
 
     conn.then(async (client) => {
       /** 基础的产物名 */
-      const outputBaseName = PathExtra.__basename(outputName);
+      const outputBaseName = PathExtra.getBasenameOfTarGz(outputName);
       /** 发布到远程的路径 */
       const remoteOutputPath = PathExtra.forceSlash(path.join(publishDir, outputBaseName));
       /** 备份文件的路径夹路径 */
