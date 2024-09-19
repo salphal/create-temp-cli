@@ -14,7 +14,7 @@ import path from 'path';
  *
  */
 const createTempConfig = (context) => {
-  const {__dirname} = context;
+  const { __dirname } = context;
   const joinPath = (...p) => path.join(...p);
 
   const springGroupPath = 'com/example';
@@ -25,26 +25,28 @@ const createTempConfig = (context) => {
   /**
    * @param ctx {object}
    */
-  const springJavaPath = ({prefix = ''}) => joinPath(__dirname, prefix, springMainPath, 'java', springGroupPath, springArtifact);
+  const springJavaPath = ({ prefix = '' }) =>
+    joinPath(__dirname, prefix, springMainPath, 'java', springGroupPath, springArtifact);
   /**
    * @param ctx {object}
    */
-  const springSourcesPath = ({prefix = ''}) => joinPath(__dirname, prefix, springMainPath, 'resources');
+  const springSourcesPath = ({ prefix = '' }) =>
+    joinPath(__dirname, prefix, springMainPath, 'resources');
 
   return {
-    "front/react": {
+    'front/react': {
       data: (ctx) => {
         return {};
       },
-      promptList: []
+      promptList: [],
     },
-    "front/vue": {
+    'front/vue': {
       data: (ctx) => {
         return {};
       },
-      promptList: []
+      promptList: [],
     },
-    "backend/spring": {
+    'backend/spring': {
       data: () => {
         return {
           packageName: springPackageName,
@@ -57,12 +59,8 @@ const createTempConfig = (context) => {
             dto: joinPath(springJavaPath(ctx), 'dto'),
             entity: joinPath(springJavaPath(ctx), 'entity'),
           }),
-          prefixList: [
-            "app1",
-            "app2",
-            "app3",
-          ]
-        }
+          prefixList: ['app1', 'app2', 'app3'],
+        };
       },
       promptList: [],
     },
