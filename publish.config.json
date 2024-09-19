@@ -1,5 +1,51 @@
 [
   {
+    "envName": "front-demo",
+    "local": {
+      "outputName": "dist/index.mjs"
+    },
+    "server": {
+      "connect": {
+        "host": "192.168.1.1",
+        "username": "root",
+        "port": 22,
+        "password": "password",
+        "privateKey": null
+      },
+      "isBackup": true,
+      "backup": {
+        "dirName": "time-machine",
+        "max": 5
+      },
+      "publishDir": "/opt/front",
+      "appName": "app",
+      "restartCmd": "nginx -s reload"
+    }
+  },
+  {
+    "envName": "backend-demo",
+    "local": {
+      "outputName": "/target/demo-0.0.1-SNAPSHOT.jar"
+    },
+    "server": {
+      "connect": {
+        "host": "192.168.1.1",
+        "username": "root",
+        "port": 22,
+        "password": "password",
+        "privateKey": null
+      },
+      "isBackup": true,
+      "backup": {
+        "dirName": "time-machine",
+        "max": 5
+      },
+      "publishDir": "/opt/backend",
+      "appName": "app-0.0.1-SNAPSHOT.jar",
+      "restartCmd": "sh /opt/backend/exec.sh restart"
+    }
+  },
+  {
     "envName": "__front_demo__",
     "local": {
       "outputName": "dist"
