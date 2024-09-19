@@ -62,7 +62,33 @@ const createTempConfig = (context) => {
           prefixList: ['app1', 'app2', 'app3'],
         };
       },
-      promptList: [],
+      promptList: [
+        {
+          type: 'text',
+          name: 'input',
+          message: 'Please enter a demo',
+          initial: 'defaultValue',
+        },
+        {
+          type: 'autocomplete',
+          name: 'select',
+          message: 'Please enter a demo',
+          choices: [
+            { title: 'option1', value: 'option1' },
+            { title: 'option2', value: 'option2' },
+            { title: 'option3', value: 'option3' },
+          ],
+          initial: 'defaultValue',
+        },
+        {
+          type: 'toggle',
+          name: 'confirm',
+          message: 'Can you confirm?',
+          active: 'yes',
+          inactive: 'no',
+          initial: true,
+        }
+      ],
     },
   };
 };
