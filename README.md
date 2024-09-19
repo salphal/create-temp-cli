@@ -133,3 +133,15 @@ dev-cli dw
 
 
 ```
+
+```
+
+? Please select a file to download. > 
+>   all                     // 下载所有配置
+    __template__            // 下载预设模版
+    template.config.mjs     // 下载模版配置( 用于自定义注入一些模版的变量和交互问题等 )
+    publish.config.json     // 下载部署配置
+
+```
+
+
