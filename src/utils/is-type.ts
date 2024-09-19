@@ -31,10 +31,14 @@ export function isObject<T extends object>(value: T | unknown): value is object 
 }
 
 export function isArray<T extends any[]>(value: T | unknown): value is T {
-  return Object.prototype.toString.call(value) === '[object Array]';
+  return Array.isArray(value);
 }
 
 export function isEmptyArray<T extends any[]>(value: T | unknown): value is T {
+  return isArray(value) && !value.length;
+}
+
+export function isNotEmptyArray<T extends any[]>(value: T | unknown): value is T {
   return isArray(value) && !!value.length;
 }
 
