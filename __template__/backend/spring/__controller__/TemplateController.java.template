@@ -1,0 +1,63 @@
+
+
+@RestController
+@RequestMapping("${prefix}")
+public class ${CompName}Controller {
+
+    private final ${CompName}Service ${compName}Service;
+
+    @Autowired
+    public ${CompName}Controller(${CompName}Service ${compName}Service) {
+        this.${compName}Service = ${compName}Service;
+    }
+
+    @PostMapping("")
+    public Resp<Void> add${CompName}(@RequestBody ${CompName} ${compName}) {
+        ${compName}Service.add${CompName}(${compName});
+        return Resp.success();
+    }
+
+    @DeleteMapping("/{id}")
+    public Resp<Void> delete${CompName}ById(@PathVariable Long id) {
+        ${compName}Service.delete${CompName}ById(id);
+        return Resp.success();
+    }
+
+    @PutMapping("")
+    public Resp<Void> update${CompName}ById(@RequestBody ${CompName} ${compName}) {
+        ${compName}Service.update${CompName}ById(${compName});
+        return Resp.success();
+    }
+
+    @GetMapping("/{id}")
+    public Resp<${CompName}Dto> get${CompName}ById(@PathVariable Long id) {
+        return Resp.success(${compName}Service.get${CompName}ById(id));
+    }
+
+    @PostMapping("/list")
+    public Resp<Void> batchAdd${CompName}s(@RequestBody List<${CompName}> ${compName}List) {
+        ${compName}Service.batchAdd${CompName}s(${compName}List);
+        return Resp.success();
+    }
+
+    @DeleteMapping("/list/{ids}")
+    public Resp<Void> batchDelete${CompName}s(@PathVariable List<Long> ids) {
+        ${compName}Service.batchDelete${CompName}s(ids);
+        return Resp.success();
+    }
+
+    @PutMapping("/list")
+    public Resp<Void> batchUpdate${CompName}s(@RequestBody List<${CompName}> ${compName}List) {
+        ${compName}Service.batchUpdate${CompName}s(${compName}List);
+        return Resp.success();
+    }
+
+    @GetMapping("/list")
+    public Resp<PageResp<${CompName}Dto>> get${CompName}sByPage(
+        @RequestParam(value = "currentPage", defaultValue = "1") int currentPage,
+        @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+        @RequestParam(required = false) String queryCondition
+    ) {
+        return Resp.success(${compName}Service.get${CompName}sByPage(currentPage, pageSize, queryCondition));
+    }
+}
