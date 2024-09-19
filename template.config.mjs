@@ -87,6 +87,15 @@ const createTempConfig = (context) => {
           active: 'yes',
           inactive: 'no',
           initial: true,
+        },
+        {
+          type: 'number',
+          name: 'number',
+          message: 'How old are you?',
+          style: 'default',
+          min: 2,
+          max: 10,
+          initial: 0,
         }
       ],
     },
