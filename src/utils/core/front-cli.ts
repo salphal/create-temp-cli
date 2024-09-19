@@ -1,10 +1,10 @@
+import prompts from 'prompts';
 import { ResCode, StepList, StepScheduler } from './scheduler';
 import { Envs } from '@type/env';
 import { Logger } from '../logger/index';
 import { CLI_CONFIG_FILE_NAME, TEMPLATE_CONFIG_FILE_NAME } from '@constants/common';
 import path from 'path';
-import { FsExtra, Prompt, PromptList } from '@utils';
-import prompts from 'prompts';
+import { FsExtra, isNotEmptyArray, Prompt } from '@utils';
 import { isEmptyArray } from '../is-type';
 
 export interface IFrontCliOptions {
@@ -113,8 +113,9 @@ export abstract class FrontCli<T = any> {
           }
 
           /** 若设置了自定义问题则执行 */
-          if (isEmptyArray(stepData.promptList)) {
-            promptsResult = await prompts(stepData.promptList);
+          const promptList = customConfig.promptList || [];
+          if (isNotEmptyArray(promptList)) {
+            promptsResult = await prompts(promptList);
           }
 
           /** 根据用户选饿的 outputPrefix 执行, 并返回输出路径映射集合 */
