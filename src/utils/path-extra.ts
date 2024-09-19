@@ -18,7 +18,7 @@ export class PathExtra {
   }
 
   static __extname(p: string): string {
-    if (/.*(\.tar\.gz)$/.test(p)) {
+    if (/.*((\.tar\.gz)|(\.tar))$/.test(p)) {
       return '.tar.gz';
     }
     return path.extname(p);
