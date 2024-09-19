@@ -56,7 +56,7 @@ export class Prompt {
   /**
    * 单选, 根据输入筛选
    */
-  static async autocomplete(message: string, choices: PromptChoices, config: any = {}) {
+  static async autocomplete(message: string, choices: PromptChoices, config: any = { limit: 16 }) {
     const res = await prompts({
       type: 'autocomplete',
       name: 'value',
