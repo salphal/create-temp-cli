@@ -17,7 +17,6 @@ import { __test__ } from '@/test';
 import { Envs } from '@type/env';
 import { CliEnvs } from '@clis/template/template';
 import { Prompt, ShellExtra } from '@utils';
-import { downloadNameChoices } from '@clis/download/constant';
 import { publishTypeChoices, publishTypes } from '@clis/publish/constant';
 import { CLI_NAME } from '@constants/cli';
 import { CLI_CONFIG_FILE_NAME } from '@constants/common';
@@ -106,10 +105,6 @@ program
   .command('download')
   .alias('dw')
   .action(async (opts: any, cmd: any) => {
-    // const name = await Prompt.autocomplete(
-    //   'Please select a file to download.',
-    //   downloadNameChoices,
-    // );
     downloadCli.start();
   });
 
